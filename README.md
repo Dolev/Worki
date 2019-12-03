@@ -3,4 +3,4 @@ Software Engineering project for Ariel Univversity
 
 # UML Diagrams
 
-![use-case](/Readme/UML/Worki use-case.png)
+![use-case](https://github.com/elishadar/Worki/blob/master/Readme/UML/Worki%20use-case.png)
