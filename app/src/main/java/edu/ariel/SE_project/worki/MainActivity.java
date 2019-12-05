@@ -3,6 +3,7 @@ package edu.ariel.SE_project.worki;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -18,6 +19,8 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SharedPreferences sp = getSharedPreferences("login", MODE_PRIVATE);
 
         login = (Button) findViewById(R.id.login);
         login.setOnClickListener(Helper.ClickTransfer(this, new Intent(this, LoginActivity.class)));
