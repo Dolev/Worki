@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "509229437117",
+    "firebase_url": "https://worki-367e9.firebaseio.com",
+    "project_id": "worki-367e9",
+    "storage_bucket": "worki-367e9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:509229437117:android:e7cd0a52093b31eed9e7d4",
+        "android_client_info": {
+          "package_name": "edu.ariel.SE_project.worki"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "509229437117-6guncsiaf7327bfi2aa8a7pa5llefpbu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.ariel.SE_project.worki",
+            "certificate_hash": "639cbc6fe1aa7315f78f850d5845aaa16c2909f8"
+          }
+        },
+        {
+          "client_id": "509229437117-u9nr5gj8m7d4q1qf8dtcprcrocnjdkpp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEt7h__qvCT1B-bDAqFXMxxJxG8l8IgYE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "509229437117-u9nr5gj8m7d4q1qf8dtcprcrocnjdkpp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
