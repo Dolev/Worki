@@ -43,6 +43,7 @@ public class LoginRegisterActivity extends AppCompatActivity
     private boolean to_register;
 
     private String TAG;
+    private final int minPasswordLength = 6;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -240,6 +241,10 @@ public class LoginRegisterActivity extends AppCompatActivity
         {
             passwordEditText.setError("Required.");
             valid = false;
+        } else if (password.length() < minPasswordLength)
+        {
+            passwordEditText.setError("Must be more than " + minPasswordLength + " characters.");
+            valid = false;
         } else
         {
             passwordEditText.setError(null);
@@ -248,6 +253,11 @@ public class LoginRegisterActivity extends AppCompatActivity
         return valid;
     }
 
+    /**
+     * Called after login / register is finished.
+     *
+     * @param currentUser current user data
+     */
     private void updateUI(FirebaseUser currentUser)
     {
 
