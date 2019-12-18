@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 import edu.ariel.SE_project.worki.R;
 
@@ -33,6 +34,8 @@ public class LoginRegisterActivity extends AppCompatActivity
 {
 
     private FirebaseAuth mAuth;
+
+    private EditText name;
 
     private EditText emailEditText;
     private EditText passwordEditText;
@@ -52,6 +55,8 @@ public class LoginRegisterActivity extends AppCompatActivity
         setContentView(R.layout.activity_login_register);
 
         // Initialize variables
+        name = findViewById(R.id.name);
+
         emailEditText = findViewById(R.id.email);
         passwordEditText = findViewById(R.id.password);
 
@@ -70,11 +75,15 @@ public class LoginRegisterActivity extends AppCompatActivity
             enterButton.setText(R.string.action_register);
             setTitle(R.string.register_title);
             TAG = "Register_Email";
+            name.setVisibility(View.GONE);
+            name.setEnabled(false);
         } else
         {
             enterButton.setText(R.string.action_sign_in);
             setTitle(R.string.login_title);
             TAG = "Login";
+            name.setVisibility(View.VISIBLE);
+            name.setEnabled(true);
         }
 
         enterButton.setEnabled(true);
@@ -202,6 +211,24 @@ public class LoginRegisterActivity extends AppCompatActivity
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+
+                            // Update profile with name
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(name.getText().toString())
+                                    .build();
+                            user.updateProfile(profileUpdates)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>()
+                                    {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task)
+                                        {
+                                            if (task.isSuccessful())
+                                            {
+                                                Log.d(TAG, "User profile updated.");
+                                            }
+                                        }
+                                    });
+                            
                             updateUI(user);
                         } else
                         {
@@ -248,6 +275,19 @@ public class LoginRegisterActivity extends AppCompatActivity
         } else
         {
             passwordEditText.setError(null);
+        }
+
+        if (to_register)
+        {
+            String nm = name.getText().toString();
+            if (TextUtils.isEmpty(nm))
+            {
+                name.setError("Required.");
+                valid = false;
+            } else
+            {
+                name.setError(null);
+            }
         }
 
         return valid;
