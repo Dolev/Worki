@@ -10,9 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".SideMenuBar"
+            android:label="@string/title_activity_side_menu_bar"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".FullRegister"
             android:label="@string/title_activity_register"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.login.LoginRegisterActivity"
             android:label="@string/title_activity_login" />
