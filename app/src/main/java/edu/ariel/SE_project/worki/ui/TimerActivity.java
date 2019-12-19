@@ -8,21 +8,28 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import edu.ariel.SE_project.worki.R;
 
-import static edu.ariel.SE_project.worki.R.id.startShift;
-
 public class TimerActivity extends AppCompatActivity
 {
+    /**
+     * Update period (in milliseconds).
+     */
+    private static final int timerUpdatePeriod = 100;
+
     private Button startShift;
     private Button stopShift;
     private Button pauseShift;
     private TextView timer;
-    long time = 0;
-    long startTime = 0;
+    private long time = 0;
+    private long startTime = 0;
+    private long lastTime = 0;
+    private boolean paused = false;
+
     Timer timing = new Timer("MyTimer");//create a new TimerActivity
 
     //timer:
@@ -32,9 +39,7 @@ public class TimerActivity extends AppCompatActivity
         @Override
         public void run()
         {
-            time = startTime - System.currentTimeMillis();
-            System.out.println("TimerTask executing counter is: " + counter);
-            counter++;//increments the counter
+            updateTimer();
         }
     };
 
@@ -45,12 +50,12 @@ public class TimerActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
 
-// Initialize variables
+        // Initialize variables
         startShift = findViewById(R.id.startShift);
 
         stopShift = findViewById(R.id.stopShift);
 
-        pauseShift= findViewById(R.id.pauseShift);
+        pauseShift = findViewById(R.id.pauseShift);
 
         timer = findViewById(R.id.timer);
 
@@ -60,21 +65,70 @@ public class TimerActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                startTime = System.currentTimeMillis();
-                timing.scheduleAtFixedRate(timerTask, 30, 3000);//this line starts the timer at the same time its executed
-//start shift button
+                startTimer();
             }
         });
+
         pauseShift.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                startTime = System.currentTimeMillis();
-                run();
+                pauseTimer();
             }
         });
 
 
+    }
+
+    /**
+     * Start the timer.
+     */
+    private void startTimer()
+    {
+        lastTime = startTime = System.currentTimeMillis();
+        timing.scheduleAtFixedRate(timerTask, timerUpdatePeriod, timerUpdatePeriod);
+    }
+
+    /**
+     * Update the timer.
+     */
+    private void updateTimer()
+    {
+        if (!paused)
+        {
+            time += System.currentTimeMillis() - lastTime;
+            lastTime = System.currentTimeMillis();
+        }
+        timer.setText(String.format(Locale.getDefault(), "%tT", time));
+    }
+
+    /**
+     * Pause the timer.
+     */
+    private void pauseTimer()
+    {
+        timing.cancel();
+        updateTimer();
+        paused = true;
+    }
+
+    /**
+     * Continue (unpause) the timer.
+     */
+    private void continueTimer()
+    {
+        paused = false;
+        lastTime = System.currentTimeMillis();
+        timing.scheduleAtFixedRate(timerTask, timerUpdatePeriod, timerUpdatePeriod);
+    }
+
+    /**
+     * Stop the timer.
+     */
+    private void stopTimer()
+    {
+        timing.cancel();
+        time = 0;
     }
 }
