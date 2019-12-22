@@ -14,7 +14,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 {
 
     private Button login;
-    private Button register;
+    private Button registerWorker;
+    private Button registerCompany;
     private FirebaseAuth mAuth;
 //    Toolbar toolbar;
 
@@ -25,7 +26,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         login = findViewById(R.id.login);
-        register = findViewById(R.id.reg);
+        registerWorker = findViewById(R.id.regWorker);
+        registerCompany = findViewById(R.id.regCompany);
+
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -36,7 +39,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         login.setOnClickListener(this);
-        register.setOnClickListener(this);
+        registerWorker.setOnClickListener(this);
+        registerCompany.setOnClickListener(this);
 
 
     }
@@ -55,9 +59,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (v == login)
         {
             intent.putExtra("register", false);
-        } else if (v == register)
+        } else if (v == registerWorker)
         {
             intent.putExtra("register", true);
+            intent.putExtra("manager", false);
+        } else if (v == registerCompany)
+        {
+            intent.putExtra("register", true);
+            intent.putExtra("manager", true);
         }
 
         startActivity(intent);

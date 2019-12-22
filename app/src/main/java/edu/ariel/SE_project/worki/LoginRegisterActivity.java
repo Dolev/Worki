@@ -40,7 +40,8 @@ public class LoginRegisterActivity extends AppCompatActivity
     private Button enterButton;
     private ProgressBar loadingProgressBar;
 
-    private boolean to_register;
+    private boolean registering;
+    private boolean asManager;
 
     private String TAG;
     private final int minPasswordLength = 6;
@@ -65,13 +66,18 @@ public class LoginRegisterActivity extends AppCompatActivity
 
         // Get variables from caller
         Intent intent = getIntent();
-        to_register = intent.getBooleanExtra("register", true);
+        registering = intent.getBooleanExtra("register", true);
+        asManager = intent.getBooleanExtra("manager", false);
 
-        if (to_register)
+        if (registering)
         {
             enterButton.setText(R.string.action_register);
             setTitle(R.string.register_title);
-            TAG = "Register_Email";
+            if (asManager)
+                TAG = "Manager_Register_Email";
+            else
+                TAG = "Worker_Register_Email";
+
             name.setVisibility(View.GONE);
             name.setEnabled(false);
         } else
@@ -130,10 +136,7 @@ public class LoginRegisterActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                if (validateForm())
-                {
-                    enter();
-                }
+                enter();
             }
         });
     }
@@ -148,7 +151,7 @@ public class LoginRegisterActivity extends AppCompatActivity
             loadingProgressBar.setVisibility(View.VISIBLE);
 
 
-            if (to_register)
+            if (registering)
                 register(emailEditText.getText().toString(), passwordEditText.getText().toString());
             else
                 login(emailEditText.getText().toString(), passwordEditText.getText().toString());
@@ -203,42 +206,54 @@ public class LoginRegisterActivity extends AppCompatActivity
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task)
                     {
-                        if (task.isSuccessful())
-                        {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
 
-                            // Update profile with name
-                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                    .setDisplayName(name.getText().toString())
-                                    .build();
-                            user.updateProfile(profileUpdates)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>()
-                                    {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task)
-                                        {
-                                            if (task.isSuccessful())
-                                            {
-                                                Log.d(TAG, "User profile updated.");
-                                            }
-                                        }
-                                    });
-
-                            updateUI(user);
-                        } else
-                        {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(LoginRegisterActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            updateUI(null);
-                        }
-
+                        afterRegister(task);
                         // ...
                     }
                 });
+    }
+
+    private void afterRegister(@NonNull Task<AuthResult> task)
+    {
+        if (task.isSuccessful())
+        {
+            // Sign in success, update UI with the signed-in user's information
+            Log.d(TAG, "createUserWithEmail:success");
+            FirebaseUser user = mAuth.getCurrentUser();
+
+            // Update profile with name
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(name.getText().toString())
+                    .build();
+            if (user != null)
+            {
+                user.updateProfile(profileUpdates)
+                        .addOnCompleteListener(new OnCompleteListener<Void>()
+                        {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task)
+                            {
+                                if (task.isSuccessful())
+                                {
+                                    Log.d(TAG, "User profile updated.");
+                                }
+                            }
+                        });
+
+                updateUI(user);
+            }
+            if (asManager)
+            {
+                // TODO go to register Company
+            }
+        } else
+        {
+            // If sign in fails, display a message to the user.
+            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+            Toast.makeText(LoginRegisterActivity.this, "Authentication failed.",
+                    Toast.LENGTH_SHORT).show();
+            updateUI(null);
+        }
     }
 
     /**
@@ -274,7 +289,7 @@ public class LoginRegisterActivity extends AppCompatActivity
             passwordEditText.setError(null);
         }
 
-        if (to_register)
+        if (registering)
         {
             String nm = name.getText().toString();
             if (TextUtils.isEmpty(nm))
@@ -301,7 +316,7 @@ public class LoginRegisterActivity extends AppCompatActivity
         loadingProgressBar.setVisibility(View.GONE);
         if (currentUser != null)
         {
-            if (to_register)
+            if (registering)
             {
                 Toast.makeText(getBaseContext(), "Registered as: " + currentUser.getEmail(),
                         Toast.LENGTH_LONG).show();

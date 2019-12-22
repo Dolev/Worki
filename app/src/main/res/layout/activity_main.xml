@@ -14,20 +14,27 @@
         android:text="@string/main_login_key"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_worki" />
 
     <Button
-        android:id="@+id/reg"
+        android:id="@+id/regWorker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/main_reg_key"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/main_reg_worker_key"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login" />
+
+    <Button
+        android:id="@+id/regCompany"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_reg_company_key"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/regWorker" />
 
     <ImageView
         android:id="@+id/main_worki"
