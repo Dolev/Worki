@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <item android:id="@+id/toolbarHomePage"
+        android:title="@string/home_page" />
+    <item android:id="@+id/toolbarAskForShifts"
+        android:title="@string/ask_for_shifts"/>
+    <item android:id="@+id/toolbarWhosOnline"
+        android:title="@string/who_s_online"/>
+    <item android:id="@+id/toolbarSettings"
+        android:title="@string/toolbar_settings"/>
+    <item android:id="@+id/toolbarLogout"
+        android:title="@string/toolbar_logout"/>
+</menu>
