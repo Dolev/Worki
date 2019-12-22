@@ -26,6 +26,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginRegisterActivity extends AppCompatActivity
 {
@@ -239,13 +241,22 @@ public class LoginRegisterActivity extends AppCompatActivity
                                 }
                             }
                         });
-
-                updateUI(user);
             }
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference("users/" + user.getUid());
+
+            myRef.child("name").setValue(name.getText().toString());
+            myRef.child("email").setValue(emailEditText.getText().toString());
+
             if (asManager)
             {
-                // TODO go to register Company
+                myRef.child("manager").setValue(true);
+            } else
+            {
+                myRef.child("manager").setValue(false);
             }
+
+            updateUI(user);
         } else
         {
             // If sign in fails, display a message to the user.
@@ -321,7 +332,14 @@ public class LoginRegisterActivity extends AppCompatActivity
                 Toast.makeText(getBaseContext(), "Registered as: " + currentUser.getEmail(),
                         Toast.LENGTH_LONG).show();
 
-                // TODO finish registration (FullRegister)
+                if (asManager)
+                {
+                    Intent intent = new Intent(this, RegisterCompany.class);
+                    startActivity(intent);
+                } else
+                {
+                    // TODO signed in activity
+                }
             } else
             {
                 Toast.makeText(getBaseContext(), "Logged in as: " + currentUser.getEmail(),

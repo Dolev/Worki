@@ -92,7 +92,7 @@ public class RegisterCompany extends AppCompatActivity
         {
             loadingProgressBar.setVisibility(View.VISIBLE);
 
-            // Write a message to the database
+
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference myRef = database.getReference("companies/" + user.getUid());
 
