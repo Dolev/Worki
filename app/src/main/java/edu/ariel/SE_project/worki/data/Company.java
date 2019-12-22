@@ -1,5 +1,8 @@
 package edu.ariel.SE_project.worki.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * An object to store company data.
  */
@@ -8,6 +11,7 @@ public class Company
     public int companyId = 0;
     public String companyName = "";
     public String address = "";
+    public List<User> workers = new ArrayList<>();
 
     /**
      * Create an empty company object.
@@ -30,4 +34,6 @@ public class Company
         this.companyName = companyName;
         this.address = address;
     }
+
+
 }

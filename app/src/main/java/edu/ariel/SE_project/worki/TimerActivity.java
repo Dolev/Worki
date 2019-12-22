@@ -1,4 +1,4 @@
-package edu.ariel.SE_project.worki.ui;
+package edu.ariel.SE_project.worki;
 
 import androidx.appcompat.app.AppCompatActivity;
 

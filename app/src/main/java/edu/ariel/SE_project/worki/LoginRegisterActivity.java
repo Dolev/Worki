@@ -1,11 +1,10 @@
-package edu.ariel.SE_project.worki.ui.login;
+package edu.ariel.SE_project.worki;
 
 import androidx.annotation.NonNull;
 
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.Editable;
@@ -27,8 +26,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-
-import edu.ariel.SE_project.worki.R;
 
 public class LoginRegisterActivity extends AppCompatActivity
 {
@@ -75,15 +72,15 @@ public class LoginRegisterActivity extends AppCompatActivity
             enterButton.setText(R.string.action_register);
             setTitle(R.string.register_title);
             TAG = "Register_Email";
-            name.setVisibility(View.VISIBLE);
-            name.setEnabled(true);
+            name.setVisibility(View.GONE);
+            name.setEnabled(false);
         } else
         {
             enterButton.setText(R.string.action_sign_in);
             setTitle(R.string.login_title);
             TAG = "Login";
-            name.setVisibility(View.GONE);
-            name.setEnabled(false);
+            name.setVisibility(View.VISIBLE);
+            name.setEnabled(true);
         }
 
         enterButton.setEnabled(true);
@@ -133,7 +130,10 @@ public class LoginRegisterActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                enter();
+                if (validateForm())
+                {
+                    enter();
+                }
             }
         });
     }
@@ -208,26 +208,24 @@ public class LoginRegisterActivity extends AppCompatActivity
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            if (user != null)
-                            {
 
-                                // Update profile with name
-                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                        .setDisplayName(name.getText().toString())
-                                        .build();
-                                user.updateProfile(profileUpdates)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>()
+                            // Update profile with name
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(name.getText().toString())
+                                    .build();
+                            user.updateProfile(profileUpdates)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>()
+                                    {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task)
                                         {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task)
+                                            if (task.isSuccessful())
                                             {
-                                                if (task.isSuccessful())
-                                                {
-                                                    Log.d(TAG, "User profile updated.");
-                                                }
+                                                Log.d(TAG, "User profile updated.");
                                             }
-                                        });
-                            }
+                                        }
+                                    });
+
                             updateUI(user);
                         } else
                         {
@@ -295,7 +293,7 @@ public class LoginRegisterActivity extends AppCompatActivity
     /**
      * Called after login / register is finished.
      *
-     * @param currentUser current user data. Null if the login / registration was faulty
+     * @param currentUser current user data
      */
     private void updateUI(FirebaseUser currentUser)
     {
@@ -314,7 +312,8 @@ public class LoginRegisterActivity extends AppCompatActivity
                 Toast.makeText(getBaseContext(), "Logged in as: " + currentUser.getEmail(),
                         Toast.LENGTH_LONG).show();
 
-                // TODO go to logged in activity
+                Intent intent = new Intent(this, TimerActivity.class);
+                startActivity(intent);
             }
         }
     }
