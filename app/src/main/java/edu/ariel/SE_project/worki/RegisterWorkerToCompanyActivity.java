@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class RegiterWorkerToCompanyActivity extends AppCompatActivity
+public class RegisterWorkerToCompanyActivity extends AppCompatActivity
 {
     TextView WorkerMail;
     Button AddButton;
@@ -17,7 +17,7 @@ public class RegiterWorkerToCompanyActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_regiter_worker_to_company);
+        setContentView(R.layout.activity_register_worker_to_company);
 
         WorkerMail = findViewById(R.id.addWorkerToCompanyTextView);
         AddButton = findViewById(R.id.addWorkerToCompanyButton);
