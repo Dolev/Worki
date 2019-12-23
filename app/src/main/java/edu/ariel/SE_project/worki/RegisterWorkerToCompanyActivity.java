@@ -3,6 +3,7 @@ package edu.ariel.SE_project.worki;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -30,6 +31,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
         AddButton = findViewById(R.id.addWorkerToCompanyButton);
 
         databaseMessages = FirebaseDatabase.getInstance().getReference("messages");
+        databaseUsers = FirebaseDatabase.getInstance().getReference("users");
 
         AddButton.setOnClickListener(new View.OnClickListener()
                                      {
@@ -56,6 +58,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
             return false;
         }
 
+        // TODO search if the mail entered exists on the database of users
 //        if(text)              // if mail doesnt exist in database
 //        {
 //            return false;
@@ -71,9 +74,9 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
 
     private void sendInvitationToWorker(String mailAddress)
     {
-        InviteMessageObj InviteNewWorker = new InviteMessageObj(mailAddress,"manager");
-
-        // TODO give some unique id to message, send invitation to worker,
+        String id = databaseMessages.push().getKey();
+        InviteMessageObj InviteNewWorker = new InviteMessageObj(mailAddress,"manager", id);
+        databaseMessages.child(id).setValue(InviteNewWorker);
 
         showSentMessage();
     }

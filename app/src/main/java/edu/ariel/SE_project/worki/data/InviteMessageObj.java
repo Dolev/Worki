@@ -4,16 +4,17 @@ public class InviteMessageObj
 {
     public String recipient;
     public String sender;
-//    public String sid;
+    public String messageId;
 
     public InviteMessageObj()
     {
     }
 
-    public InviteMessageObj(String recipient, String sender)
+    public InviteMessageObj(String recipient, String sender, String messageId)
     {
         this.recipient = recipient;
         this.sender = sender;
+        this.messageId = messageId;
     }
 
     public String getRecipient()
@@ -24,6 +25,11 @@ public class InviteMessageObj
     public String getSender()
     {
         return sender;
+    }
+
+    public String getMessageId()
+    {
+        return messageId;
     }
 
 }

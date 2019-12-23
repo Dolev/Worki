@@ -22,17 +22,17 @@
         tools:layout_editor_absoluteY="65dp" />
 
     <Button
-        android:id="@+id/WorkerInvitationAcceptButton"
+        android:id="@+id/ButtonAcceptIncomingWorkerInvitations"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Accept"
-        app:layout_constraintEnd_toStartOf="@+id/WorkerInvitationDeclineButton"
+        app:layout_constraintEnd_toStartOf="@+id/ButtonDeclineIncomingWorkerInvitations"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="538dp" />
 
     <Button
-        android:id="@+id/WorkerInvitationDeclineButton"
+        android:id="@+id/ButtonDeclineIncomingWorkerInvitations"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="88dp"
@@ -42,7 +42,7 @@
         tools:layout_editor_absoluteY="538dp" />
 
     <ListView
-        android:id="@+id/WorkerInvitationIncomingInvitationList"
+        android:id="@+id/ListViewIncomingWorkerInvitations"
         android:layout_width="300dp"
         android:layout_height="346dp"
         app:layout_constraintEnd_toEndOf="parent"
