@@ -8,10 +8,17 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import edu.ariel.SE_project.worki.data.InviteMessageObj;
+
 public class RegisterWorkerToCompanyActivity extends AppCompatActivity
 {
     TextView WorkerMail;
     Button AddButton;
+    DatabaseReference databaseMessages;
+    DatabaseReference databaseUsers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -22,14 +29,16 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
         WorkerMail = findViewById(R.id.addWorkerToCompanyTextView);
         AddButton = findViewById(R.id.addWorkerToCompanyButton);
 
+        databaseMessages = FirebaseDatabase.getInstance().getReference("messages");
+
         AddButton.setOnClickListener(new View.OnClickListener()
                                      {
                                          @Override
                                          public void onClick(View v)
                                          {
-                                                  if(WorkerMail.getText() != null)
+                                                  if(mailIsValid(WorkerMail.getText().toString()))
                                                   {
-                                                         sendInvitationToWorker(WorkerMail.getText());
+                                                         sendInvitationToWorker(WorkerMail.getText().toString());
                                                   }
                                                   else
                                                   {
@@ -40,13 +49,37 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
         );
     }
 
-    private void showErrorMessage()
+    private boolean mailIsValid(String text)
     {
-        Toast.makeText(this, "Please Enter a Valid Address.", Toast.LENGTH_SHORT).show();
+        if(text == null)
+        {
+            return false;
+        }
+
+//        if(text)              // if mail doesnt exist in database
+//        {
+//            return false;
+//        }
+
+        return true;
     }
 
-    private void sendInvitationToWorker(CharSequence mailAdress)
+    private void showErrorMessage()
     {
-            // TODO send invitation to worker
+        Toast.makeText(this, "Please Enter a Valid Mail Address.", Toast.LENGTH_SHORT).show();
+    }
+
+    private void sendInvitationToWorker(String mailAddress)
+    {
+        InviteMessageObj InviteNewWorker = new InviteMessageObj(mailAddress,"manager");
+
+        // TODO give some unique id to message, send invitation to worker,
+
+        showSentMessage();
+    }
+
+    private void showSentMessage()
+    {
+        Toast.makeText(this, "Invitation Was Sent Successfully!", Toast.LENGTH_SHORT).show();
     }
 }

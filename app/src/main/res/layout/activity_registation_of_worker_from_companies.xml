@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegistationOfWorkerFromCompaniesActivity">
+
+    <EditText
+        android:id="@+id/RegistrationInvitesForWorkerHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autoText="false"
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:inputType="textPersonName"
+        android:text="Invitations:"
+        android:textSize="26"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="65dp" />
+
+    <Button
+        android:id="@+id/WorkerInvitationAcceptButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Accept"
+        app:layout_constraintEnd_toStartOf="@+id/WorkerInvitationDeclineButton"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="538dp" />
+
+    <Button
+        android:id="@+id/WorkerInvitationDeclineButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="88dp"
+        android:layout_marginRight="88dp"
+        android:text="Decline"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:layout_editor_absoluteY="538dp" />
+
+    <ListView
+        android:id="@+id/WorkerInvitationIncomingInvitationList"
+        android:layout_width="300dp"
+        android:layout_height="346dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="155dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

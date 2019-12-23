@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "509229437117-qq5khth09qj14grsjck3atlhod7gdt57.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.ariel.SE_project.worki",
+            "certificate_hash": "3c0efd63fcb762cfb01f741ff0c71fca0f96192a"
+          }
+        },
+        {
           "client_id": "509229437117-6guncsiaf7327bfi2aa8a7pa5llefpbu.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

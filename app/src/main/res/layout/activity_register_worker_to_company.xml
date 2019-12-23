@@ -33,9 +33,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:gravity="center_horizontal"
         android:inputType="textPersonName"
+        android:singleLine="false"
         android:text="Recruitment"
-        android:textSize="24sp"
+        android:textSize="26"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="29dp" />
