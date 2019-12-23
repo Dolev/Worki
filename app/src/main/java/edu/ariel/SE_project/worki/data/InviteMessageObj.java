@@ -4,6 +4,7 @@ public class InviteMessageObj
 {
     public String recipient;
     public String sender;
+//    public String sid;
 
     public InviteMessageObj()
     {
