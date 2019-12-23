@@ -18,6 +18,7 @@ import static edu.ariel.SE_project.worki.R.id.startShift;
 public class TimerActivity extends AppCompatActivity
 {
     private Button startShift;
+
     private Button stopShift;
     private Button pauseShift;
     private TextView timer;
@@ -54,7 +55,7 @@ public class TimerActivity extends AppCompatActivity
 
         timer = findViewById(R.id.timer);
 
-
+//start shift button
         startShift.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -62,9 +63,10 @@ public class TimerActivity extends AppCompatActivity
             {
                 startTime = System.currentTimeMillis();
                 timing.scheduleAtFixedRate(timerTask, 30, 3000);//this line starts the timer at the same time its executed
-//start shift button
+
             }
         });
+        //pause shift button
         pauseShift.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -74,7 +76,16 @@ public class TimerActivity extends AppCompatActivity
                 run();
             }
         });
-
+        //stop shift button
+        pauseShift.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                startTime = System.currentTimeMillis();
+                run();
+            }
+        });
 
     }
 }
