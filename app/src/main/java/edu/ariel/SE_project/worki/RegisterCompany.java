@@ -17,6 +17,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * Register a company.
+ */
 public class RegisterCompany extends AppCompatActivity
 {
     private FirebaseAuth mAuth;
@@ -84,7 +87,7 @@ public class RegisterCompany extends AppCompatActivity
     }
 
     /**
-     * Info was entered. Now we register company
+     * Info was entered. Now we register the company
      */
     private void enter()
     {
@@ -111,9 +114,15 @@ public class RegisterCompany extends AppCompatActivity
         }
     }
 
+    /**
+     * Called after registering the company.
+     *
+     * @param successful was the registration successful?
+     */
     private void updateUI(boolean successful)
     {
-
+        if (successful)
+            Transitions.toLoggedInActivity(this, user);
     }
 
     /**

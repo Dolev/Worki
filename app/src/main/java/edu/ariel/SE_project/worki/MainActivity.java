@@ -47,29 +47,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void updateUI(FirebaseUser currentUser)
     {
-
-        // TODO start signed in activity
+        Transitions.toLoggedInActivity(this, currentUser);
     }
 
     @Override
     public void onClick(View v)
     {
-        Intent intent = new Intent(this, LoginRegisterActivity.class);
-
         if (v == login)
         {
-            intent.putExtra("register", false);
+            Transitions.toLoginOrRegister(this, true, false);
         } else if (v == registerWorker)
         {
-            intent.putExtra("register", true);
-            intent.putExtra("manager", false);
+            Transitions.toLoginOrRegister(this, false, false);
         } else if (v == registerCompany)
         {
-            intent.putExtra("register", true);
-            intent.putExtra("manager", true);
+            Transitions.toLoginOrRegister(this, false, true);
         }
-
-        startActivity(intent);
     }
 
 //    @Override
