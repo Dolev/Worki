@@ -9,7 +9,7 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="main_login_key">Login</string>
-    <string name="main_reg_key">Register</string>
+    <string name="main_reg_worker_key">Register As Worker</string>
     <string name="title_activity_register">Register</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
@@ -104,18 +104,15 @@
     <string name="action_register">Register</string>
     <string name="register_title">Register</string>
     <string name="login_title">Login</string>
-    <string name="title_activity_side_menu_bar">SideMenuBar</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
-    <string name="menu_tools">Tools</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
     <string name="textview">TextView</string>
+
+    <string name="home_page">Home Page</string>
+    <string name="ask_for_shifts">Ask For Shifts</string>
+    <string name="who_s_online">Who\'s Online?</string>
+    <string name="toolbar_settings">Settings</string>
+    <string name="toolbar_logout">Logout</string>
+    <string name="main_reg_company_key">Regsiter As Manager</string>
+    <string name="company_register_name_hint">Company Name</string>
+    <string name="company_register_address_hint">Postal Address</string>
+    <string name="company_register_phone_hint">Phone Number</string>
 </resources>
