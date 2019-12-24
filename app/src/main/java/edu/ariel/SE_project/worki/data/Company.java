@@ -25,7 +25,7 @@ public class Company
      * Create a new company object.
      *
      * @param companyId   the company's Id.
-     * @param companyName the company's nmae.
+     * @param companyName the company's name.
      * @param address     the company's address.
      */
     public Company(String companyId, String companyName, String address)

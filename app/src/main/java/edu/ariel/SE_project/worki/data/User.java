@@ -5,6 +5,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 /**
  * An object to store user data.
  */
@@ -15,6 +20,8 @@ public class User
     public String email;
     public boolean isManager;
     public String companyId;
+
+    private List<ShiftStamp> shiftStamps = new ArrayList<>();
 
     /**
      * Create an empty user object.
@@ -27,7 +34,7 @@ public class User
     /**
      * Create a user using a data snapshot of the storage.
      *
-     * @param snapshot the DataSnapshot of the storage.
+     * @param snapshot the snapshot of the database where the User is stored.
      */
     User(FirebaseUser user, DataSnapshot snapshot)
     {
@@ -37,7 +44,24 @@ public class User
         Boolean manager = snapshot.child("manager").getValue(boolean.class);
         if (manager != null)
             isManager = manager;
+        else
+            isManager = false;
 
+        companyId = snapshot.child("companyId").getValue(String.class);
+
+        for (DataSnapshot d : snapshot.child("shiftStamps").getChildren())
+        {
+            shiftStamps.add(new ShiftStamp(d));
+        }
+        Collections.sort(shiftStamps, (new Comparator<ShiftStamp>()
+        {
+            @Override
+            public int compare(ShiftStamp o1, ShiftStamp o2)
+            {
+                //noinspection UseCompareMethod
+                return ((Long) o1.utcTime).compareTo(o2.utcTime);
+            }
+        }));
     }
 
     /**
@@ -55,6 +79,11 @@ public class User
         this.companyId = companyId;
     }
 
+    /**
+     * Store this User in the database.
+     *
+     * @param reference the database reference where the User would be stored.
+     */
     public void writeToDatabase(DatabaseReference reference)
     {
 
@@ -68,6 +97,12 @@ public class User
         } else
         {
             reference.child("manager").setValue(false);
+        }
+
+        DatabaseReference stamps = reference.child("shiftStamps");
+        for (ShiftStamp s : shiftStamps)
+        {
+            s.writeToDatabase(stamps.child(s.hashCode() + ""));
         }
     }
 }
