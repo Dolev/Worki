@@ -29,6 +29,8 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import edu.ariel.SE_project.worki.data.User;
+
 public class LoginRegisterActivity extends AppCompatActivity
 {
 
@@ -242,19 +244,13 @@ public class LoginRegisterActivity extends AppCompatActivity
                             }
                         });
             }
+
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference myRef = database.getReference("users/" + user.getUid());
 
-            myRef.child("name").setValue(name.getText().toString());
-            myRef.child("email").setValue(emailEditText.getText().toString());
-
-            if (asManager)
-            {
-                myRef.child("manager").setValue(true);
-            } else
-            {
-                myRef.child("manager").setValue(false);
-            }
+            new User(user.getUid(), name.getText().toString(),
+                    emailEditText.getText().toString(), asManager, asManager ? user.getUid() : null)
+                    .writeToDatabase(myRef);
 
             updateUI(user);
         } else
