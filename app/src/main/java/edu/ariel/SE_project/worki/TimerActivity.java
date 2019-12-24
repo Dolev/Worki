@@ -7,12 +7,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import edu.ariel.SE_project.worki.R;
+import edu.ariel.SE_project.worki.assistance_classes.GlobalMetaData;
+import edu.ariel.SE_project.worki.data.ShiftStamp;
 
 public class TimerActivity extends AppCompatActivity
 {
@@ -66,6 +72,8 @@ public class TimerActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 startTimer();
+                Toast.makeText(TimerActivity.this, "Have a nice day.",
+                        Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -75,6 +83,15 @@ public class TimerActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 pauseTimer();
+
+            }
+        });
+        stopShift.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                stopTimer();
             }
         });
 
@@ -88,7 +105,10 @@ public class TimerActivity extends AppCompatActivity
     {
         lastTime = startTime = System.currentTimeMillis();
         timing.scheduleAtFixedRate(timerTask, timerUpdatePeriod, timerUpdatePeriod);
+        writeDB(ShiftStamp.ShiftStampType.Start,startTime);
     }
+
+
 
     /**
      * Update the timer.
@@ -111,6 +131,8 @@ public class TimerActivity extends AppCompatActivity
         timing.cancel();
         updateTimer();
         paused = true;
+        pauseShift.setText("Continue Shift");
+        writeDB(ShiftStamp.ShiftStampType.Pause,System.currentTimeMillis());
     }
 
     /**
@@ -119,6 +141,10 @@ public class TimerActivity extends AppCompatActivity
     private void continueTimer()
     {
         paused = false;
+        if (pauseShift.getText() == "Continue Shift")          //change button
+        {
+            pauseShift.setText("Pause Shift");
+        }
         lastTime = System.currentTimeMillis();
         timing.scheduleAtFixedRate(timerTask, timerUpdatePeriod, timerUpdatePeriod);
     }
@@ -130,5 +156,16 @@ public class TimerActivity extends AppCompatActivity
     {
         timing.cancel();
         time = 0;
+        Toast.makeText(TimerActivity.this, "Come back soon!.",
+                Toast.LENGTH_SHORT).show();
+        writeDB(ShiftStamp.ShiftStampType.Stop,System.currentTimeMillis());
+    }
+
+    private void writeDB(ShiftStamp.ShiftStampType type,long time)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(GlobalMetaData.userDataPath());
+        ShiftStamp ss = new ShiftStamp(type,time);
+        ss.writeToDatabase(myRef.child("shiftStamps").child(ss.hashCode() + ""));
     }
 }
