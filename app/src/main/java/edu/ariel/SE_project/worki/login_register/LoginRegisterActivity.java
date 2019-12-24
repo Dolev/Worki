@@ -31,6 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import edu.ariel.SE_project.worki.R;
 import edu.ariel.SE_project.worki.TimerActivity;
+import edu.ariel.SE_project.worki.assistance_classes.GlobalMetaData;
 import edu.ariel.SE_project.worki.data.User;
 
 public class LoginRegisterActivity extends AppCompatActivity
@@ -248,7 +249,7 @@ public class LoginRegisterActivity extends AppCompatActivity
             }
 
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference("users/" + user.getUid());
+            DatabaseReference myRef = database.getReference(GlobalMetaData.userDataPath());
 
             new User(user.getUid(), name.getText().toString(),
                     emailEditText.getText().toString(), asManager, asManager ? user.getUid() : null)

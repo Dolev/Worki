@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import edu.ariel.SE_project.worki.R;
+import edu.ariel.SE_project.worki.assistance_classes.GlobalMetaData;
 import edu.ariel.SE_project.worki.assistance_classes.Transitions;
 
 /**
@@ -100,7 +101,7 @@ public class RegisterCompany extends AppCompatActivity
 
 
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference("companies/" + user.getUid());
+            DatabaseReference myRef = database.getReference(GlobalMetaData.companyDataPath());
 
             boolean nameSuccessful = myRef.child("name").setValue(name.getText().toString()).isSuccessful();
             boolean addressSuccessful = myRef.child("address").setValue(address.getText().toString()).isSuccessful();
