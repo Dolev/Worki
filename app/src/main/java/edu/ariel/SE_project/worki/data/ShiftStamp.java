@@ -6,7 +6,7 @@ import com.google.firebase.database.DatabaseReference;
 /**
  * Class for saving shift start / end.
  */
-public class ShiftStamp
+public class ShiftStamp implements WriteableToDatabase, ReadableFromDatabase
 {
 
     /**
@@ -42,7 +42,7 @@ public class ShiftStamp
     /**
      * Read a ShiftStamp from the database.
      *
-     * @param snapshot the database snapshot where the snapshot is stored).
+     * @param snapshot the database snapshot where the snapshot is stored.
      */
     public ShiftStamp(DataSnapshot snapshot)
     {
@@ -56,11 +56,18 @@ public class ShiftStamp
             utcTime = 0;
     }
 
+    @Override
+    public ShiftStamp readFromDatabase(DataSnapshot snapshot)
+    {
+        return new ShiftStamp(snapshot);
+    }
+
     /**
      * Write this ShiftStamp to the database.
      *
      * @param reference the database reference where the snapshot would be stored.
      */
+    @Override
     public void writeToDatabase(DatabaseReference reference)
     {
         reference.child("type").setValue(type);
