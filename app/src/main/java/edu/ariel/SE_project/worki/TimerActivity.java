@@ -105,9 +105,8 @@ public class TimerActivity extends AppCompatActivity
     {
         lastTime = startTime = System.currentTimeMillis();
         timing.scheduleAtFixedRate(timerTask, timerUpdatePeriod, timerUpdatePeriod);
-        writeDB(ShiftStamp.ShiftStampType.Start,startTime);
+        writeDB(ShiftStamp.ShiftStampType.Start, startTime);
     }
-
 
 
     /**
@@ -132,7 +131,7 @@ public class TimerActivity extends AppCompatActivity
         updateTimer();
         paused = true;
         pauseShift.setText("Continue Shift");
-        writeDB(ShiftStamp.ShiftStampType.Pause,System.currentTimeMillis());
+        writeDB(ShiftStamp.ShiftStampType.Pause, System.currentTimeMillis());
     }
 
     /**
@@ -158,14 +157,14 @@ public class TimerActivity extends AppCompatActivity
         time = 0;
         Toast.makeText(TimerActivity.this, "Come back soon!.",
                 Toast.LENGTH_SHORT).show();
-        writeDB(ShiftStamp.ShiftStampType.Stop,System.currentTimeMillis());
+        writeDB(ShiftStamp.ShiftStampType.Stop, System.currentTimeMillis());
     }
 
-    private void writeDB(ShiftStamp.ShiftStampType type,long time)
+    private void writeDB(ShiftStamp.ShiftStampType type, long time)
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(GlobalMetaData.userDataPath());
-        ShiftStamp ss = new ShiftStamp(type,time);
-        ss.writeToDatabase(myRef.child("shiftStamps").child(ss.hashCode() + ""));
+        ShiftStamp ss = new ShiftStamp(type, time);
+        ss.writeToDatabase(myRef.child("shiftStamps").push());
     }
 }

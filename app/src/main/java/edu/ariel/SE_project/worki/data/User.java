@@ -81,12 +81,12 @@ public class User
 
     /**
      * Store this User in the database.
+     * Warning: this will delete any user data at this location
      *
      * @param reference the database reference where the User would be stored.
      */
     public void writeToDatabase(DatabaseReference reference)
     {
-
         reference.child("name").setValue(name);
         reference.child("email").setValue(email);
 
@@ -99,10 +99,12 @@ public class User
             reference.child("manager").setValue(false);
         }
 
+
         DatabaseReference stamps = reference.child("shiftStamps");
+        stamps.removeValue();
         for (ShiftStamp s : shiftStamps)
         {
-            s.writeToDatabase(stamps.child(s.hashCode() + ""));
+            s.writeToDatabase(stamps.push());
         }
     }
 }
