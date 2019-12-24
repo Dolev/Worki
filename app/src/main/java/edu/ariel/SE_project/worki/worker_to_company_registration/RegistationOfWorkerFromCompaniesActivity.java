@@ -1,4 +1,4 @@
-package edu.ariel.SE_project.worki;
+package edu.ariel.SE_project.worki.worker_to_company_registration;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+
+import edu.ariel.SE_project.worki.R;
 
 public class RegistationOfWorkerFromCompaniesActivity extends AppCompatActivity
 {

@@ -9,13 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".RegistationOfWorkerFromCompaniesActivity"></activity>
+        <activity android:name=".worker_to_company_registration.RegistationOfWorkerFromCompaniesActivity"></activity>
         <activity
-            android:name=".RegisterCompany"
+            android:name=".login_register.RegisterCompany"
             android:allowBackup="false" />
         <activity android:name=".TimerActivity" />
         <activity
-            android:name=".LoginRegisterActivity"
+            android:name=".login_register.LoginRegisterActivity"
             android:allowBackup="false"
             android:label="@string/title_activity_login" />
         <activity

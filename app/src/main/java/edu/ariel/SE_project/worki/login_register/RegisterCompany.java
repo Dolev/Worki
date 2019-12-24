@@ -1,4 +1,4 @@
-package edu.ariel.SE_project.worki;
+package edu.ariel.SE_project.worki.login_register;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,6 +16,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import edu.ariel.SE_project.worki.R;
+import edu.ariel.SE_project.worki.assistance_classes.Transitions;
 
 /**
  * Register a company.

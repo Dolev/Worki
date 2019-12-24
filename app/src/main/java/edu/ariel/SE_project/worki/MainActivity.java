@@ -2,13 +2,14 @@ package edu.ariel.SE_project.worki;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import edu.ariel.SE_project.worki.assistance_classes.Transitions;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener
 {

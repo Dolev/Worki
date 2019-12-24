@@ -1,4 +1,4 @@
-package edu.ariel.SE_project.worki;
+package edu.ariel.SE_project.worki.login_register;
 
 import androidx.annotation.NonNull;
 
@@ -29,6 +29,8 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import edu.ariel.SE_project.worki.R;
+import edu.ariel.SE_project.worki.TimerActivity;
 import edu.ariel.SE_project.worki.data.User;
 
 public class LoginRegisterActivity extends AppCompatActivity
