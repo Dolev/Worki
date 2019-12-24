@@ -84,15 +84,15 @@ public class LoginRegisterActivity extends AppCompatActivity
             else
                 TAG = "Worker_Register_Email";
 
-            name.setVisibility(View.GONE);
-            name.setEnabled(false);
+            name.setVisibility(View.VISIBLE);
+            name.setEnabled(true);
         } else
         {
             enterButton.setText(R.string.action_sign_in);
             setTitle(R.string.login_title);
             TAG = "Login";
-            name.setVisibility(View.VISIBLE);
-            name.setEnabled(true);
+            name.setVisibility(View.GONE);
+            name.setEnabled(false);
         }
 
         enterButton.setEnabled(true);

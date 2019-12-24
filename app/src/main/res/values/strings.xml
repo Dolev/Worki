@@ -115,4 +115,5 @@
     <string name="company_register_name_hint">Company Name</string>
     <string name="company_register_address_hint">Postal Address</string>
     <string name="company_register_phone_hint">Phone Number</string>
+    <string name="prompt_name">Name</string>
 </resources>
