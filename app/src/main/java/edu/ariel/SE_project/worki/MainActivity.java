@@ -73,38 +73,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        return true;
 //    }
 
-    // This method allows the user to navigate on the app through the menu
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//
-//        Intent intent;
-//        switch (item.getItemId()){
-//            case R.id.toolbarHomePage:{
-//                intent = new Intent(MainActivity.this, TimerActivity.class);
-//                startActivity(intent);
-//                return true;
-//            }
-//            case R.id.toolbarAskForShifts:{
-//                intent = new Intent(MainActivity.this, ShiftsActivity.class);
-//                startActivity(intent);
-//                return true;
-//            }
-//            case R.id.toolbarWhosOnline:{
-//                intent = new Intent(MainActivity.this, OnlineActivity.class);
-//                startActivity(intent);
-//                return true;
-//            }
-//            case R.id.toolbarSettings:{
-//                intent = new Intent(MainActivity.this, SettingsActivity.class);
-//                startActivity(intent);
-//                return true;
-//            }
-//            case R.id.toolbarLogout:{
-//                intent = new Intent(MainActivity.this, MainActivity.class);
-//                startActivity(intent);
-//                return true;
-//            }
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 }

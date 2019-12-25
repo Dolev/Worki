@@ -3,8 +3,10 @@ package edu.ariel.SE_project.worki;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,24 +32,10 @@ public class TimerActivity extends AppCompatActivity
     private Button startShift;
     private Button stopShift;
     private Button pauseShift;
-    private TextView timer;
-    private long time = 0;
-    private long startTime = 0;
-    private long lastTime = 0;
+    private Chronometer timer;
+
+    private long duration;
     private boolean paused = false;
-
-    Timer timing = new Timer("MyTimer");//create a new TimerActivity
-
-    //timer:
-    final TimerTask timerTask = new TimerTask()
-    {
-
-        @Override
-        public void run()
-        {
-            updateTimer();
-        }
-    };
 
 
     @Override
@@ -63,8 +51,7 @@ public class TimerActivity extends AppCompatActivity
 
         pauseShift = findViewById(R.id.pauseShift);
 
-        timer = findViewById(R.id.timer);
-
+        timer = findViewById(R.id.chronometer);
 
         startShift.setOnClickListener(new View.OnClickListener()
         {
@@ -72,8 +59,6 @@ public class TimerActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 startTimer();
-                Toast.makeText(TimerActivity.this, "Have a nice day.",
-                        Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -82,7 +67,11 @@ public class TimerActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                pauseTimer();
+                paused = !paused;
+                if (paused)
+                    pauseTimer();
+                else
+                    continueTimer();
 
             }
         });
@@ -103,23 +92,10 @@ public class TimerActivity extends AppCompatActivity
      */
     private void startTimer()
     {
-        lastTime = startTime = System.currentTimeMillis();
-        timing.scheduleAtFixedRate(timerTask, timerUpdatePeriod, timerUpdatePeriod);
-        writeDB(ShiftStamp.ShiftStampType.Start, startTime);
-    }
+        timer.setBase(SystemClock.elapsedRealtime() - 10000);
+        timer.start();
 
-
-    /**
-     * Update the timer.
-     */
-    private void updateTimer()
-    {
-        if (!paused)
-        {
-            time += System.currentTimeMillis() - lastTime;
-            lastTime = System.currentTimeMillis();
-        }
-        timer.setText(String.format(Locale.getDefault(), "%tT", time));
+        writeDB(ShiftStamp.ShiftStampType.Start, System.currentTimeMillis());
     }
 
     /**
@@ -127,9 +103,9 @@ public class TimerActivity extends AppCompatActivity
      */
     private void pauseTimer()
     {
-        timing.cancel();
-        updateTimer();
-        paused = true;
+        duration = SystemClock.elapsedRealtime() - timer.getBase();
+        timer.stop();
+
         pauseShift.setText("Continue Shift");
         writeDB(ShiftStamp.ShiftStampType.Pause, System.currentTimeMillis());
     }
@@ -139,13 +115,11 @@ public class TimerActivity extends AppCompatActivity
      */
     private void continueTimer()
     {
-        paused = false;
-        if (pauseShift.getText() == "Continue Shift")          //change button
-        {
-            pauseShift.setText("Pause Shift");
-        }
-        lastTime = System.currentTimeMillis();
-        timing.scheduleAtFixedRate(timerTask, timerUpdatePeriod, timerUpdatePeriod);
+        timer.setBase(SystemClock.elapsedRealtime() - duration);
+        timer.start();
+
+        pauseShift.setText("Pause Shift");
+        writeDB(ShiftStamp.ShiftStampType.Continue, System.currentTimeMillis());
     }
 
     /**
@@ -153,10 +127,8 @@ public class TimerActivity extends AppCompatActivity
      */
     private void stopTimer()
     {
-        timing.cancel();
-        time = 0;
-        Toast.makeText(TimerActivity.this, "Come back soon!.",
-                Toast.LENGTH_SHORT).show();
+        timer.setBase(SystemClock.elapsedRealtime());
+        timer.stop();
         writeDB(ShiftStamp.ShiftStampType.Stop, System.currentTimeMillis());
     }
 

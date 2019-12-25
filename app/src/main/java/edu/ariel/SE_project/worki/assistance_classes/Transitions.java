@@ -1,11 +1,12 @@
 package edu.ariel.SE_project.worki.assistance_classes;
 
+import android.app.Activity;
 import android.content.Intent;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseUser;
 
+import edu.ariel.SE_project.worki.MainActivity;
+import edu.ariel.SE_project.worki.TimerActivity;
 import edu.ariel.SE_project.worki.login_register.LoginRegisterActivity;
 
 /**
@@ -20,7 +21,7 @@ public class Transitions
      * @param login     login?
      * @param asManager as manager?
      */
-    public static void toLoginOrRegister(AppCompatActivity activity, boolean login, boolean asManager)
+    public static void toLoginOrRegister(Activity activity, boolean login, boolean asManager)
     {
         Intent intent = new Intent(activity, LoginRegisterActivity.class);
 
@@ -42,13 +43,20 @@ public class Transitions
      * @param activity the activity.
      * @param user     the firebase user to determine if the user is a manager.
      */
-    public static void toLoggedInActivity(AppCompatActivity activity, FirebaseUser user)
+    public static void toLoggedInActivity(Activity activity, FirebaseUser user)
     {
 
         final String TAG = "To Logged In Activity";
 
-        // TODO implement
+        activity.startActivity(new Intent(activity, TimerActivity.class));
 
+        activity.finish();
+    }
+
+    public static void toMainActivity(Activity activity)
+    {
+
+        activity.startActivity(new Intent(activity, MainActivity.class));
         activity.finish();
     }
 }
