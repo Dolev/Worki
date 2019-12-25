@@ -11,9 +11,9 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
         undecided, accepted, declined
     }
 
-    public invitationStatus currentStatus;
-    public String recipient;
-    public String sender;
+    private invitationStatus currentStatus;
+    private String recipient;
+    private String sender;
 
 
 
@@ -21,6 +21,7 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
     {
 
     }
+
 
     public InviteMessage(String recipient, String sender)
     {
@@ -39,6 +40,10 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
         return sender;
     }
 
+    public void setCurrentStatus(invitationStatus currentStatus)
+    {
+        this.currentStatus = currentStatus;
+    }
 
     public void writeMessageToDatabase()
     {

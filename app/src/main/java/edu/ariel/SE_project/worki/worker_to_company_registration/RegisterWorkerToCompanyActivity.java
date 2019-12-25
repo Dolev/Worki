@@ -22,9 +22,9 @@ import edu.ariel.SE_project.worki.data.InviteMessage;
 
 public class RegisterWorkerToCompanyActivity extends AppCompatActivity
 {
-    TextView WorkerMail;
-    Button AddButton;
-    DatabaseReference databaseRef;
+    private TextView WorkerMail;
+    private Button AddButton;
+    private DatabaseReference databaseRef;
 
 
 //    DatabaseReference databaseUsers;
