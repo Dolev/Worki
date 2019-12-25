@@ -9,4 +9,4 @@ Software Engineering project for Ariel Univversity
 
 ![activity](https://github.com/elishadar/Worki/blob/master/Readme/UML/Worki%20activity.png)
 
-![class] (https://github.com/elishadar/Worki/blob/master/Readme/UML/class_diagram_worki.png)
+![class](https://github.com/elishadar/Worki/blob/master/Readme/UML/class_diagram_worki.png)
