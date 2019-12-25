@@ -19,9 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import edu.ariel.SE_project.worki.R;
-import edu.ariel.SE_project.worki.assistance_classes.GlobalMetaData;
 import edu.ariel.SE_project.worki.assistance_classes.Transitions;
-import edu.ariel.SE_project.worki.data.CurrentUser;
 
 /**
  * Register a company.
