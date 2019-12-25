@@ -82,7 +82,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
                 if(dataSnapshot.getChildrenCount() > 0)
                 {
                     String id = databaseRef.push().getKey();
-                    InviteMessage InviteNewWorker = new InviteMessage(mailAddress, CurrentUser.getInstance().getUserData().email, id);
+                    InviteMessage InviteNewWorker = new InviteMessage(mailAddress, CurrentUser.getInstance().getUserData().email);
                     databaseRef.child(id).setValue(InviteNewWorker);
                 }
             }

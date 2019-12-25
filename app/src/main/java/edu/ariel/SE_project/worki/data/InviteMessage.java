@@ -14,7 +14,7 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
     public invitationStatus currentStatus;
     public String recipient;
     public String sender;
-    public String messageId;
+
 
 
     public InviteMessage()
@@ -22,11 +22,10 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
 
     }
 
-    public InviteMessage(String recipient, String sender, String messageId)
+    public InviteMessage(String recipient, String sender)
     {
         this.recipient = recipient;
         this.sender = sender;
-        this.messageId = messageId;
         this.currentStatus = invitationStatus.undecided;
     }
 
@@ -40,10 +39,6 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
         return sender;
     }
 
-    public String getMessageId()
-    {
-        return messageId;
-    }
 
     public void writeMessageToDatabase()
     {
@@ -61,9 +56,8 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
         //todo status?
         String recipient = snapshot.child("recipient").getValue(String.class);
         String sender = snapshot.child("sender").getValue(String.class);
-        String messageId = snapshot.child("messageId").getValue(String.class);
 
-        return new InviteMessage(recipient, sender,messageId);
+        return new InviteMessage(recipient, sender);
     }
 
     @Override
@@ -72,6 +66,5 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
         //todo status?
         reference.child("recipient").setValue(recipient);
         reference.child("sender").setValue(sender);
-        reference.child("messageId").setValue(messageId);
     }
 }
