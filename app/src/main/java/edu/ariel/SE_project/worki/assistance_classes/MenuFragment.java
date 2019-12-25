@@ -109,7 +109,10 @@ public class MenuFragment extends Fragment
         }
 
         if (intent != null)
+        {
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 }

@@ -24,10 +24,6 @@ import edu.ariel.SE_project.worki.data.ShiftStamp;
 
 public class TimerActivity extends AppCompatActivity
 {
-    /**
-     * Update period (in milliseconds).
-     */
-    private static final int timerUpdatePeriod = 100;
 
     private Button startShift;
     private Button stopShift;
@@ -92,7 +88,7 @@ public class TimerActivity extends AppCompatActivity
      */
     private void startTimer()
     {
-        timer.setBase(SystemClock.elapsedRealtime() - 10000);
+        timer.setBase(SystemClock.elapsedRealtime());
         timer.start();
 
         writeDB(ShiftStamp.ShiftStampType.Start, System.currentTimeMillis());
