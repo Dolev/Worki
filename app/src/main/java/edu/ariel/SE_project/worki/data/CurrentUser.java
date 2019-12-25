@@ -3,6 +3,7 @@ package edu.ariel.SE_project.worki.data;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.core.util.Consumer;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -11,6 +12,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Class for getting user data from database. Data is updated automatically.
@@ -25,6 +29,9 @@ public class CurrentUser
     private User user;
 
     private FirebaseUser firebaseUser;
+
+    public List<Consumer<User>> listeners = new LinkedList<>();
+
     /**
      * The singleton instance.
      */
@@ -86,6 +93,14 @@ public class CurrentUser
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 user = new User(firebaseUser, dataSnapshot);
+
+
+                for (Consumer<User> listener : listeners)
+                {
+                    listener.accept(user);
+                    listeners.remove(listener);
+                }
+
                 Log.d("CurrentUser", "Reading Data");
             }
 
@@ -105,11 +120,23 @@ public class CurrentUser
      */
     public User getUserData()
     {
+        if (user == null)
+        {
+
+        }
         return user;
     }
 
     public FirebaseUser getFirebaseUser()
     {
         return firebaseUser;
+    }
+
+    public void addOnUserNotNullListener(Consumer<User> listener)
+    {
+        if (user != null)
+            listener.accept(user);
+        else
+            listeners.add(listener);
     }
 }

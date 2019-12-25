@@ -3,9 +3,13 @@ package edu.ariel.SE_project.worki.assistance_classes;
 import android.app.Activity;
 import android.content.Intent;
 
+import androidx.core.util.Consumer;
+
 import com.google.firebase.auth.FirebaseUser;
 
 import edu.ariel.SE_project.worki.MainActivity;
+import edu.ariel.SE_project.worki.data.CurrentUser;
+import edu.ariel.SE_project.worki.data.User;
 import edu.ariel.SE_project.worki.login_register.LoginRegisterActivity;
 import edu.ariel.SE_project.worki.signed_in_activities.TimerActivity;
 
@@ -43,14 +47,24 @@ public class Transitions
      * @param activity the activity.
      * @param user     the firebase user to determine if the user is a manager.
      */
-    public static void toLoggedInActivity(Activity activity, FirebaseUser user)
+    public static void toLoggedInActivity(final Activity activity, FirebaseUser user)
     {
 
         final String TAG = "To Logged In Activity";
 
-        activity.startActivity(new Intent(activity, TimerActivity.class));
+        CurrentUser.getInstance().addOnUserNotNullListener(new Consumer<User>()
+        {
+            @Override
+            public void accept(User user)
+            {
+                if (user.isManager)
+                {
+                    activity.startActivity(new Intent(activity, TimerActivity.class));
+                }
 
-        activity.finish();
+                activity.finish();
+            }
+        });
     }
 
     public static void toMainActivity(Activity activity)

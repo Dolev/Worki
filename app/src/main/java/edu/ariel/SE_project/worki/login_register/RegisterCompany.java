@@ -2,9 +2,11 @@ package edu.ariel.SE_project.worki.login_register;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.util.Consumer;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -13,13 +15,17 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.common.util.Predicate;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import edu.ariel.SE_project.worki.R;
+import edu.ariel.SE_project.worki.assistance_classes.GlobalMetaData;
 import edu.ariel.SE_project.worki.assistance_classes.Transitions;
+import edu.ariel.SE_project.worki.data.CurrentUser;
+import edu.ariel.SE_project.worki.data.User;
 
 /**
  * Register a company.
@@ -99,33 +105,31 @@ public class RegisterCompany extends AppCompatActivity
         {
             loadingProgressBar.setVisibility(View.VISIBLE);
 
-
-            FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener()
+            CurrentUser.getInstance().addOnUserNotNullListener(new Consumer<User>()
             {
                 @Override
-                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth)
+                public void accept(User user)
                 {
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    if (firebaseAuth.getCurrentUser() != null)
-                    {
-                        DatabaseReference myRef = database.getReference("companies/" + firebaseAuth.getCurrentUser().getUid());
-
-                        boolean nameSuccessful = myRef.child("name").setValue(name.getText().toString()).isSuccessful();
-                        boolean addressSuccessful = myRef.child("address").setValue(address.getText().toString()).isSuccessful();
-                        boolean phoneSuccessful = myRef.child("phone").setValue(phone.getText().toString()).isSuccessful();
-
-                        if (nameSuccessful && addressSuccessful && phoneSuccessful)
-                        {
-                            updateUI(true);
-                        } else
-                        {
-                            updateUI(false);
-                        }
-                    }
+                    writeToDatabase(user);
                 }
             });
         }
     }
+
+    private void writeToDatabase(User user)
+    {
+        Log.d("Register Company", "Trying write to database...");
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("companies/" + user.companyId);
+
+        boolean nameSuccessful = myRef.child("name").setValue(name.getText().toString()).isSuccessful();
+        boolean addressSuccessful = myRef.child("address").setValue(address.getText().toString()).isSuccessful();
+        boolean phoneSuccessful = myRef.child("phone").setValue(phone.getText().toString()).isSuccessful();
+
+        Log.d("Register Company", "Finished");
+        updateUI(true);
+    }
+
 
     /**
      * Called after registering the company.
