@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.util.Consumer;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -23,7 +24,11 @@ import java.util.List;
 import java.util.Objects;
 
 import edu.ariel.SE_project.worki.R;
+import edu.ariel.SE_project.worki.data.CurrentUser;
+import edu.ariel.SE_project.worki.data.User;
 import edu.ariel.SE_project.worki.signed_in_activities.TimerActivity;
+import edu.ariel.SE_project.worki.worker_to_company_registration.RegisterWorkerToCompanyActivity;
+import edu.ariel.SE_project.worki.worker_to_company_registration.RegistrationOfWorkerFromCompaniesActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,12 +45,21 @@ public class MenuFragment extends Fragment
         return inflater.inflate(R.layout.fragment_meun, container, false);
     }
 
-    @Override
 
+    private boolean isManager = false;
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
 
         super.onCreate(savedInstanceState);
+
+        if (getActivity() != null)
+        {
+            Intent intent = getActivity().getIntent();
+            isManager = intent.getBooleanExtra("isManager", false);
+        }
+
         setHasOptionsMenu(true);
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -72,6 +86,8 @@ public class MenuFragment extends Fragment
     }
 
     private List<MenuEntry> entries = new LinkedList<>();
+    private List<MenuEntry> managerOnly = new LinkedList<>();
+    private List<MenuEntry> workerOnly = new LinkedList<>();
 
 
     public MenuFragment()
@@ -79,20 +95,37 @@ public class MenuFragment extends Fragment
         // Add menu entries here
 
         entries.add(new MenuEntry("Timer", TimerActivity.class));
+        managerOnly.add(new MenuEntry("Register Workers", RegisterWorkerToCompanyActivity.class));
+
+
+        workerOnly.add(new MenuEntry("Register to Company", RegistrationOfWorkerFromCompaniesActivity.class));
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater)
+    public void onCreateOptionsMenu(@NonNull final Menu menu, @NonNull MenuInflater inflater)
     {
-        // TODO don't show current activity in menu (doesn't work)
+
         for (MenuEntry entry : entries)
         {
-            if ((getActivity() == null) || (entry.cls.equals(getActivity().getClass())))
+            entry.item = menu.add(entry.name);
+        }
+        if (isManager)
+        {
+            for (MenuEntry entry : managerOnly)
+            {
+                entry.item = menu.add(entry.name);
+            }
+        } else
+        {
+            for (MenuEntry entry : workerOnly)
             {
                 entry.item = menu.add(entry.name);
             }
         }
+
+
         super.onCreateOptionsMenu(menu, inflater);
+
     }
 
     // This method allows the user to navigate on the app through the menu
@@ -101,6 +134,22 @@ public class MenuFragment extends Fragment
     {
         Intent intent = null;
         for (MenuEntry entry : entries)
+        {
+            if (item == entry.item)
+            {
+                intent = new Intent(getActivity(), entry.cls);
+            }
+        }
+
+        for (MenuEntry entry : managerOnly)
+        {
+            if (item == entry.item)
+            {
+                intent = new Intent(getActivity(), entry.cls);
+            }
+        }
+
+        for (MenuEntry entry : workerOnly)
         {
             if (item == entry.item)
             {

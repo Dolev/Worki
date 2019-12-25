@@ -24,7 +24,7 @@ import edu.ariel.SE_project.worki.R;
 import edu.ariel.SE_project.worki.data.CurrentUser;
 import edu.ariel.SE_project.worki.data.InviteMessage;
 
-public class RegistationOfWorkerFromCompaniesActivity extends AppCompatActivity
+public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
 {
     private ListView registrationListView;
     private Button registrationAcceptButton;
