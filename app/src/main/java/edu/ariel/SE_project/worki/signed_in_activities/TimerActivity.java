@@ -1,4 +1,4 @@
-package edu.ariel.SE_project.worki;
+package edu.ariel.SE_project.worki.signed_in_activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 

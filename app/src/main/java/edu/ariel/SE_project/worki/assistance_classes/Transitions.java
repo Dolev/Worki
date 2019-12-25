@@ -6,8 +6,8 @@ import android.content.Intent;
 import com.google.firebase.auth.FirebaseUser;
 
 import edu.ariel.SE_project.worki.MainActivity;
-import edu.ariel.SE_project.worki.TimerActivity;
 import edu.ariel.SE_project.worki.login_register.LoginRegisterActivity;
+import edu.ariel.SE_project.worki.signed_in_activities.TimerActivity;
 
 /**
  * Class for all transitions between activities for simplicity.
