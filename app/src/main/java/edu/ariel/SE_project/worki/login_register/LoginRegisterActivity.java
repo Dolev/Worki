@@ -30,9 +30,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import edu.ariel.SE_project.worki.R;
-import edu.ariel.SE_project.worki.TimerActivity;
 import edu.ariel.SE_project.worki.assistance_classes.GlobalMetaData;
+import edu.ariel.SE_project.worki.assistance_classes.Transitions;
 import edu.ariel.SE_project.worki.data.User;
+import edu.ariel.SE_project.worki.signed_in_activities.TimerActivity;
 
 public class LoginRegisterActivity extends AppCompatActivity
 {
@@ -251,9 +252,10 @@ public class LoginRegisterActivity extends AppCompatActivity
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference myRef = database.getReference(GlobalMetaData.userDataPath());
 
-            new User(user.getUid(), name.getText().toString(),
-                    emailEditText.getText().toString(), asManager, asManager ? user.getUid() : null)
-                    .writeToDatabase(myRef);
+            if (user != null)
+                new User(user.getUid(), name.getText().toString(),
+                        emailEditText.getText().toString(), asManager, asManager ? user.getUid() : null)
+                        .writeToDatabase(myRef);
 
             updateUI(user);
         } else
@@ -337,7 +339,7 @@ public class LoginRegisterActivity extends AppCompatActivity
                     startActivity(intent);
                 } else
                 {
-                    // TODO signed in activity
+                    Transitions.toLoggedInActivity(this, currentUser);
                 }
             } else
             {

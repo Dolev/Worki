@@ -23,6 +23,8 @@ public class CurrentUser
      * The User object.
      */
     private User user;
+
+    private FirebaseUser firebaseUser;
     /**
      * The singleton instance.
      */
@@ -70,6 +72,8 @@ public class CurrentUser
             return;
 
 
+        this.firebaseUser = firebaseUser;
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("user/" + firebaseUser.getUid());
 
@@ -102,5 +106,10 @@ public class CurrentUser
     public User getUserData()
     {
         return user;
+    }
+
+    public FirebaseUser getFirebaseUser()
+    {
+        return firebaseUser;
     }
 }

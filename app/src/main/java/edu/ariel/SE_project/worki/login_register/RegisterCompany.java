@@ -1,5 +1,6 @@
 package edu.ariel.SE_project.worki.login_register;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import edu.ariel.SE_project.worki.R;
 import edu.ariel.SE_project.worki.assistance_classes.GlobalMetaData;
 import edu.ariel.SE_project.worki.assistance_classes.Transitions;
+import edu.ariel.SE_project.worki.data.CurrentUser;
 
 /**
  * Register a company.
@@ -100,21 +102,30 @@ public class RegisterCompany extends AppCompatActivity
             loadingProgressBar.setVisibility(View.VISIBLE);
 
 
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference(GlobalMetaData.companyDataPath());
-
-            boolean nameSuccessful = myRef.child("name").setValue(name.getText().toString()).isSuccessful();
-            boolean addressSuccessful = myRef.child("address").setValue(address.getText().toString()).isSuccessful();
-            boolean phoneSuccessful = myRef.child("phone").setValue(phone.getText().toString()).isSuccessful();
-
-            if (nameSuccessful && addressSuccessful && phoneSuccessful)
+            FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener()
             {
-                updateUI(true);
-            } else
-            {
-                updateUI(false);
-            }
+                @Override
+                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth)
+                {
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    if (firebaseAuth.getCurrentUser() != null)
+                    {
+                        DatabaseReference myRef = database.getReference("companies/" + firebaseAuth.getCurrentUser().getUid());
 
+                        boolean nameSuccessful = myRef.child("name").setValue(name.getText().toString()).isSuccessful();
+                        boolean addressSuccessful = myRef.child("address").setValue(address.getText().toString()).isSuccessful();
+                        boolean phoneSuccessful = myRef.child("phone").setValue(phone.getText().toString()).isSuccessful();
+
+                        if (nameSuccessful && addressSuccessful && phoneSuccessful)
+                        {
+                            updateUI(true);
+                        } else
+                        {
+                            updateUI(false);
+                        }
+                    }
+                }
+            });
         }
     }
 

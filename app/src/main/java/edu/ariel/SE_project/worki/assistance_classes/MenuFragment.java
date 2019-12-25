@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 import edu.ariel.SE_project.worki.R;
-import edu.ariel.SE_project.worki.TimerActivity;
+import edu.ariel.SE_project.worki.signed_in_activities.TimerActivity;
 
 /**
  * A simple {@link Fragment} subclass.
