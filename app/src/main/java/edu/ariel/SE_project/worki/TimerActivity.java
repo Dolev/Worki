@@ -85,7 +85,7 @@ public class TimerActivity extends AppCompatActivity
         timer.setBase(SystemClock.elapsedRealtime());
         timer.start();
 
-        startStop.setText(R.string.start_shift_text);
+        startStop.setText(R.string.stop_shift_text);
         writeDB(ShiftStamp.ShiftStampType.Start, System.currentTimeMillis());
     }
 
@@ -97,7 +97,7 @@ public class TimerActivity extends AppCompatActivity
         duration = SystemClock.elapsedRealtime() - timer.getBase();
         timer.stop();
 
-        pauseShift.setText(R.string.pause_shift_text);
+        pauseShift.setText(R.string.continue_shift_text);
         writeDB(ShiftStamp.ShiftStampType.Pause, System.currentTimeMillis());
     }
 
@@ -109,7 +109,7 @@ public class TimerActivity extends AppCompatActivity
         timer.setBase(SystemClock.elapsedRealtime() - duration);
         timer.start();
 
-        pauseShift.setText(R.string.continue_shift_text);
+        pauseShift.setText(R.string.pause_shift_text);
         writeDB(ShiftStamp.ShiftStampType.Continue, System.currentTimeMillis());
     }
 
@@ -121,7 +121,7 @@ public class TimerActivity extends AppCompatActivity
         timer.setBase(SystemClock.elapsedRealtime());
         timer.stop();
 
-        startStop.setText(R.string.stop_shift_text);
+        startStop.setText(R.string.start_shift_text);
         writeDB(ShiftStamp.ShiftStampType.Stop, System.currentTimeMillis());
     }
 
