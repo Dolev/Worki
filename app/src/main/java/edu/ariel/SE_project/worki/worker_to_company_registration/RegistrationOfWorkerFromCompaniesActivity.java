@@ -2,6 +2,7 @@ package edu.ariel.SE_project.worki.worker_to_company_registration;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.util.Consumer;
 
 import android.os.Bundle;
 import android.view.View;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import edu.ariel.SE_project.worki.R;
 import edu.ariel.SE_project.worki.data.CurrentUser;
 import edu.ariel.SE_project.worki.data.InviteMessage;
+import edu.ariel.SE_project.worki.data.User;
 
 public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
 {
@@ -48,9 +50,16 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
 
         myMess = new ArrayList<>();
 
-        searchForNewMessages();
-        updateMessagesListView();
+        CurrentUser.getInstance().addOnUserNotNullListener(new Consumer<User>()
+        {
+            @Override
+            public void accept(User user)
+            {
 
+                searchForNewMessages(user);
+                updateMessagesListView();
+            }
+        });
 
 
         registrationListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -58,12 +67,11 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                if(myMess.isEmpty())
+                if (myMess.isEmpty())
                 {
                     registrationAcceptButton.setClickable(false);
                     registrationDeclineButton.setClickable(false);
-                }
-                else
+                } else
                 {
                     registrationAcceptButton.setClickable(true);
                     registrationDeclineButton.setClickable(true);
@@ -71,7 +79,6 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
                 itemChosen = parent.getSelectedItemPosition();          // for later use of accept/decline
             }
         });
-
 
 
         registrationAcceptButton.setOnClickListener(new View.OnClickListener()
@@ -97,20 +104,19 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     }
 
 
-
     // search for invite messages sent from managers to this user's email, saves them on a list.
-    public void searchForNewMessages()
+    public void searchForNewMessages(User user)
     {
         myRef = FirebaseDatabase.getInstance().getReference("messages");
         Query query = FirebaseDatabase.getInstance().getReference("messages").orderByChild("email")
-                .equalTo(CurrentUser.getInstance().getUserData().email);
+                .equalTo(user.email);
 
         query.addListenerForSingleValueEvent(new ValueEventListener()
         {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
             {
-                for(DataSnapshot ds : dataSnapshot.getChildren())
+                for (DataSnapshot ds : dataSnapshot.getChildren())
                 {
                     InviteMessage mess = ds.getValue(InviteMessage.class);
                     myMess.add(mess);
