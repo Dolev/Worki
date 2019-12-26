@@ -34,16 +34,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null)
-            updateUI(currentUser);
-
-
         login.setOnClickListener(this);
         registerWorker.setOnClickListener(this);
         registerCompany.setOnClickListener(this);
 
 
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        checkLogin();
+    }
+
+    private void checkLogin()
+    {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null)
+            updateUI(currentUser);
     }
 
     private void updateUI(FirebaseUser currentUser)

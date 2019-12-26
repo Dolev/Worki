@@ -120,7 +120,7 @@ public class RegisterCompany extends AppCompatActivity
     {
         Log.d("Register Company", "Trying write to database...");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("companies/" + user.companyId);
+        DatabaseReference myRef = database.getReference(GlobalMetaData.companiesPath + '/' + user.companyId);
 
         boolean nameSuccessful = myRef.child("name").setValue(name.getText().toString()).isSuccessful();
         boolean addressSuccessful = myRef.child("address").setValue(address.getText().toString()).isSuccessful();

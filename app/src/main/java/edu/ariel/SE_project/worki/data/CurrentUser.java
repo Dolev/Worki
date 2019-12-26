@@ -16,6 +16,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.ariel.SE_project.worki.assistance_classes.GlobalMetaData;
+
 /**
  * Class for getting user data from database. Data is updated automatically.
  * TODO won't work when logging out
@@ -76,13 +78,16 @@ public class CurrentUser
     private void updateUser(final FirebaseUser firebaseUser)
     {
         if (firebaseUser == null)
+        {
+            user = null;
             return;
+        }
 
 
         this.firebaseUser = firebaseUser;
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("user/" + firebaseUser.getUid());
+        DatabaseReference myRef = database.getReference(GlobalMetaData.usersPath + '/' + firebaseUser.getUid());
 
         // Read from the database
         myRef.addValueEventListener(new ValueEventListener()
@@ -101,14 +106,14 @@ public class CurrentUser
                     listeners.remove(listener);
                 }
 
-                Log.d("CurrentUser", "Reading Data");
+                Log.d("CurrentUser", "Reading Data. Id: " + firebaseUser.getUid());
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error)
             {
                 // Failed to read value
-                Log.w("CurrentUser", "Failed to read data.", error.toException());
+                Log.w("CurrentUser", "Failed to read data. Id: " + firebaseUser.getUid() + ", User: " + user, error.toException());
             }
         });
     }

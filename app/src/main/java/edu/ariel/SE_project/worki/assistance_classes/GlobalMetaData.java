@@ -7,6 +7,10 @@ import edu.ariel.SE_project.worki.data.CurrentUser;
 
 public class GlobalMetaData
 {
+    public static final String usersPath = "users";
+    public static final String companiesPath = "companies";
+    public static final String messagesPath = "messages";
+
     public static String userDataPath()
     {
 

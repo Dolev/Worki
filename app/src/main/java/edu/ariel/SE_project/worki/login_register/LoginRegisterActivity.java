@@ -346,8 +346,7 @@ public class LoginRegisterActivity extends AppCompatActivity
                 Toast.makeText(getBaseContext(), "Logged in as: " + currentUser.getEmail(),
                         Toast.LENGTH_LONG).show();
 
-                Intent intent = new Intent(this, TimerActivity.class);
-                startActivity(intent);
+                Transitions.toLoggedInActivity(this, currentUser);
             }
         }
     }

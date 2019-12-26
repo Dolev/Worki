@@ -107,4 +107,16 @@ public class User
             s.writeToDatabase(stamps.push());
         }
     }
+
+    @Override
+    public String toString()
+    {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", isManager=" + isManager +
+                ", companyId='" + companyId + '\'' +
+                '}';
+    }
 }

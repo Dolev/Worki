@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +37,21 @@ import edu.ariel.SE_project.worki.worker_to_company_registration.RegistrationOfW
 public class MenuFragment extends Fragment
 {
 
+    private List<MenuEntry> entries = new LinkedList<>();
+    private List<MenuEntry> managerOnly = new LinkedList<>();
+    private List<MenuEntry> workerOnly = new LinkedList<>();
+
+
+    public MenuFragment()
+    {
+        // Add menu entries here
+
+        entries.add(new MenuEntry("Timer", TimerActivity.class));
+        managerOnly.add(new MenuEntry("Register Workers", RegisterWorkerToCompanyActivity.class));
+
+        workerOnly.add(new MenuEntry("Register to Company", RegistrationOfWorkerFromCompaniesActivity.class));
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,8 +61,33 @@ public class MenuFragment extends Fragment
         return inflater.inflate(R.layout.fragment_meun, container, false);
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
 
-    private boolean isManager = false;
+
+        if (getActivity() != null)
+        {
+            Intent intent = getActivity().getIntent();
+            if (intent.hasExtra("isManager"))
+            {
+                isManager = intent.getBooleanExtra("isManager", false);
+            }
+
+            Log.d("Menu", "@onActivityCreated: hasExtra: " + intent.hasExtra("isManager") + ", isManager: " + isManager);
+
+            if (menuCreated)
+            {
+                getActivity().invalidateOptionsMenu();
+            }
+        }
+
+
+    }
+
+
+    private Boolean isManager = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -54,11 +95,8 @@ public class MenuFragment extends Fragment
 
         super.onCreate(savedInstanceState);
 
-        if (getActivity() != null)
-        {
-            Intent intent = getActivity().getIntent();
-            isManager = intent.getBooleanExtra("isManager", false);
-        }
+
+        Log.d("Menu", "@onCreate");
 
         setHasOptionsMenu(true);
 
@@ -85,44 +123,38 @@ public class MenuFragment extends Fragment
         }
     }
 
-    private List<MenuEntry> entries = new LinkedList<>();
-    private List<MenuEntry> managerOnly = new LinkedList<>();
-    private List<MenuEntry> workerOnly = new LinkedList<>();
 
-
-    public MenuFragment()
-    {
-        // Add menu entries here
-
-        entries.add(new MenuEntry("Timer", TimerActivity.class));
-        managerOnly.add(new MenuEntry("Register Workers", RegisterWorkerToCompanyActivity.class));
-
-
-        workerOnly.add(new MenuEntry("Register to Company", RegistrationOfWorkerFromCompaniesActivity.class));
-    }
+    private boolean menuCreated = false;
 
     @Override
     public void onCreateOptionsMenu(@NonNull final Menu menu, @NonNull MenuInflater inflater)
     {
 
+        Log.d("Menu", "@onCreateOptionsMenu: menuCreated: " + menuCreated + ", isManager: " + isManager);
+
         for (MenuEntry entry : entries)
         {
             entry.item = menu.add(entry.name);
         }
-        if (isManager)
+        if (isManager != null)
         {
-            for (MenuEntry entry : managerOnly)
+            if (isManager)
             {
-                entry.item = menu.add(entry.name);
-            }
-        } else
-        {
-            for (MenuEntry entry : workerOnly)
+                for (MenuEntry entry : managerOnly)
+                {
+                    entry.item = menu.add(entry.name);
+                }
+            } else
             {
-                entry.item = menu.add(entry.name);
+                for (MenuEntry entry : workerOnly)
+                {
+                    entry.item = menu.add(entry.name);
+                }
             }
         }
 
+
+        menuCreated = true;
 
         super.onCreateOptionsMenu(menu, inflater);
 

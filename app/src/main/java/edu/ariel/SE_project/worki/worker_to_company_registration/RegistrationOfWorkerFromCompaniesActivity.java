@@ -22,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import edu.ariel.SE_project.worki.R;
+import edu.ariel.SE_project.worki.assistance_classes.GlobalMetaData;
 import edu.ariel.SE_project.worki.data.CurrentUser;
 import edu.ariel.SE_project.worki.data.InviteMessage;
 import edu.ariel.SE_project.worki.data.User;
@@ -43,6 +44,9 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registation_of_worker_from_companies);
+
+
+        myRef = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath);
 
         registrationListView = findViewById(R.id.ListViewIncomingWorkerInvitations);
         registrationAcceptButton = findViewById(R.id.ButtonAcceptIncomingWorkerInvitations);
@@ -107,8 +111,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     // search for invite messages sent from managers to this user's email, saves them on a list.
     public void searchForNewMessages(User user)
     {
-        myRef = FirebaseDatabase.getInstance().getReference("messages");
-        Query query = FirebaseDatabase.getInstance().getReference("messages").orderByChild("email")
+        Query query = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath).orderByChild("email")
                 .equalTo(user.email);
 
         query.addListenerForSingleValueEvent(new ValueEventListener()

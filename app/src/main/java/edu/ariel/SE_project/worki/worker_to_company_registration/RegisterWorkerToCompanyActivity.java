@@ -17,6 +17,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import edu.ariel.SE_project.worki.R;
+import edu.ariel.SE_project.worki.assistance_classes.GlobalMetaData;
 import edu.ariel.SE_project.worki.data.CurrentUser;
 import edu.ariel.SE_project.worki.data.InviteMessage;
 
@@ -46,14 +47,13 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
                                          @Override
                                          public void onClick(View v)
                                          {
-                                                  if(mailIsValid(WorkerMail.getText().toString()))
-                                                  {
-                                                         sendInvitationToWorker(WorkerMail.getText().toString());
-                                                  }
-                                                  else
-                                                  {
-                                                         showErrorMessage();
-                                                  }
+                                             if (mailIsValid(WorkerMail.getText().toString()))
+                                             {
+                                                 sendInvitationToWorker(WorkerMail.getText().toString());
+                                             } else
+                                             {
+                                                 showErrorMessage();
+                                             }
                                          }
                                      }
         );
@@ -61,7 +61,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
 
     private boolean mailIsValid(String text)
     {
-        if(text == null || text == "" || isUserInDataBase(text))
+        if (text == null || text == "" || isUserInDataBase(text))
         {
             return false;
         }
@@ -71,15 +71,15 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
     // search for the user's email in the database, if so - saves the message on the firebase.
     private void sendInvitationToWorker(final String mailAddress)
     {
-        databaseRef = FirebaseDatabase.getInstance().getReference("users");
-        Query query = FirebaseDatabase.getInstance().getReference("users").orderByChild("email").equalTo(mailAddress);
+        databaseRef = FirebaseDatabase.getInstance().getReference(GlobalMetaData.usersPath);
+        Query query = FirebaseDatabase.getInstance().getReference(GlobalMetaData.usersPath).orderByChild("email").equalTo(mailAddress);
 
         query.addListenerForSingleValueEvent(new ValueEventListener()
         {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
             {
-                if(dataSnapshot.getChildrenCount() > 0)
+                if (dataSnapshot.getChildrenCount() > 0)
                 {
                     String id = databaseRef.push().getKey();
                     InviteMessage InviteNewWorker = new InviteMessage(mailAddress, CurrentUser.getInstance().getUserData().email);
@@ -99,7 +99,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
 
     private boolean isUserInDataBase(String mailAddress)
     {
-        if(databaseRef.getRef().child("users").child("userId").child(mailAddress) == null)
+        if (databaseRef.getRef().child("users").child("userId").child(mailAddress) == null)
         {
             return false;
         }
