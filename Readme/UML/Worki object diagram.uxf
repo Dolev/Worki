@@ -1,0 +1,36 @@
+<diagram program="umletino" version="14.3.0"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>291</x><y>380</y><w>210</w><h>100</h></coordinates><panel_attributes>_ufcUser1: User_
+--
+id: String="36548"
+name: String= "ufc ebg"
+email: String= "ufcebg@gmail.com"
+isManager: boolean= false
+companyId: String=""
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>291</x><y>60</y><w>210</w><h>100</h></coordinates><panel_attributes>_abcUser: User_
+--
+id: String="36548"
+name: String= "abc efg"
+email: String= "abcefg@gmail.com"
+isManager: boolean= true
+companyId: String="1234"
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>470</x><y>230</y><w>210</w><h>70</h></coordinates><panel_attributes>_inviteToUfc: inviteMessage_
+--
+recipient: String="ufcebg@gmail.com"
+sender: String="abcefg@gmail.com"
+currentStatus: enum invitationStatus=undecided
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>20</x><y>120</y><w>210</w><h>70</h></coordinates><panel_attributes>_abcComp: company_
+--
+companyId: String="1234"
+companyName: String="abc's place"
+address: String="abc street 1111"
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>490</x><y>120</y><w>100</w><h>130</h></coordinates><panel_attributes>lt=-&gt;&gt;</panel_attributes><additional_attributes>10;10;80;110</additional_attributes></element><element><id>Relation</id><coordinates><x>220</x><y>120</y><w>90</w><h>50</h></coordinates><panel_attributes>lt=-&gt;&gt;</panel_attributes><additional_attributes>70;10;10;30</additional_attributes></element><element><id>Relation</id><coordinates><x>460</x><y>290</y><w>130</w><h>110</h></coordinates><panel_attributes>lt=-&gt;&gt;</panel_attributes><additional_attributes>110;10;10;90</additional_attributes></element><element><id>UMLClass</id><coordinates><x>21</x><y>250</y><w>210</w><h>100</h></coordinates><panel_attributes>_bbcUser1: User_
+--
+id: String="36548"
+name: String= "bbcbbc"
+email: String= "bbcbbc@gmail.com"
+isManager: boolean= false
+companyId: String="1234"
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>100</x><y>180</y><w>30</w><h>90</h></coordinates><panel_attributes>lt=-&gt;&gt;</panel_attributes><additional_attributes>10;70;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>190</x><y>150</y><w>150</w><h>120</h></coordinates><panel_attributes>lt=-&gt;&gt;</panel_attributes><additional_attributes>130;10;10;100</additional_attributes></element><element><id>UMLClass</id><coordinates><x>20</x><y>420</y><w>210</w><h>70</h></coordinates><panel_attributes>_bbcSS: shiftStamp_
+--
+type: enum shiftStampType=stop
+utcTime: long= 1
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>100</x><y>340</y><w>30</w><h>100</h></coordinates><panel_attributes>lt=-&gt;&gt;</panel_attributes><additional_attributes>10;10;10;80</additional_attributes></element></diagram>

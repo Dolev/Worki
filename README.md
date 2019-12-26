@@ -20,3 +20,6 @@ Software Engineering project for Ariel Univversity
 
 ## Sequence Diagram
 ![sequence](https://github.com/elishadar/Worki/blob/master/Readme/UML/Worki%20Sequence.png)
+
+## Object Diagram
+![Object](https://github.com/elishadar/Worki/blob/master/Readme/UML/Worki%20obeject%20diagram.png)
