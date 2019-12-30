@@ -42,6 +42,7 @@ public class TimerActivity extends AppCompatActivity
 
         // Initialize variables
         startStop = findViewById(R.id.startStop);
+        pauseShift.setEnabled(false);
 
         pauseShift = findViewById(R.id.pauseShift);
 
