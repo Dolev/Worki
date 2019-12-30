@@ -42,6 +42,7 @@ public class TimerActivity extends AppCompatActivity
 
         // Initialize variables
         startStop = findViewById(R.id.startStop);
+        pauseShift.setEnabled(false);
 
         pauseShift = findViewById(R.id.pauseShift);
 
@@ -82,6 +83,7 @@ public class TimerActivity extends AppCompatActivity
      */
     private void startTimer()
     {
+        pauseShift.setEnabled(true);
         timer.setBase(SystemClock.elapsedRealtime());
         timer.start();
 
@@ -94,8 +96,7 @@ public class TimerActivity extends AppCompatActivity
      */
     private void pauseTimer()
     {
-        if (!started)
-            return;
+
         duration = SystemClock.elapsedRealtime() - timer.getBase();
         timer.stop();
 
@@ -108,8 +109,6 @@ public class TimerActivity extends AppCompatActivity
      */
     private void continueTimer()
     {
-        if (!started)
-            return;
         timer.setBase(SystemClock.elapsedRealtime() - duration);
         timer.start();
 
@@ -122,6 +121,7 @@ public class TimerActivity extends AppCompatActivity
      */
     private void stopTimer()
     {
+        pauseShift.setEnabled(false);
         timer.setBase(SystemClock.elapsedRealtime());
         timer.stop();
 
