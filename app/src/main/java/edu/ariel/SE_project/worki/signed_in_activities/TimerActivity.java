@@ -94,6 +94,8 @@ public class TimerActivity extends AppCompatActivity
      */
     private void pauseTimer()
     {
+        if (!started)
+            return;
         duration = SystemClock.elapsedRealtime() - timer.getBase();
         timer.stop();
 
@@ -106,6 +108,8 @@ public class TimerActivity extends AppCompatActivity
      */
     private void continueTimer()
     {
+        if (!started)
+            return;
         timer.setBase(SystemClock.elapsedRealtime() - duration);
         timer.start();
 
