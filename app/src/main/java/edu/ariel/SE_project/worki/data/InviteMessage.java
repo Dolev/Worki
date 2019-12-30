@@ -6,6 +6,11 @@ import com.google.firebase.database.DatabaseReference;
 public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
 
 {
+    public invitationStatus getCurrentStatus()
+    {
+        return currentStatus;
+    }
+
     public enum invitationStatus
     {
         undecided, accepted, declined
@@ -24,10 +29,17 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
 
 
     public InviteMessage(String recipient, String sender)
+{
+    this.recipient = recipient;
+    this.sender = sender;
+    this.currentStatus = invitationStatus.undecided;
+}
+
+    public InviteMessage(String recipient, String sender, invitationStatus currentStatus)
     {
         this.recipient = recipient;
         this.sender = sender;
-        this.currentStatus = invitationStatus.undecided;
+        this.currentStatus = currentStatus;
     }
 
     public String getRecipient()

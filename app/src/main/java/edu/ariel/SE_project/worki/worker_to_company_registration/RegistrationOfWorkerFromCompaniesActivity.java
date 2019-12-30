@@ -73,14 +73,14 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
             {
                 if (myMess.isEmpty())
                 {
-                    registrationAcceptButton.setClickable(false);
-                    registrationDeclineButton.setClickable(false);
-                } else
-                {
-                    registrationAcceptButton.setClickable(true);
-                    registrationDeclineButton.setClickable(true);
+                    setButtonsClickable(false);
                 }
-                itemChosen = parent.getSelectedItemPosition();          // for later use of accept/decline
+                else
+                {
+                    setButtonsClickable(true);
+                    itemChosen = parent.getSelectedItemPosition();          // for later use of accept/decline
+                }
+
             }
         });
 
@@ -91,7 +91,10 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 // TODO
-                messageAccepted(itemChosen);
+                if(registrationAcceptButton.isClickable())
+                {
+                    messageAccepted(itemChosen);
+                }
             }
         });
 
@@ -101,10 +104,19 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 // TODO
-                messageDeclined(itemChosen);
+                if(registrationDeclineButton.isClickable())
+                {
+                    messageDeclined(itemChosen);
+                }
 
             }
         });
+    }
+
+    // turning the buttons apearance on/off
+    private void setButtonsClickable(boolean b)
+    {
+        registrationAcceptButton.setEnabled(b);
     }
 
 
@@ -146,11 +158,12 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     private void messageDeclined(int itemChosen)
     {
         String id = myRef.push().getKey();
-        InviteMessage inviteMessageAccepted = myMess.get(itemChosen);
-        inviteMessageAccepted.setCurrentStatus(InviteMessage.invitationStatus.declined);
-        myRef.child(id).setValue(inviteMessageAccepted);
+        InviteMessage inviteMessageDeclined = myMess.get(itemChosen);
+        inviteMessageDeclined.setCurrentStatus(InviteMessage.invitationStatus.declined);
+        myRef.child(id).setValue(inviteMessageDeclined);
 
         // todo implement send AnswerToManager
+        sendAnswerToManager(inviteMessageDeclined);
 
         myMess.remove(itemChosen);
         updateMessagesListView();
@@ -165,6 +178,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
         myRef.child(id).setValue(inviteMessageAccepted);
 
         // todo implement send AnswerToManager
+        sendAnswerToManager(inviteMessageAccepted);
 
         deleteAllInviteMessages();
         updateMessagesListView();
@@ -181,8 +195,9 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
         Toast.makeText(this, "There are no Messages to show", Toast.LENGTH_SHORT).show();
     }
 
-    private void sendAnswerToManager()
+    private void sendAnswerToManager(InviteMessage inviteMessage)
     {
-
+        InviteMessage replyToManager = new InviteMessage(inviteMessage.getSender(), inviteMessage.getRecipient(), inviteMessage.getCurrentStatus());
+        // todo send the reply
     }
 }
