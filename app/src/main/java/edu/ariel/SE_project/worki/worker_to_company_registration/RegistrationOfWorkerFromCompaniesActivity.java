@@ -197,7 +197,9 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
 
     private void sendAnswerToManager(InviteMessage inviteMessage)
     {
-        InviteMessage replyToManager = new InviteMessage(inviteMessage.getSender(), inviteMessage.getRecipient(), inviteMessage.getCurrentStatus());
+        InviteMessage replyToManager = new InviteMessage(inviteMessage);
+        replyToManager.setReply(true);
+        replyToManager.inverseRecipientSender();
         // todo send the reply
     }
 }

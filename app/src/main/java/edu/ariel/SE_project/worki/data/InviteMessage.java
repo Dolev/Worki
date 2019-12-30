@@ -19,7 +19,7 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
     private invitationStatus currentStatus;
     private String recipient;
     private String sender;
-
+    private boolean reply = false;
 
 
     public InviteMessage()
@@ -27,13 +27,19 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
 
     }
 
+    public InviteMessage (InviteMessage inviteMessage)
+    {
+        this.recipient = inviteMessage.getRecipient();
+        this.sender = inviteMessage.getSender();
+        this.currentStatus = inviteMessage.getCurrentStatus();
+    }
 
     public InviteMessage(String recipient, String sender)
-{
-    this.recipient = recipient;
-    this.sender = sender;
-    this.currentStatus = invitationStatus.undecided;
-}
+    {
+        this.recipient = recipient;
+        this.sender = sender;
+        this.currentStatus = invitationStatus.undecided;
+    }
 
     public InviteMessage(String recipient, String sender, invitationStatus currentStatus)
     {
@@ -57,6 +63,22 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
         this.currentStatus = currentStatus;
     }
 
+    public boolean getReply()
+    {
+        return reply;
+    }
+
+    public void setReply(boolean reply)
+    {
+        this.reply = reply;
+    }
+
+    public void inverseRecipientSender()
+    {
+        String temp = this.recipient;
+        this.recipient = this.sender;
+        this.sender = temp;
+    }
     public void writeMessageToDatabase()
     {
 
