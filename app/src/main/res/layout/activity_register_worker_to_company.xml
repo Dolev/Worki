@@ -7,7 +7,7 @@
     tools:context=".worker_to_company_registration.RegisterWorkerToCompanyActivity">
 
     <Button
-        android:id="@+id/addWorkerToCompanyButton2"
+        android:id="@+id/clearRecievedRepliesFromWorkersButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Clear"
@@ -69,6 +69,7 @@
         tools:layout_editor_absoluteY="29dp" />
 
     <ListView
+        android:id="@+id/managerRepliesFromWorkersListView"
         android:layout_width="286dp"
         android:layout_height="293dp"
         app:layout_constraintEnd_toEndOf="parent"

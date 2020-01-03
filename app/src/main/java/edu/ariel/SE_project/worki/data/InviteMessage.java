@@ -18,8 +18,9 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
 
     private invitationStatus currentStatus;
     private String recipient;
+    private String senderId;
     private String sender;
-    private boolean reply = false;
+//    private boolean reply = false;
 
 
     public InviteMessage()
@@ -31,20 +32,29 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
     {
         this.recipient = inviteMessage.getRecipient();
         this.sender = inviteMessage.getSender();
+        this.senderId = inviteMessage.getSenderId();
         this.currentStatus = inviteMessage.getCurrentStatus();
     }
 
-    public InviteMessage(String recipient, String sender)
+    public  InviteMessage (String recipient, String sender)
     {
         this.recipient = recipient;
         this.sender = sender;
+    }
+
+    public InviteMessage(String recipient, String sender, String senderId)
+    {
+        this.recipient = recipient;
+        this.sender = sender;
+        this.senderId = senderId;
         this.currentStatus = invitationStatus.undecided;
     }
 
-    public InviteMessage(String recipient, String sender, invitationStatus currentStatus)
+    public InviteMessage(String recipient, String sender, String senderId, invitationStatus currentStatus)
     {
         this.recipient = recipient;
         this.sender = sender;
+        this.senderId = senderId;
         this.currentStatus = currentStatus;
     }
 
@@ -63,14 +73,19 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
         this.currentStatus = currentStatus;
     }
 
-    public boolean getReply()
-    {
-        return reply;
-    }
+//    public boolean getReply()
+//    {
+//        return reply;
+//    }
 
-    public void setReply(boolean reply)
+//    public void setReply(boolean reply)
+//    {
+//        this.reply = reply;
+//    }
+
+    public String getSenderId()
     {
-        this.reply = reply;
+        return senderId;
     }
 
     public void inverseRecipientSender()
@@ -79,9 +94,19 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
         this.recipient = this.sender;
         this.sender = temp;
     }
-    public void writeMessageToDatabase()
-    {
 
+    public String statusToString()
+    {
+        if(this.getCurrentStatus() == invitationStatus.accepted)
+        {
+            return "Accepted";
+        }
+        else if(this.getCurrentStatus() == InviteMessage.invitationStatus.declined)
+        {
+            return "Declined";
+        }
+
+        return "Undecided";         // might require a change
     }
 
     /**
@@ -95,7 +120,9 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
         //todo status?
         String recipient = snapshot.child("recipient").getValue(String.class);
         String sender = snapshot.child("sender").getValue(String.class);
+//        int senderId = snapshot.child("senderId".getValue(Integer.class));
 
+//        return new InviteMessage(recipient, sender, senderId);
         return new InviteMessage(recipient, sender);
     }
 
