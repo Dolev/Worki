@@ -33,10 +33,11 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     private Button registrationAcceptButton;
     private Button registrationDeclineButton;
 
-    private DatabaseReference myRef;
-    private ArrayList<InviteMessage> myMess;
+//    private ArrayList<InviteMessage> myMess;
     private ArrayAdapter arrAdap;
-    private int itemChosen;
+    private InviteMessage itemChosen;
+
+    private DatabaseReference myRef;
 
 
     @Override
@@ -52,14 +53,13 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
         registrationAcceptButton = findViewById(R.id.ButtonAcceptIncomingWorkerInvitations);
         registrationDeclineButton = findViewById(R.id.ButtonDeclineIncomingWorkerInvitations);
 
-        myMess = new ArrayList<>();
+//        myMess = new ArrayList<>();
 
         CurrentUser.getInstance().addOnUserNotNullListener(new Consumer<User>()
         {
             @Override
             public void accept(User user)
             {
-
                 searchForNewMessages(user);
                 updateMessagesListView();
             }
@@ -71,14 +71,14 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                if (myMess.isEmpty())
+                if (MessagesHandler.inviteWorkers.isEmpty() || MessagesHandler.inviteWorkers.get(CurrentUser.getInstance().getUserData().id).isEmpty())
                 {
-                    setButtonsClickable(false);
+                    setButtonsClickable(true);
+                    itemChosen = (InviteMessage)parent.getSelectedItem();          // for later use of accept/decline
                 }
                 else
                 {
-                    setButtonsClickable(true);
-                    itemChosen = parent.getSelectedItemPosition();          // for later use of accept/decline
+                    setButtonsClickable(false);
                 }
 
             }
@@ -121,6 +121,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
 
 
     // search for invite messages sent from managers to this user's email, saves them on a list.
+    // done
     public void searchForNewMessages(User user)
     {
         Query query = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath).orderByChild("email")
@@ -134,7 +135,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
                 for (DataSnapshot ds : dataSnapshot.getChildren())
                 {
                     InviteMessage mess = ds.getValue(InviteMessage.class);
-                    myMess.add(mess);
+                    MessagesHandler.insertByKey(MessagesHandler.inviteWorkers, CurrentUser.getInstance().getUserData().id, mess);
                 }
             }
 
@@ -148,37 +149,41 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
 
 
     // updates the listview ui
+    // done
     private void updateMessagesListView()
     {
-        arrAdap = new ArrayAdapter(this, android.R.layout.simple_list_item_1, myMess);
+        arrAdap = new ArrayAdapter(this, android.R.layout.simple_list_item_1,
+                                   MessagesHandler.inviteWorkers.get(CurrentUser.getInstance().getUserData().id));
         registrationListView.setAdapter(arrAdap);
     }
 
     // deletes declined message from listview
-    private void messageDeclined(int itemChosen)
+    // half done
+    private void messageDeclined(InviteMessage itemChosen)
     {
         String id = myRef.push().getKey();
-        InviteMessage inviteMessageDeclined = myMess.get(itemChosen);
+
+        InviteMessage inviteMessageDeclined = new InviteMessage(itemChosen);
         inviteMessageDeclined.setCurrentStatus(InviteMessage.invitationStatus.declined);
         myRef.child(id).setValue(inviteMessageDeclined);
 
-        // todo implement send AnswerToManager
-        sendAnswerToManager(inviteMessageDeclined);
+        MessagesHandler.sendReplyToManager(inviteMessageDeclined);
 
-        myMess.remove(itemChosen);
+        MessagesHandler.inviteWorkers.remove(itemChosen);
         updateMessagesListView();
     }
 
     // changes message status to accepted, deletes all messages from listview
-    private void messageAccepted(int itemChosen)
+    // half done
+    private void messageAccepted(InviteMessage itemChosen)
     {
         String id = myRef.push().getKey();
-        InviteMessage inviteMessageAccepted = myMess.get(itemChosen);
+
+        InviteMessage inviteMessageAccepted = new InviteMessage(itemChosen);
         inviteMessageAccepted.setCurrentStatus(InviteMessage.invitationStatus.accepted);
         myRef.child(id).setValue(inviteMessageAccepted);
 
-        // todo implement send AnswerToManager
-        sendAnswerToManager(inviteMessageAccepted);
+        MessagesHandler.sendReplyToManager(inviteMessageAccepted);
 
         deleteAllInviteMessages();
         updateMessagesListView();
@@ -187,7 +192,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
 
     private void deleteAllInviteMessages()
     {
-        myMess.clear();
+        MessagesHandler.inviteWorkers.clear();
     }
 
     private void noMessagesToShow()
@@ -195,11 +200,4 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
         Toast.makeText(this, "There are no Messages to show", Toast.LENGTH_SHORT).show();
     }
 
-    private void sendAnswerToManager(InviteMessage inviteMessage)
-    {
-        InviteMessage replyToManager = new InviteMessage(inviteMessage);
-        replyToManager.setReply(true);
-        replyToManager.inverseRecipientSender();
-        // todo send the reply
-    }
 }
