@@ -137,7 +137,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
 
     private boolean mailIsValid(String text)
     {
-        if (text == null || text == "" || isUserInDataBase(text))
+        if (text == null || text.isEmpty() || isUserInDataBase(text))
         {
             return false;
         }

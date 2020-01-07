@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
+        checkLogin();
+
         login.setOnClickListener(this);
         registerWorker.setOnClickListener(this);
         registerCompany.setOnClickListener(this);
@@ -48,16 +50,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         checkLogin();
     }
 
+    private boolean loggedIn = false;
+
     private void checkLogin()
     {
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null)
-            updateUI(currentUser);
-    }
-
-    private void updateUI(FirebaseUser currentUser)
-    {
-        Transitions.toLoggedInActivity(this, currentUser);
+        if (currentUser != null && !loggedIn)
+        {
+            loggedIn = true;
+            Transitions.toLoggedInActivity(this);
+        }
     }
 
     @Override

@@ -7,12 +7,10 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
 
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import edu.ariel.SE_project.worki.MainActivity;
@@ -58,9 +56,8 @@ public class Transitions
      * Go to logged in activity.
      *
      * @param activity the activity.
-     * @param user     the firebase user to determine if the user is a manager.
      */
-    public static void toLoggedInActivity(final Activity activity, final FirebaseUser user)
+    public static void toLoggedInActivity(final Activity activity)
     {
         Log.d("Transitions", "Going to Logged In activity. Caller: " + activity);
 

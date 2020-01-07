@@ -1,6 +1,5 @@
 package edu.ariel.SE_project.worki.login_register;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Consumer;
 
@@ -15,7 +14,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.common.util.Predicate;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -139,7 +137,7 @@ public class RegisterCompany extends AppCompatActivity
     private void updateUI(boolean successful)
     {
         if (successful)
-            Transitions.toLoggedInActivity(this, user);
+            Transitions.toLoggedInActivity(this);
     }
 
     /**
