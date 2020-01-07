@@ -125,10 +125,6 @@ public class CurrentUser
      */
     public User getUserData()
     {
-        if (user == null)
-        {
-
-        }
         return user;
     }
 

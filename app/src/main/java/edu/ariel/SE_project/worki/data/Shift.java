@@ -11,7 +11,7 @@ import java.util.Date;
 public class Shift implements ReadableFromDatabase,WriteableToDatabase
 {
     private static int shiftIdGenerator = 0;
-    private User shiftManager;
+    public User shiftManager;
     private ArrayList<User> workersInShift;
     private int shiftId;
     private Date shiftDate;
