@@ -10,35 +10,44 @@ public class MessagesHandler
     public static HashMap<String, ArrayList<InviteMessage>> inviteWorkers = new HashMap<String, ArrayList<InviteMessage>>();
     public static HashMap<String, ArrayList<InviteMessage>> workerReplies = new HashMap<String, ArrayList<InviteMessage>>();
 
-
-
-    public static void insertByKey(HashMap<String, ArrayList<InviteMessage>> hMap, String userId, InviteMessage inviteMessage)
+    public static void sendMessage(boolean manager, String recipient, InviteMessage message)
     {
-        if(hMap.containsKey(userId))
-        {
-            hMap.get(userId).add(inviteMessage);
-        }
+        HashMap<String, ArrayList<InviteMessage>> hMap;
+        if (manager)
+            hMap = inviteWorkers;
         else
+            hMap = workerReplies;
+
+        if (hMap.containsKey(recipient))
+        {
+            if (hMap.get(recipient) != null)
+                hMap.get(recipient).add(message);
+        } else
         {
             ArrayList<InviteMessage> list = new ArrayList<>();
-            list.add(inviteMessage);
-            hMap.put(userId, list);
+            list.add(message);
+            hMap.put(recipient, list);
         }
     }
 
-    public static void deleteUserMessages(HashMap<String, ArrayList<InviteMessage>> hMap, String userId)
+    public static void deleteMessage(boolean manager, String recipient)
     {
-        if(hMap.containsKey(userId))
+        HashMap<String, ArrayList<InviteMessage>> hMap;
+        if (manager)
+            hMap = inviteWorkers;
+        else
+            hMap = workerReplies;
+
+        if (hMap.containsKey(recipient))
         {
-            hMap.remove(userId);
+            hMap.remove(recipient);
         }
+
     }
 
     public static void sendInviteToWorker(InviteMessage inviteMessage)
     {
         InviteMessage sendToWorker = new InviteMessage(inviteMessage);
-
-
     }
 
     public static void sendReplyToManager(InviteMessage inviteMessage)
@@ -47,7 +56,7 @@ public class MessagesHandler
         String managerId = inviteMessage.getSenderId();
         sendToManager.inverseRecipientSender();
 
-        insertByKey(workerReplies, managerId, sendToManager);
+        sendMessage(false, managerId, sendToManager);
 
     }
 
@@ -57,10 +66,10 @@ public class MessagesHandler
         return answer;
     }
 
-    public static ArrayList<String> convertToStrings (ArrayList<InviteMessage> inviteMessages)
+    public static ArrayList<String> convertToStrings(ArrayList<InviteMessage> inviteMessages)
     {
         ArrayList<String> repliesInStrings = new ArrayList<>();
-        for (InviteMessage im: inviteMessages)
+        for (InviteMessage im : inviteMessages)
         {
             repliesInStrings.add(createReply(im.getSender(), im.statusToString()));
         }

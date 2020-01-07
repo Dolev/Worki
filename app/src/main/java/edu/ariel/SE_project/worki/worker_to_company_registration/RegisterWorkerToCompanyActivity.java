@@ -42,7 +42,6 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
     private DatabaseReference databaseMessagesRef;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -78,8 +77,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
                 if (MessagesHandler.workerReplies.get(CurrentUser.getInstance().getUserData().id).isEmpty())
                 {
                     ClearButton.setEnabled(false);
-                }
-                else
+                } else
                 {
                     ClearButton.setEnabled(true);
                 }
@@ -109,24 +107,28 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                MessagesHandler.deleteUserMessages(MessagesHandler.workerReplies, CurrentUser.getInstance().getUserData().id);
+                MessagesHandler.deleteMessage(false, CurrentUser.getInstance().getUserData().id);
             }
         });
     }
+
     // done
     private void updateRepliesListView()
     {
-        myReplies = new ArrayList<>();
-        myReplies = MessagesHandler.convertToStrings(MessagesHandler.workerReplies.get(CurrentUser.getInstance().getUserData().id));
+        if (MessagesHandler.workerReplies.containsKey(CurrentUser.getInstance().getUserData().id))
+        {
+            myReplies = new ArrayList<>();
+            myReplies = MessagesHandler.convertToStrings(MessagesHandler.workerReplies.get(CurrentUser.getInstance().getUserData().id));
 
-        arrAdap = new ArrayAdapter(this, android.R.layout.simple_list_item_1, myReplies);
-        repliesListview.setAdapter(arrAdap);
+            arrAdap = new ArrayAdapter(this, android.R.layout.simple_list_item_1, myReplies);
+            repliesListview.setAdapter(arrAdap);
+        }
     }
 
     private void searchForNewReplies()
     {
         // todo implement send AnswerToManager, need some kind of static object to handle messages
-        if(MessagesHandler.workerReplies.containsKey(CurrentUser.getInstance().getUserData().id))
+        if (MessagesHandler.workerReplies.containsKey(CurrentUser.getInstance().getUserData().id))
         {
             updateRepliesListView();
         }
@@ -181,11 +183,13 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
         return true;
 
     }
+
     // done
     private void showErrorMessage()
     {
         Toast.makeText(this, "Please Enter a Valid Mail Address.", Toast.LENGTH_SHORT).show();
     }
+
     //done
     private void showSentMessage()
     {

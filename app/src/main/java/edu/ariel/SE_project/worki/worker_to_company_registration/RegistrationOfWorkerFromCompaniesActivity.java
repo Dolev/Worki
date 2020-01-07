@@ -33,7 +33,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     private Button registrationAcceptButton;
     private Button registrationDeclineButton;
 
-//    private ArrayList<InviteMessage> myMess;
+    //    private ArrayList<InviteMessage> myMess;
     private ArrayAdapter arrAdap;
     private InviteMessage itemChosen;
 
@@ -74,9 +74,8 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
                 if (MessagesHandler.inviteWorkers.isEmpty() || MessagesHandler.inviteWorkers.get(CurrentUser.getInstance().getUserData().id).isEmpty())
                 {
                     setButtonsClickable(true);
-                    itemChosen = (InviteMessage)parent.getSelectedItem();          // for later use of accept/decline
-                }
-                else
+                    itemChosen = (InviteMessage) parent.getSelectedItem();          // for later use of accept/decline
+                } else
                 {
                     setButtonsClickable(false);
                 }
@@ -91,7 +90,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 // TODO
-                if(registrationAcceptButton.isClickable())
+                if (registrationAcceptButton.isClickable() && CurrentUser.getInstance().getUserData() != null)
                 {
                     messageAccepted(itemChosen);
                 }
@@ -104,7 +103,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 // TODO
-                if(registrationDeclineButton.isClickable())
+                if (registrationDeclineButton.isClickable() && CurrentUser.getInstance().getUserData() != null)
                 {
                     messageDeclined(itemChosen);
                 }
@@ -135,7 +134,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
                 for (DataSnapshot ds : dataSnapshot.getChildren())
                 {
                     InviteMessage mess = ds.getValue(InviteMessage.class);
-                    MessagesHandler.insertByKey(MessagesHandler.inviteWorkers, CurrentUser.getInstance().getUserData().id, mess);
+                    MessagesHandler.sendMessage(true, CurrentUser.getInstance().getUserData().id, mess);
                 }
             }
 
@@ -152,8 +151,9 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     // done
     private void updateMessagesListView()
     {
-        arrAdap = new ArrayAdapter(this, android.R.layout.simple_list_item_1,
-                                   MessagesHandler.inviteWorkers.get(CurrentUser.getInstance().getUserData().id));
+        if (MessagesHandler.inviteWorkers.containsKey(CurrentUser.getInstance().getUserData().id))
+            arrAdap = new ArrayAdapter(this, android.R.layout.simple_list_item_1,
+                    MessagesHandler.inviteWorkers.get(CurrentUser.getInstance().getUserData().id));
         registrationListView.setAdapter(arrAdap);
     }
 

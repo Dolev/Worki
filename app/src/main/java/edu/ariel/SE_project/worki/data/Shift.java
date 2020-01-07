@@ -65,7 +65,7 @@ public class Shift implements ReadableFromDatabase,WriteableToDatabase
 
         return "Shift {Shift Id: " + shiftId + '\'' +
                 ", Manager Id: " + shiftManager.id + '\'' +
-                ", Worker on Shift" + workers + '\'' +
+                ", Workers In Shift" + workers + '\'' +
                 ", Shift Starts in: " + shiftDate.toString() +
                 ", Shift Ends in: " + shiftEnd.toString() + '\'' +
                 '}';
