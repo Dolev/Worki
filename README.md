@@ -1,5 +1,5 @@
 # Worki
-Software Engineering project for Ariel Univversity
+Software Engineering project for Ariel University
 
 # UML Diagrams
 
@@ -16,10 +16,10 @@ Software Engineering project for Ariel Univversity
 ![class](https://github.com/elishadar/Worki/blob/master/Readme/UML/Worki%20class%20diagram.png)
 
 ## ERD Diagram
-![ERD](https://github.com/elishadar/Worki/blob/master/Readme/UML/Worki-ERD.PNG)
+![ERD](https://github.com/elishadar/Worki/blob/master/Readme/UML/worki-ERD.vpd.png)
 
 ## Sequence Diagram
 ![sequence](https://github.com/elishadar/Worki/blob/master/Readme/UML/Worki%20Sequence.png)
 
 ## Object Diagram
-![Object](https://github.com/elishadar/Worki/blob/master/Readme/UML/Worki%20obeject%20diagram.png)
+![Object](https://github.com/elishadar/Worki/blob/master/Readme/UML/Worki%20object%20diagram.png)
