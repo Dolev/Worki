@@ -77,7 +77,7 @@ public class Shift implements ReadableFromDatabase,WriteableToDatabase
      * @param snapshot the database snapshot where the object is stored.
      */
     @Override
-    public ReadableFromDatabase readFromDatabase(DataSnapshot snapshot)
+    public Shift readFromDatabase(DataSnapshot snapshot)
     {
         User shiftManager = snapshot.child("shiftManager").getValue(User.class);
         ArrayList<User> shiftWorkers = snapshot.child("workersInShift").getValue(ArrayList.class);
