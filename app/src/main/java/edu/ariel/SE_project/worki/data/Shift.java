@@ -81,6 +81,7 @@ public class Shift implements ReadableFromDatabase,WriteableToDatabase
     {
         User shiftManager = snapshot.child("shiftManager").getValue(User.class);
         ArrayList<User> shiftWorkers = snapshot.child("workersInShift").getValue(ArrayList.class);
+
         int shiftId = snapshot.child("shiftId").getValue(Integer.class);
         Date shiftDate = snapshot.child("shiftDate").getValue(Date.class);
         Date shiftEnd = snapshot.child("shiftEnd").getValue(Date.class);
