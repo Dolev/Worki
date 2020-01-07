@@ -118,6 +118,11 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
 
     }
 
+    /**
+     * Store this InviteMessage in the database.
+     *
+     * @param reference the database reference where the User would be stored.
+     */
     @Override
     public void writeToDatabase(DatabaseReference reference)
     {

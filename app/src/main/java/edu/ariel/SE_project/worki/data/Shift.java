@@ -88,6 +88,11 @@ public class Shift implements ReadableFromDatabase,WriteableToDatabase
         return new Shift(shiftManager, shiftWorkers, shiftId, shiftDate, shiftEnd);
     }
 
+    /**
+     * Store this Shift in the database.
+     *
+     * @param reference the database reference where the User would be stored.
+     */
     @Override
     public void writeToDatabase(DatabaseReference reference)
     {
