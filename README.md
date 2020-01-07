@@ -16,7 +16,7 @@ Software Engineering project for Ariel Univversity
 ![class](https://github.com/elishadar/Worki/blob/master/Readme/UML/Worki%20class%20diagram.png)
 
 ## ERD Diagram
-![ERD](https://github.com/elishadar/Worki/blob/master/Readme/UML/Worki-ERD(1).PNG)
+![ERD](https://github.com/elishadar/Worki/blob/master/Readme/UML/Worki-ERD.PNG)
 
 ## Sequence Diagram
 ![sequence](https://github.com/elishadar/Worki/blob/master/Readme/UML/Worki%20Sequence.png)
