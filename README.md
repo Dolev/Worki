@@ -1,5 +1,5 @@
 # Worki
-Software Engineering project for Ariel Univversity
+Software Engineering project for Ariel University
 
 # UML Diagrams
 
