@@ -39,6 +39,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
     private ArrayAdapter arrAdap;
 
     private DatabaseReference databaseRef;
+    private DatabaseReference databaseShiftRef;
 
 
 
@@ -144,9 +145,9 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
     // search for the user's email in the database, if so - saves the message on the firebase.
     private void sendInvitationToWorker(final String mailAddress)
     {
+        databaseShiftRef = FirebaseDatabase.getInstance().getReference(GlobalMetaData.shiftsPath);
         databaseRef = FirebaseDatabase.getInstance().getReference(GlobalMetaData.usersPath);
         Query query = FirebaseDatabase.getInstance().getReference(GlobalMetaData.usersPath).orderByChild("email").equalTo(mailAddress);
-
         query.addListenerForSingleValueEvent(new ValueEventListener()
         {
             @Override
@@ -154,9 +155,10 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
             {
                 if (dataSnapshot.getChildrenCount() > 0)
                 {
-                    String id = databaseRef.push().getKey();
-                    InviteMessage InviteNewWorker = new InviteMessage(mailAddress, CurrentUser.getInstance().getUserData().email);
-                    databaseRef.child(id).setValue(InviteNewWorker);
+//                    String id = databaseRef.push().getKey();
+                    InviteMessage InviteNewWorker = new InviteMessage();
+                    InviteNewWorker.readFromDatabase(dataSnapshot);
+                    InviteNewWorker.writeToDatabase(databaseShiftRef);
                 }
             }
 

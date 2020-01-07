@@ -10,6 +10,7 @@ public class GlobalMetaData
     public static final String usersPath = "users";
     public static final String companiesPath = "companies";
     public static final String messagesPath = "messages";
+    public static final String shiftsPath = "shifts";
 
     public static String userDataPath()
     {

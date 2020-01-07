@@ -37,7 +37,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     private ArrayAdapter arrAdap;
     private InviteMessage itemChosen;
 
-    private DatabaseReference myRef;
+    private DatabaseReference databaseRef;
 
 
     @Override
@@ -47,7 +47,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
         setContentView(R.layout.activity_registation_of_worker_from_companies);
 
 
-        myRef = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath);
+        databaseRef = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath);
 
         registrationListView = findViewById(R.id.ListViewIncomingWorkerInvitations);
         registrationAcceptButton = findViewById(R.id.ButtonAcceptIncomingWorkerInvitations);
@@ -161,11 +161,12 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     // half done
     private void messageDeclined(InviteMessage itemChosen)
     {
-        String id = myRef.push().getKey();
+        String id = databaseRef.push().getKey();
 
         InviteMessage inviteMessageDeclined = new InviteMessage(itemChosen);
         inviteMessageDeclined.setCurrentStatus(InviteMessage.invitationStatus.declined);
-        myRef.child(id).setValue(inviteMessageDeclined);
+        inviteMessageDeclined.writeToDatabase(databaseRef);
+//        databaseRef.child(id).setValue(inviteMessageDeclined);
 
         MessagesHandler.sendReplyToManager(inviteMessageDeclined);
 
@@ -177,11 +178,12 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     // half done
     private void messageAccepted(InviteMessage itemChosen)
     {
-        String id = myRef.push().getKey();
+        String id = databaseRef.push().getKey();
 
         InviteMessage inviteMessageAccepted = new InviteMessage(itemChosen);
         inviteMessageAccepted.setCurrentStatus(InviteMessage.invitationStatus.accepted);
-        myRef.child(id).setValue(inviteMessageAccepted);
+//        databaseRef.child(id).setValue(inviteMessageAccepted);
+        inviteMessageAccepted.writeToDatabase(databaseRef);
 
         MessagesHandler.sendReplyToManager(inviteMessageAccepted);
 
@@ -192,7 +194,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
 
     private void deleteAllInviteMessages()
     {
-        MessagesHandler.inviteWorkers.clear();
+        MessagesHandler.inviteWorkers.get(CurrentUser.getInstance().getUserData().id).clear();
     }
 
     private void noMessagesToShow()
