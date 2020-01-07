@@ -36,7 +36,6 @@ public class RegisterToShifts extends AppCompatActivity
 
     private void updateUI(List<Shift> shifts)
     {
-        ArrayAdapter arrAdap = new ArrayAdapter(this, android.R.layout.simple_list_item_1, shifts);
-        shiftsView.setAdapter(arrAdap);
+        shiftsView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, shifts));
     }
 }
