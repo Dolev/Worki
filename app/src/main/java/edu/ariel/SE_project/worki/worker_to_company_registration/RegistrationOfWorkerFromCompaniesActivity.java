@@ -37,7 +37,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     private ArrayAdapter arrAdap;
     private InviteMessage itemChosen;
 
-    private DatabaseReference databaseRef;
+    private DatabaseReference databaseMessagesRef;
 
 
     @Override
@@ -47,7 +47,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
         setContentView(R.layout.activity_registation_of_worker_from_companies);
 
 
-        databaseRef = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath);
+        databaseMessagesRef = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath);
 
         registrationListView = findViewById(R.id.ListViewIncomingWorkerInvitations);
         registrationAcceptButton = findViewById(R.id.ButtonAcceptIncomingWorkerInvitations);
@@ -161,11 +161,11 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     // half done
     private void messageDeclined(InviteMessage itemChosen)
     {
-        String id = databaseRef.push().getKey();
+        String id = databaseMessagesRef.push().getKey();
 
         InviteMessage inviteMessageDeclined = new InviteMessage(itemChosen);
         inviteMessageDeclined.setCurrentStatus(InviteMessage.invitationStatus.declined);
-        inviteMessageDeclined.writeToDatabase(databaseRef);
+        inviteMessageDeclined.writeToDatabase(databaseMessagesRef);
 //        databaseRef.child(id).setValue(inviteMessageDeclined);
 
         MessagesHandler.sendReplyToManager(inviteMessageDeclined);
@@ -178,12 +178,12 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     // half done
     private void messageAccepted(InviteMessage itemChosen)
     {
-        String id = databaseRef.push().getKey();
+        String id = databaseMessagesRef.push().getKey();
 
         InviteMessage inviteMessageAccepted = new InviteMessage(itemChosen);
         inviteMessageAccepted.setCurrentStatus(InviteMessage.invitationStatus.accepted);
 //        databaseRef.child(id).setValue(inviteMessageAccepted);
-        inviteMessageAccepted.writeToDatabase(databaseRef);
+        inviteMessageAccepted.writeToDatabase(databaseMessagesRef);
 
         MessagesHandler.sendReplyToManager(inviteMessageAccepted);
 

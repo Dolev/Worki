@@ -38,8 +38,8 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
     private ArrayList<String> myReplies;
     private ArrayAdapter arrAdap;
 
-    private DatabaseReference databaseRef;
-    private DatabaseReference databaseShiftRef;
+    private DatabaseReference databaseUsersRef;
+    private DatabaseReference databaseMessagesRef;
 
 
 
@@ -145,8 +145,8 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
     // search for the user's email in the database, if so - saves the message on the firebase.
     private void sendInvitationToWorker(final String mailAddress)
     {
-        databaseShiftRef = FirebaseDatabase.getInstance().getReference(GlobalMetaData.shiftsPath);
-        databaseRef = FirebaseDatabase.getInstance().getReference(GlobalMetaData.usersPath);
+        databaseMessagesRef = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath);
+        databaseUsersRef = FirebaseDatabase.getInstance().getReference(GlobalMetaData.usersPath);
         Query query = FirebaseDatabase.getInstance().getReference(GlobalMetaData.usersPath).orderByChild("email").equalTo(mailAddress);
         query.addListenerForSingleValueEvent(new ValueEventListener()
         {
@@ -158,7 +158,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
 //                    String id = databaseRef.push().getKey();
                     InviteMessage InviteNewWorker = new InviteMessage();
                     InviteNewWorker.readFromDatabase(dataSnapshot);
-                    InviteNewWorker.writeToDatabase(databaseShiftRef);
+                    InviteNewWorker.writeToDatabase(databaseMessagesRef);
                 }
             }
 
@@ -174,7 +174,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
 
     private boolean isUserInDataBase(String mailAddress)
     {
-        if (databaseRef.getRef().child("users").child("userId").child(mailAddress) == null)
+        if (databaseUsersRef.getRef().child("users").child("userId").child(mailAddress) == null)
         {
             return false;
         }
