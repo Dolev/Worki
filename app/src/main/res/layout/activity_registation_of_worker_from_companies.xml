@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".worker_to_company_registration.RegistrationOfWorkerFromCompaniesActivity">
+    tools:context=".worker_to_company_registration.RegistrationOfWorkerFromCompaniesActivity"
+    android:background="@drawable/background">
 
     <EditText
         android:id="@+id/RegistrationInvitesForWorkerHeader"

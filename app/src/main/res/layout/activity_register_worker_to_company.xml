@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".worker_to_company_registration.RegisterWorkerToCompanyActivity">
+    tools:context=".worker_to_company_registration.RegisterWorkerToCompanyActivity"
+    android:background="@drawable/background">
 
     <Button
         android:id="@+id/clearRecievedRepliesFromWorkersButton"
