@@ -40,6 +40,15 @@ public class Shift implements ReadableFromDatabase,WriteableToDatabase
         this.shiftEnd = shift.shiftEnd;
     }
 
+    public Shift(User shiftManager, ArrayList<User> workersInShifts, int shiftId, Date shiftDate, Date shiftEnd)
+    {
+        this.shiftManager = shiftManager;
+        this.shiftId = shiftId;
+        this.workersInShift = workersInShift;
+        this.shiftDate = shiftDate;
+        this.shiftEnd = shiftEnd;
+    }
+
     public void addWorkerToShift(User worker)
     {
         workersInShift.add(worker);
@@ -70,12 +79,23 @@ public class Shift implements ReadableFromDatabase,WriteableToDatabase
     @Override
     public ReadableFromDatabase readFromDatabase(DataSnapshot snapshot)
     {
-        return new Shift();
+        User shiftManager = snapshot.child("shiftManager").getValue(User.class);
+        ArrayList<User> shiftWorkers = snapshot.child("workersInShift").getValue(ArrayList.class);
+        int shiftId = snapshot.child("shiftId").getValue(Integer.class);
+        Date shiftDate = snapshot.child("shiftDate").getValue(Date.class);
+        Date shiftEnd = snapshot.child("shiftEnd").getValue(Date.class);
+
+        return new Shift(shiftManager, shiftWorkers, shiftId, shiftDate, shiftEnd);
     }
 
     @Override
     public void writeToDatabase(DatabaseReference reference)
     {
+        reference.child("shiftManager").setValue(shiftManager);
+        reference.child("workersInShift").setValue(workersInShift);
+        reference.child("shiftId").setValue(shiftId);
+        reference.child("shiftDate").setValue(shiftDate);
+        reference.child("shiftEnd").setValue(shiftEnd);
 
     }
 }

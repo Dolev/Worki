@@ -6,10 +6,6 @@ import com.google.firebase.database.DatabaseReference;
 public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
 
 {
-    public invitationStatus getCurrentStatus()
-    {
-        return currentStatus;
-    }
 
     public enum invitationStatus
     {
@@ -20,7 +16,6 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
     private String recipient;
     private String senderId;
     private String sender;
-//    private boolean reply = false;
 
 
     public InviteMessage()
@@ -36,11 +31,11 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
         this.currentStatus = inviteMessage.getCurrentStatus();
     }
 
-    public  InviteMessage (String recipient, String sender)
-    {
-        this.recipient = recipient;
-        this.sender = sender;
-    }
+//    public  InviteMessage (String recipient, String sender)
+//    {
+//        this.recipient = recipient;
+//        this.sender = sender;
+//    }
 
     public InviteMessage(String recipient, String sender, String senderId)
     {
@@ -68,20 +63,16 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
         return sender;
     }
 
+    public invitationStatus getCurrentStatus()
+    {
+        return currentStatus;
+    }
+
     public void setCurrentStatus(invitationStatus currentStatus)
     {
         this.currentStatus = currentStatus;
     }
 
-//    public boolean getReply()
-//    {
-//        return reply;
-//    }
-
-//    public void setReply(boolean reply)
-//    {
-//        this.reply = reply;
-//    }
 
     public String getSenderId()
     {
@@ -117,20 +108,22 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
     @Override
     public ReadableFromDatabase readFromDatabase(DataSnapshot snapshot)
     {
-        //todo status?
+
         String recipient = snapshot.child("recipient").getValue(String.class);
         String sender = snapshot.child("sender").getValue(String.class);
-//        int senderId = snapshot.child("senderId".getValue(Integer.class));
+        String senderId = snapshot.child("senderId").getValue(String.class);
+        invitationStatus invitationStatus = snapshot.child("invitationStatus").getValue(InviteMessage.invitationStatus.class);
 
-//        return new InviteMessage(recipient, sender, senderId);
-        return new InviteMessage(recipient, sender);
+        return new InviteMessage(recipient, sender, senderId, invitationStatus);
+
     }
 
     @Override
     public void writeToDatabase(DatabaseReference reference)
     {
-        //todo status?
         reference.child("recipient").setValue(recipient);
         reference.child("sender").setValue(sender);
+        reference.child("senderId").setValue(senderId);
+        reference.child("invitationStatus").setValue(currentStatus);
     }
 }
