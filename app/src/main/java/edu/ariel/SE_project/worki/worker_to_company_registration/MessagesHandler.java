@@ -7,8 +7,8 @@ import edu.ariel.SE_project.worki.data.InviteMessage;
 
 public class MessagesHandler
 {
-    public static HashMap<String, ArrayList<InviteMessage>> inviteWorkers = new HashMap<String, ArrayList<InviteMessage>>();
-    public static HashMap<String, ArrayList<InviteMessage>> workerReplies = new HashMap<String, ArrayList<InviteMessage>>();
+    public static HashMap<String, ArrayList<InviteMessage>> inviteWorkers = new HashMap<>();
+    public static HashMap<String, ArrayList<InviteMessage>> workerReplies = new HashMap<>();
 
     public static void sendMessage(boolean manager, String recipient, InviteMessage message)
     {
