@@ -74,7 +74,8 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                if (MessagesHandler.workerReplies.get(CurrentUser.getInstance().getUserData().id).isEmpty())
+                if (!MessagesHandler.workerReplies.containsKey(CurrentUser.getInstance().getUserData().id) ||
+                        MessagesHandler.workerReplies.get(CurrentUser.getInstance().getUserData().id).isEmpty())
                 {
                     ClearButton.setEnabled(false);
                 } else
@@ -160,7 +161,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
 //                    String id = databaseRef.push().getKey();
                     InviteMessage InviteNewWorker = new InviteMessage();
                     InviteNewWorker.readFromDatabase(dataSnapshot);
-                    InviteNewWorker.writeToDatabase(databaseMessagesRef);
+                    InviteNewWorker.writeToDatabase(databaseMessagesRef.push());
                 }
             }
 

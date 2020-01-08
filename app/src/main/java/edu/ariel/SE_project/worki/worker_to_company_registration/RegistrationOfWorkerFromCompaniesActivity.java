@@ -71,13 +71,14 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                if (MessagesHandler.inviteWorkers.isEmpty() || MessagesHandler.inviteWorkers.get(CurrentUser.getInstance().getUserData().id).isEmpty())
+                if (!MessagesHandler.inviteWorkers.containsKey(CurrentUser.getInstance().getUserData().id)
+                        || MessagesHandler.inviteWorkers.get(CurrentUser.getInstance().getUserData().id).isEmpty())
+                {
+                    setButtonsClickable(false);
+                } else
                 {
                     setButtonsClickable(true);
                     itemChosen = (InviteMessage) parent.getSelectedItem();          // for later use of accept/decline
-                } else
-                {
-                    setButtonsClickable(false);
                 }
 
             }
