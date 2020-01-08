@@ -10,6 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".shift_management.RegisterToShifts"></activity>
+        <activity android:name=".signed_in_activities.ListOfUserConnected"></activity>
         <activity android:name=".worker_to_company_registration.RegistrationOfWorkerFromCompaniesActivity" />
         <activity android:name=".worker_to_company_registration.RegisterWorkerToCompanyActivity" />
         <activity
