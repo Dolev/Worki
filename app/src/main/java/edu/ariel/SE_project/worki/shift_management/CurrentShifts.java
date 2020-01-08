@@ -33,7 +33,7 @@ public class CurrentShifts
         return instance;
     }
 
-    public CurrentShifts()
+    private CurrentShifts()
     {
         CurrentUser.getInstance().addOnUserNotNullListener(new Consumer<User>()
         {
