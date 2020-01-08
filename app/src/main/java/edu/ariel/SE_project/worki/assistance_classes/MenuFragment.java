@@ -47,9 +47,10 @@ public class MenuFragment extends Fragment
         // Add menu entries here
 
         entries.add(new MenuEntry("Timer", TimerActivity.class));
-        managerOnly.add(new MenuEntry("Register Workers", RegistrationOfWorkerFromCompaniesActivity.class));
 
-        workerOnly.add(new MenuEntry("Register to Company", RegisterWorkerToCompanyActivity.class));
+        managerOnly.add(new MenuEntry("Register Workers", RegisterWorkerToCompanyActivity.class));
+
+        workerOnly.add(new MenuEntry("Register to Company", RegistrationOfWorkerFromCompaniesActivity.class));
     }
 
 

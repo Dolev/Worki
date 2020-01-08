@@ -12,6 +12,32 @@ public class Shift implements ReadableFromDatabase,WriteableToDatabase
 {
     private static int shiftIdGenerator = 0;
     public User shiftManager;
+
+    public User getShiftManager()
+    {
+        return shiftManager;
+    }
+
+    public ArrayList<User> getWorkersInShift()
+    {
+        return workersInShift;
+    }
+
+    public int getShiftId()
+    {
+        return shiftId;
+    }
+
+    public Date getShiftDate()
+    {
+        return shiftDate;
+    }
+
+    public Date getShiftEnd()
+    {
+        return shiftEnd;
+    }
+
     private ArrayList<User> workersInShift;
     private int shiftId;
     private Date shiftDate;

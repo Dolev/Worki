@@ -7,6 +7,17 @@
     tools:context=".worker_to_company_registration.RegistrationOfWorkerFromCompaniesActivity"
     android:background="@drawable/background">
 
+    <fragment
+        android:id="@+id/fragment2"
+        android:name="edu.ariel.SE_project.worki.assistance_classes.MenuFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_meun" />
+
     <EditText
         android:id="@+id/RegistrationInvitesForWorkerHeader"
         android:layout_width="wrap_content"

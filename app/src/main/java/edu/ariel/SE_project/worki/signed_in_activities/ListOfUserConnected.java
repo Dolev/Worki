@@ -12,19 +12,14 @@ import edu.ariel.SE_project.worki.data.Shift;
 public class ListOfUserConnected extends AppCompatActivity
 {
     private Button showCurrentUsers;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_of_user_connected);
 
-        showCurrentUsers= findViewById(R.id.ShowCurrentUsers);
-
-
-            if (Shift.workersInShift!=null)
-            {
-
-            }
+        showCurrentUsers = findViewById(R.id.ShowCurrentUsers);
 
 
     }

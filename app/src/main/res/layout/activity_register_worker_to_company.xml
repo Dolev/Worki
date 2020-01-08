@@ -7,14 +7,27 @@
     tools:context=".worker_to_company_registration.RegisterWorkerToCompanyActivity"
     android:background="@drawable/background">
 
+    <fragment
+        android:id="@+id/fragment3"
+        android:name="edu.ariel.SE_project.worki.assistance_classes.MenuFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_meun" />
+
     <Button
         android:id="@+id/clearRecievedRepliesFromWorkersButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="29dp"
         android:text="Clear"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="653dp" />
+        app:layout_constraintTop_toBottomOf="@+id/managerRepliesFromWorkersListView" />
 
     <EditText
         android:id="@+id/repliesHeader"
@@ -27,10 +40,10 @@
         android:text="Replies:"
         android:textSize="24sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/managerRepliesFromWorkersListView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.52"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="269dp" />
+        app:layout_constraintTop_toBottomOf="@+id/addWorkerToCompanyButton" />
 
     <Button
         android:id="@+id/addWorkerToCompanyButton"
@@ -39,7 +52,6 @@
         android:layout_marginTop="72dp"
         android:text="Add"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/addWorkerToCompanyTextView" />
 
@@ -47,12 +59,13 @@
         android:id="@+id/addWorkerToCompanyTextView"
         android:layout_width="281dp"
         android:layout_height="47dp"
+        android:layout_marginTop="72dp"
         android:ems="10"
         android:hint="Enter a worker's Email to Recruit:"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="125dp" />
+        app:layout_constraintTop_toBottomOf="@+id/recruitmentHeader" />
 
     <EditText
         android:id="@+id/recruitmentHeader"
@@ -67,14 +80,15 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="29dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
         android:id="@+id/managerRepliesFromWorkersListView"
         android:layout_width="286dp"
         android:layout_height="293dp"
+        android:layout_marginBottom="72dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.53"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="331dp" />
+        app:layout_constraintTop_toTopOf="@+id/fragment3" />
 </androidx.constraintlayout.widget.ConstraintLayout>
