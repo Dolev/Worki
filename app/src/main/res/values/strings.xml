@@ -123,4 +123,5 @@
     <string name="stop_shift_text">Stop Shift</string>
     <string name="pause_shift_text">Pause Shift</string>
     <string name="continue_shift_text">Continue shift</string>
+    <string name="show_users_online">Show Users</string>
 </resources>
