@@ -26,6 +26,8 @@ public class ListOfUserConnected extends AppCompatActivity
     private Button showCurrentUsers;
     private ListView show_users_online;
 
+    private List<User> users = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -60,15 +62,14 @@ public class ListOfUserConnected extends AppCompatActivity
         {
             Date current = new Date();
             if (s.getShiftDate().before(current) && s.getShiftEnd().after(current))
-                if ((s.getWorkersInShift().contains(CurrentUser.getInstance().getUserData())))
-                {                //insert workers
+                if (CurrentUser.getInstance().getUserData().isManager || (s.getWorkersInShift().contains(CurrentUser.getInstance().getUserData())))
+                {                                    //insert workers by current users
                     ArrayAdapter<User> userAdapter =
-                            new ArrayAdapter<User>(this, android.R.layout.simple_list_item_1,s.getWorkersInShift());
+                            new ArrayAdapter<User>(this, android.R.layout.simple_list_item_1, s.getWorkersInShift());
 
                     show_users_online.setAdapter(userAdapter);
                 }
         }
-
 
 
     }
