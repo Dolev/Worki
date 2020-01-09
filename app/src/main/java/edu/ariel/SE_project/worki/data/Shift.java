@@ -7,23 +7,29 @@ import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-public class Shift implements ReadableFromDatabase,WriteableToDatabase
+public class Shift implements ReadableFromDatabase, WriteableToDatabase
 {
     private static int shiftIdGenerator = 0;
-    public User shiftManager;
+    private User shiftManager;
+
+    private List<User> workersInShift;
+    private String shiftId;
+    private Date shiftDate;
+    private Date shiftEnd;
 
     public User getShiftManager()
     {
         return shiftManager;
     }
 
-    public ArrayList<User> getWorkersInShift()
+    public List<User> getWorkersInShift()
     {
         return workersInShift;
     }
 
-    public int getShiftId()
+    public String getShiftId()
     {
         return shiftId;
     }
@@ -38,26 +44,20 @@ public class Shift implements ReadableFromDatabase,WriteableToDatabase
         return shiftEnd;
     }
 
-    private ArrayList<User> workersInShift;
-    private int shiftId;
-    private Date shiftDate;
-    private Date shiftEnd;
-
     public Shift()
     {
 
     }
 
-    public Shift (User shiftManager, int shiftLength)
+    public Shift(User shiftManager, int shiftLength)
     {
         this.shiftManager = shiftManager;
-        this.shiftId = shiftIdGenerator++;
         shiftDate = new Date();
         shiftEnd = new Date(shiftDate.getTime() + shiftLength);
 
     }
 
-    public Shift (Shift shift)
+    public Shift(Shift shift)
     {
         this.shiftManager = shift.shiftManager;
         this.shiftId = shift.shiftId;
@@ -66,7 +66,7 @@ public class Shift implements ReadableFromDatabase,WriteableToDatabase
         this.shiftEnd = shift.shiftEnd;
     }
 
-    public Shift(User shiftManager, ArrayList<User> workersInShifts, int shiftId, Date shiftDate, Date shiftEnd)
+    public Shift(User shiftManager, List<User> workersInShifts, String shiftId, Date shiftDate, Date shiftEnd)
     {
         this.shiftManager = shiftManager;
         this.shiftId = shiftId;
@@ -106,13 +106,11 @@ public class Shift implements ReadableFromDatabase,WriteableToDatabase
     public Shift readFromDatabase(DataSnapshot snapshot)
     {
         User shiftManager = snapshot.child("shiftManager").getValue(User.class);
-        ArrayList<User> shiftWorkers = snapshot.child("workersInShift").getValue(ArrayList.class);
-
-        int shiftId = snapshot.child("shiftId").getValue(Integer.class);
+        List<User> shiftWorkers = snapshot.child("workersInShift").getValue(List.class);
         Date shiftDate = snapshot.child("shiftDate").getValue(Date.class);
         Date shiftEnd = snapshot.child("shiftEnd").getValue(Date.class);
 
-        return new Shift(shiftManager, shiftWorkers, shiftId, shiftDate, shiftEnd);
+        return new Shift(shiftManager, shiftWorkers, snapshot.getKey(), shiftDate, shiftEnd);
     }
 
     /**

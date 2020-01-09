@@ -1,5 +1,7 @@
 package edu.ariel.SE_project.worki.shift_management;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
@@ -41,14 +43,14 @@ public class CurrentShifts
             public void accept(User user)
             {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference(GlobalMetaData.shiftsPath + '/' + user.id);
+                DatabaseReference myRef = database.getReference(GlobalMetaData.shiftsPath + '/' + user.companyId);
                 myRef.addChildEventListener(new ChildEventListener()
                 {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
                     {
                         Shift shift = new Shift().readFromDatabase(dataSnapshot);
-                        shifts.put(shift.shiftManager.id, shift);
+                        shifts.put(dataSnapshot.getKey(), shift);
                         onChange();
                     }
 
@@ -56,7 +58,7 @@ public class CurrentShifts
                     public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
                     {
                         Shift shift = new Shift().readFromDatabase(dataSnapshot);
-                        shifts.put(shift.shiftManager.id, shift);
+                        shifts.put(dataSnapshot.getKey(), shift);
                         onChange();
                     }
 
@@ -64,7 +66,7 @@ public class CurrentShifts
                     public void onChildRemoved(@NonNull DataSnapshot dataSnapshot)
                     {
                         Shift shift = new Shift().readFromDatabase(dataSnapshot);
-                        shifts.remove(shift.shiftManager.id);
+                        shifts.remove(dataSnapshot.getKey());
                         onChange();
                     }
 
@@ -77,7 +79,7 @@ public class CurrentShifts
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError)
                     {
-
+                        Log.e("CurrentShifts", "ChildEventListener canceled");
                     }
                 });
             }
@@ -102,5 +104,30 @@ public class CurrentShifts
             listener.accept(shifts);
         }
     }
+
+    public void registerToShift(Shift shift, User user)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(GlobalMetaData.shiftsPath + '/' + user.companyId);
+
+        if (shifts.containsKey(shift.getShiftId()))
+        {
+            shift.addWorkerToShift(user);
+            shift.writeToDatabase(myRef.child(shift.getShiftId()));
+        }
+    }
+
+    public void unregisterToShift(Shift shift, User user)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(GlobalMetaData.shiftsPath + '/' + user.companyId);
+
+        if (shifts.containsKey(shift.getShiftId()))
+        {
+            shift.removeWorkerFromShift(user);
+            shift.writeToDatabase(myRef.child(shift.getShiftId()));
+        }
+    }
+
 
 }
