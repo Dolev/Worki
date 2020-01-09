@@ -27,6 +27,7 @@ import java.util.Objects;
 import edu.ariel.SE_project.worki.R;
 import edu.ariel.SE_project.worki.data.CurrentUser;
 import edu.ariel.SE_project.worki.data.User;
+import edu.ariel.SE_project.worki.signed_in_activities.ListOfUserConnected;
 import edu.ariel.SE_project.worki.signed_in_activities.TimerActivity;
 import edu.ariel.SE_project.worki.worker_to_company_registration.RegisterWorkerToCompanyActivity;
 import edu.ariel.SE_project.worki.worker_to_company_registration.RegistrationOfWorkerFromCompaniesActivity;
@@ -47,6 +48,7 @@ public class MenuFragment extends Fragment
         // Add menu entries here
 
         entries.add(new MenuEntry("Timer", TimerActivity.class));
+        entries.add(new MenuEntry("ShowCurrentUsers", ListOfUserConnected.class));
 
         managerOnly.add(new MenuEntry("Register Workers", RegisterWorkerToCompanyActivity.class));
 

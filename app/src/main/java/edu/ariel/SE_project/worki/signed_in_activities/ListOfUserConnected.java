@@ -1,6 +1,7 @@
 package edu.ariel.SE_project.worki.signed_in_activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.util.Consumer;
 
 import android.os.Bundle;
 import android.view.View;
@@ -23,7 +24,7 @@ import edu.ariel.SE_project.worki.worker_to_company_registration.MessagesHandler
 
 public class ListOfUserConnected extends AppCompatActivity
 {
-    private Button showCurrentUsers;
+
     private ListView show_users_online;
 
     private List<User> users = null;
@@ -34,20 +35,16 @@ public class ListOfUserConnected extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_of_user_connected);
 
-        showCurrentUsers = findViewById(R.id.showCurrentUsers);
+
         show_users_online = findViewById(R.id.screenOfUsers);
 
 
-        showCurrentUsers.setOnClickListener(new View.OnClickListener()
+        CurrentUser.getInstance().addOnUserNotNullListener(new Consumer<User>()
         {
             @Override
-            public void onClick(View v)
+            public void accept(User user)
             {
-                // TODO
-                if (showCurrentUsers.isClickable() && CurrentUser.getInstance().getUserData() != null)
-                {
-                    openUsersScreen();
-                }
+                openUsersScreen();
             }
         });
 
