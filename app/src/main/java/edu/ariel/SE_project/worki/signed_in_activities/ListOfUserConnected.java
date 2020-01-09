@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import edu.ariel.SE_project.worki.R;
@@ -25,9 +26,6 @@ public class ListOfUserConnected extends AppCompatActivity
     private Button showCurrentUsers;
     private ListView show_users_online;
 
-    private ArrayList<User> workersInShift;
-    private ArrayList<String> usersInShift;
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -35,10 +33,8 @@ public class ListOfUserConnected extends AppCompatActivity
         setContentView(R.layout.activity_list_of_user_connected);
 
         showCurrentUsers = findViewById(R.id.showCurrentUsers);
-        show_users_online = (ListView) findViewById(R.id.screenOfUsers);
+        show_users_online = findViewById(R.id.screenOfUsers);
 
-        ArrayAdapter<String> userAdapter =
-                new ArrayAdapter<String>(this, android.R.layout., usersInShift);
 
         showCurrentUsers.setOnClickListener(new View.OnClickListener()
         {
@@ -59,18 +55,21 @@ public class ListOfUserConnected extends AppCompatActivity
     private void openUsersScreen()
     {
         List<Shift> shifts = CurrentShifts.getInstance().getShifts();
+        List<User> users = null;
         for (Shift s : shifts)
         {
-            if ((s.getWorkersInShift().contains(CurrentUser.getInstance())) == true)
-            {                //insert workers
-                workersInShift = s.getWorkersInShift();
-                for (User:
-                     workersInShift)
-                {
+            Date current = new Date();
+            if (s.getShiftDate().before(current) && s.getShiftEnd().after(current))
+                if ((s.getWorkersInShift().contains(CurrentUser.getInstance().getUserData())))
+                {                //insert workers
+                    ArrayAdapter<User> userAdapter =
+                            new ArrayAdapter<User>(this, android.R.layout.simple_list_item_1,s.getWorkersInShift());
+
                     show_users_online.setAdapter(userAdapter);
                 }
-            }
         }
+
+
 
     }
 }
