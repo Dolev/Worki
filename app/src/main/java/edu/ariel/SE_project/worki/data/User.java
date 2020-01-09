@@ -93,14 +93,9 @@ public class User
         reference.child("name").setValue(name);
         reference.child("email").setValue(email);
 
-        if (isManager)
-        {
-            reference.child("manager").setValue(true);
+        reference.child("manager").setValue(isManager);
+        if (companyId != null)
             reference.child("companyId").setValue(companyId);
-        } else
-        {
-            reference.child("manager").setValue(false);
-        }
 
 
         DatabaseReference stamps = reference.child("shiftStamps");
