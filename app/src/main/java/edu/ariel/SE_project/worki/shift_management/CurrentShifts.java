@@ -26,7 +26,7 @@ public class CurrentShifts
 
     private HashMap<String, Shift> shifts = new HashMap<>();
 
-    public List<Consumer<List<Shift>>> listeners = new LinkedList<>();
+    private List<Consumer<List<Shift>>> listeners = new LinkedList<>();
 
     public static CurrentShifts getInstance()
     {
