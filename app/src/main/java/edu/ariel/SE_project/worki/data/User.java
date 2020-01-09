@@ -1,5 +1,7 @@
 package edu.ariel.SE_project.worki.data;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -9,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * An object to store user data.
@@ -108,6 +111,7 @@ public class User
         }
     }
 
+    @NonNull
     @Override
     public String toString()
     {
@@ -118,5 +122,20 @@ public class User
                 ", isManager=" + isManager +
                 ", companyId='" + companyId + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id.equals(user.id);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return id.hashCode();
     }
 }
