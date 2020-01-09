@@ -116,7 +116,7 @@ public class CurrentShifts
             shift.writeToDatabase(myRef.child(shift.getShiftId()));
         } else
         {
-            Log.w("CurrentShifts", "unregister: shift not in list.");
+            Log.w("CurrentShifts", "register: shift not in list.");
         }
     }
 
@@ -134,6 +134,4 @@ public class CurrentShifts
             Log.w("CurrentShifts", "unregister: shift not in list.");
         }
     }
-
-
 }
