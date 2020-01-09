@@ -114,6 +114,9 @@ public class CurrentShifts
         {
             shift.addWorkerToShift(user);
             shift.writeToDatabase(myRef.child(shift.getShiftId()));
+        } else
+        {
+            Log.w("CurrentShifts", "unregister: shift not in list.");
         }
     }
 
@@ -126,6 +129,9 @@ public class CurrentShifts
         {
             shift.removeWorkerFromShift(user);
             shift.writeToDatabase(myRef.child(shift.getShiftId()));
+        } else
+        {
+            Log.w("CurrentShifts", "unregister: shift not in list.");
         }
     }
 
