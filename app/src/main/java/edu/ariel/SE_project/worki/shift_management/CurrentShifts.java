@@ -41,7 +41,7 @@ public class CurrentShifts
             public void accept(User user)
             {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference(GlobalMetaData.usersPath + '/' + user.id);
+                DatabaseReference myRef = database.getReference(GlobalMetaData.shiftsPath + '/' + user.id);
                 myRef.addChildEventListener(new ChildEventListener()
                 {
                     @Override
