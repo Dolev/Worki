@@ -14,6 +14,7 @@ import java.util.List;
 import edu.ariel.SE_project.worki.R;
 import edu.ariel.SE_project.worki.data.CurrentUser;
 import edu.ariel.SE_project.worki.data.Shift;
+import edu.ariel.SE_project.worki.data.User;
 
 public class RegisterToShifts extends AppCompatActivity implements View.OnClickListener
 {
@@ -30,8 +31,8 @@ public class RegisterToShifts extends AppCompatActivity implements View.OnClickL
         shiftsView = findViewById(R.id.shift_list);
         shiftsView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
-        accept = findViewById(R.id.accept);
-        reject = findViewById(R.id.reject);
+        accept = findViewById(R.id.add);
+        reject = findViewById(R.id.remove);
 
         CurrentShifts.getInstance().addOnShiftsChangedListener(new Consumer<List<Shift>>()
         {
@@ -58,12 +59,15 @@ public class RegisterToShifts extends AppCompatActivity implements View.OnClickL
         if (shifts == null)
             return;
         Shift selection = shifts.get(shiftsView.getCheckedItemPosition());
+        User user = CurrentUser.getInstance().getUserData();
         if (v.equals(accept))
         {
-            CurrentShifts.getInstance().registerToShift(selection, CurrentUser.getInstance().getUserData());
+            if (!selection.getWorkersInShift().contains(user))
+                CurrentShifts.getInstance().registerToShift(selection, user);
         } else if (v.equals(reject))
         {
-            CurrentShifts.getInstance().unregisterToShift(selection, CurrentUser.getInstance().getUserData());
+            if (selection.getWorkersInShift().contains(user))
+                CurrentShifts.getInstance().unregisterToShift(selection, user);
         }
     }
 }
