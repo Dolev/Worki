@@ -3,9 +3,38 @@ package edu.ariel.SE_project.worki.data;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 
+import java.util.Objects;
+
 public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
 
 {
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InviteMessage that = (InviteMessage) o;
+        return recipient.equals(that.recipient) &&
+                senderId.equals(that.senderId) &&
+                sender.equals(that.sender);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+
+        int result = 1;
+
+        result = prime * result + ((recipient == null) ? 0 : recipient.hashCode());
+
+        result = prime * result + ((senderId == null) ? 0 : senderId.hashCode());
+
+        result = prime * result + ((sender == null) ? 0 : sender.hashCode());
+
+        return result;
+    }
 
     public enum invitationStatus
     {
@@ -23,7 +52,7 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
 
     }
 
-    public InviteMessage (InviteMessage inviteMessage)
+    public InviteMessage(InviteMessage inviteMessage)
     {
         this.recipient = inviteMessage.getRecipient();
         this.sender = inviteMessage.getSender();
@@ -88,11 +117,10 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
 
     public String statusToString()
     {
-        if(this.getCurrentStatus() == invitationStatus.accepted)
+        if (this.getCurrentStatus() == invitationStatus.accepted)
         {
             return "Accepted";
-        }
-        else if(this.getCurrentStatus() == InviteMessage.invitationStatus.declined)
+        } else if (this.getCurrentStatus() == InviteMessage.invitationStatus.declined)
         {
             return "Declined";
         }

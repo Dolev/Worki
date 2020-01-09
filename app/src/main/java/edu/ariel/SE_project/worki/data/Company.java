@@ -2,6 +2,7 @@ package edu.ariel.SE_project.worki.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * An object to store company data.
@@ -36,4 +37,18 @@ public class Company
     }
 
 
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Company company = (Company) o;
+        return companyId.equals(company.companyId);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return companyId.hashCode();
+    }
 }
