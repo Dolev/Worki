@@ -121,7 +121,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
             myReplies = new ArrayList<>();
             myReplies = MessagesHandler.convertToStrings(MessagesHandler.workerReplies.get(CurrentUser.getInstance().getUserData().id));
 
-            arrAdap = new ArrayAdapter(this, android.R.layout.simple_list_item_1, myReplies);
+            arrAdap = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, myReplies);
             repliesListview.setAdapter(arrAdap);
         }
     }

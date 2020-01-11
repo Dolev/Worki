@@ -153,7 +153,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     private void updateMessagesListView()
     {
         if (MessagesHandler.inviteWorkers.containsKey(CurrentUser.getInstance().getUserData().id))
-            arrAdap = new ArrayAdapter(this, android.R.layout.simple_list_item_1,
+            arrAdap = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
                     MessagesHandler.inviteWorkers.get(CurrentUser.getInstance().getUserData().id));
         registrationListView.setAdapter(arrAdap);
     }
