@@ -91,7 +91,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 // TODO
-                if (registrationAcceptButton.isClickable() && CurrentUser.getInstance().getUserData() != null)
+                if (registrationAcceptButton.isClickable() && itemChosen != null && CurrentUser.getInstance().getUserData() != null)
                 {
                     messageAccepted(itemChosen);
                 }
@@ -104,7 +104,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 // TODO
-                if (registrationDeclineButton.isClickable() && CurrentUser.getInstance().getUserData() != null)
+                if (registrationDeclineButton.isClickable() && itemChosen != null && CurrentUser.getInstance().getUserData() != null)
                 {
                     messageDeclined(itemChosen);
                 }
