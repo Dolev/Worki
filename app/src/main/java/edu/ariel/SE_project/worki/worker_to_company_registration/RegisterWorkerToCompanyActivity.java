@@ -27,7 +27,7 @@ import edu.ariel.SE_project.worki.assistance_classes.GlobalMetaData;
 import edu.ariel.SE_project.worki.data.CurrentUser;
 import edu.ariel.SE_project.worki.data.InviteMessage;
 import edu.ariel.SE_project.worki.data.User;
-
+// this appear on manager page
 public class RegisterWorkerToCompanyActivity extends AppCompatActivity
 {
     private TextView WorkerMail;
@@ -37,7 +37,6 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
 
     private ArrayList<String> myReplies;
     private ArrayAdapter arrAdap;
-
     private DatabaseReference databaseUsersRef;
     private DatabaseReference databaseMessagesRef;
 
@@ -78,7 +77,8 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
                         MessagesHandler.workerReplies.get(CurrentUser.getInstance().getUserData().id).isEmpty())
                 {
                     ClearButton.setEnabled(false);
-                } else
+                }
+                else
                 {
                     ClearButton.setEnabled(true);
                 }
@@ -94,7 +94,8 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
                                              if (mailIsValid(WorkerMail.getText().toString()))
                                              {
                                                  sendInvitationToWorker(WorkerMail.getText().toString());
-                                             } else
+                                             }
+                                             else
                                              {
                                                  showErrorMessage();
                                              }
@@ -108,7 +109,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                MessagesHandler.deleteMessage(false, CurrentUser.getInstance().getUserData().id);
+                MessagesHandler.deleteMessage(true, CurrentUser.getInstance().getUserData().email);
             }
         });
     }
@@ -116,10 +117,10 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
     // done
     private void updateRepliesListView()
     {
-        if (MessagesHandler.workerReplies.containsKey(CurrentUser.getInstance().getUserData().id))
+        if (MessagesHandler.workerReplies.containsKey(CurrentUser.getInstance().getUserData().email))
         {
             myReplies = new ArrayList<>();
-            myReplies = MessagesHandler.convertToStrings(MessagesHandler.workerReplies.get(CurrentUser.getInstance().getUserData().id));
+            myReplies = MessagesHandler.convertToStrings(MessagesHandler.workerReplies.get(CurrentUser.getInstance().getUserData().email));
 
             arrAdap = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, myReplies);
             repliesListview.setAdapter(arrAdap);
@@ -129,7 +130,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
     private void searchForNewReplies()
     {
         // todo implement send AnswerToManager, need some kind of static object to handle messages
-        if (MessagesHandler.workerReplies.containsKey(CurrentUser.getInstance().getUserData().id))
+        if (MessagesHandler.workerReplies.containsKey(CurrentUser.getInstance().getUserData().email))
         {
             updateRepliesListView();
         }
@@ -162,7 +163,31 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
                     InviteMessage InviteNewWorker = new InviteMessage();
                     InviteNewWorker.readFromDatabase(dataSnapshot);
                     InviteNewWorker.writeToDatabase(databaseMessagesRef.push());
+                    MessagesHandler.sendMessage(true, InviteNewWorker);
+                    showSentMessage();
                 }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError)
+            {
+                showErrorMessage();
+            }
+        });
+
+
+    }
+
+    private boolean isUserInDataBase(String mailAddress)
+    {
+        Query query = FirebaseDatabase.getInstance().getReference(GlobalMetaData.usersPath).orderByChild("email").equalTo(mailAddress);
+        query.addValueEventListener(new ValueEventListener()
+        {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+            {
+               return;                  // should exit the function if the email exist in db
             }
 
             @Override
@@ -170,18 +195,9 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
             {
 
             }
+
         });
-
-        showSentMessage();
-    }
-
-    private boolean isUserInDataBase(String mailAddress)
-    {
-        if (databaseUsersRef.getRef().child("users").child("userId").child(mailAddress) == null)
-        {
-            return false;
-        }
-        return true;
+        return false;
 
     }
 
