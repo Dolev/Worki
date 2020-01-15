@@ -16,7 +16,7 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
         if (o == null || getClass() != o.getClass()) return false;
         InviteMessage that = (InviteMessage) o;
         return recipient.equals(that.recipient) &&
-                senderId.equals(that.senderId) &&
+                currentStatus.equals(that.currentStatus) &&
                 sender.equals(that.sender);
     }
 
@@ -29,21 +29,20 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
 
         result = prime * result + ((recipient == null) ? 0 : recipient.hashCode());
 
-        result = prime * result + ((senderId == null) ? 0 : senderId.hashCode());
+        result = prime * result + ((currentStatus == null) ? 0 : currentStatus.hashCode());
 
         result = prime * result + ((sender == null) ? 0 : sender.hashCode());
 
         return result;
     }
 
-    public enum invitationStatus
+    public enum InvitationStatus
     {
-        undecided, accepted, declined
+        invite, accepted, declined
     }
 
-    private invitationStatus currentStatus;
+    private InvitationStatus currentStatus;
     private String recipient;
-    private String senderId;
     private String sender;
 
 
@@ -56,7 +55,6 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
     {
         this.recipient = inviteMessage.getRecipient();
         this.sender = inviteMessage.getSender();
-        this.senderId = inviteMessage.getSenderId();
         this.currentStatus = inviteMessage.getCurrentStatus();
     }
 
@@ -66,20 +64,11 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
 //        this.sender = sender;
 //    }
 
-    public InviteMessage(String recipient, String sender, String senderId)
+    public InviteMessage(String recipient, String sender, InvitationStatus status)
     {
         this.recipient = recipient;
         this.sender = sender;
-        this.senderId = senderId;
-        this.currentStatus = invitationStatus.undecided;
-    }
-
-    public InviteMessage(String recipient, String sender, String senderId, invitationStatus currentStatus)
-    {
-        this.recipient = recipient;
-        this.sender = sender;
-        this.senderId = senderId;
-        this.currentStatus = currentStatus;
+        this.currentStatus = status;
     }
 
     public String getRecipient()
@@ -92,21 +81,16 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
         return sender;
     }
 
-    public invitationStatus getCurrentStatus()
+    public InvitationStatus getCurrentStatus()
     {
         return currentStatus;
     }
 
-    public void setCurrentStatus(invitationStatus currentStatus)
+    public void setCurrentStatus(InvitationStatus currentStatus)
     {
         this.currentStatus = currentStatus;
     }
 
-
-    public String getSenderId()
-    {
-        return senderId;
-    }
 
     public void inverseRecipientSender()
     {
@@ -117,16 +101,14 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
 
     public String statusToString()
     {
-        if (this.getCurrentStatus() == invitationStatus.accepted)
+        if (this.getCurrentStatus() == InvitationStatus.accepted)
         {
             return "Accepted";
-        } else if (this.getCurrentStatus() == InviteMessage.invitationStatus.declined)
-        {
+        } else
             return "Declined";
         }
 
-        return "Undecided";         // might require a change
-    }
+
 
     /**
      * Read a object from the database.
@@ -134,15 +116,14 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
      * @param snapshot the database snapshot where the object is stored.
      */
     @Override
-    public ReadableFromDatabase readFromDatabase(DataSnapshot snapshot)
+    public InviteMessage readFromDatabase(DataSnapshot snapshot)
     {
 
         String recipient = snapshot.child("recipient").getValue(String.class);
         String sender = snapshot.child("sender").getValue(String.class);
-        String senderId = snapshot.child("senderId").getValue(String.class);
-        invitationStatus invitationStatus = snapshot.child("invitationStatus").getValue(InviteMessage.invitationStatus.class);
+        InvitationStatus invitationStatus = snapshot.child("invitationStatus").getValue(InviteMessage.InvitationStatus.class);
 
-        return new InviteMessage(recipient, sender, senderId, invitationStatus);
+        return new InviteMessage(recipient, sender, invitationStatus);
 
     }
 
@@ -156,7 +137,6 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
     {
         reference.child("recipient").setValue(recipient);
         reference.child("sender").setValue(sender);
-        reference.child("senderId").setValue(senderId);
         reference.child("invitationStatus").setValue(currentStatus);
     }
 }
