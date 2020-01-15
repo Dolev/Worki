@@ -91,7 +91,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 // TODO
-                if (registrationAcceptButton.isClickable() && CurrentUser.getInstance().getUserData() != null)
+                if (registrationAcceptButton.isClickable() && itemChosen != null && CurrentUser.getInstance().getUserData() != null)
                 {
                     messageAccepted(itemChosen);
                 }
@@ -104,7 +104,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 // TODO
-                if (registrationDeclineButton.isClickable() && CurrentUser.getInstance().getUserData() != null)
+                if (registrationDeclineButton.isClickable() && itemChosen != null && CurrentUser.getInstance().getUserData() != null)
                 {
                     messageDeclined(itemChosen);
                 }
@@ -153,7 +153,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     private void updateMessagesListView()
     {
         if (MessagesHandler.inviteWorkers.containsKey(CurrentUser.getInstance().getUserData().id))
-            arrAdap = new ArrayAdapter(this, android.R.layout.simple_list_item_1,
+            arrAdap = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
                     MessagesHandler.inviteWorkers.get(CurrentUser.getInstance().getUserData().id));
         registrationListView.setAdapter(arrAdap);
     }
