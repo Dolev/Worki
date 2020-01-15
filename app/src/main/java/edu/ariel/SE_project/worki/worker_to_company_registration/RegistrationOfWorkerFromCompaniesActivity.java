@@ -146,7 +146,6 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
 
 
     // updates the listview ui
-    // done
     private void updateMessagesListView()
     {
         if (MessagesHandler.inviteWorkers.containsKey(CurrentUser.getInstance().getUserData().email))
@@ -156,23 +155,20 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     }
 
     // deletes declined message from listview
-    // half done
     private void messageDeclined(InviteMessage itemChosen)
     {
-
 
         InviteMessage inviteMessageDeclined = new InviteMessage(itemChosen);
         inviteMessageDeclined.setCurrentStatus(InviteMessage.InvitationStatus.declined);
         inviteMessageDeclined.writeToDatabase(databaseMessagesRef);
 
         MessagesHandler.sendReplyToManager(inviteMessageDeclined);
-
-        MessagesHandler.inviteWorkers.remove(itemChosen);
+        MessagesHandler.deleteMessage(false, inviteMessageDeclined);
+        //todo delete from db?
         updateMessagesListView();
     }
 
     // changes message status to accepted, deletes all messages from listview
-    // half done
     private void messageAccepted(InviteMessage itemChosen)
     {
 
@@ -181,15 +177,10 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
         inviteMessageAccepted.writeToDatabase(databaseMessagesRef);
 
         MessagesHandler.sendReplyToManager(inviteMessageAccepted);
+        MessagesHandler.deleteAllMessages(false, inviteMessageAccepted.getRecipient());
 
-        deleteAllInviteMessages();
         updateMessagesListView();
         Toast.makeText(this, "Invitation has been accepted Successfully!", Toast.LENGTH_SHORT).show();
-    }
-
-    private void deleteAllInviteMessages()
-    {
-        MessagesHandler.inviteWorkers.get(CurrentUser.getInstance().getUserData().id).clear();
     }
 
     private void noMessagesToShow()
