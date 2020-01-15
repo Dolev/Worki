@@ -33,7 +33,6 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     private Button registrationAcceptButton;
     private Button registrationDeclineButton;
 
-    //    private ArrayList<InviteMessage> myMess;
     private ArrayAdapter arrAdap;
     private InviteMessage itemChosen;
 
@@ -53,7 +52,6 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
         registrationAcceptButton = findViewById(R.id.ButtonAcceptIncomingWorkerInvitations);
         registrationDeclineButton = findViewById(R.id.ButtonDeclineIncomingWorkerInvitations);
 
-//        myMess = new ArrayList<>();
 
         CurrentUser.getInstance().addOnUserNotNullListener(new Consumer<User>()
         {
@@ -61,7 +59,6 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
             public void accept(User user)
             {
                 searchForNewMessages(user);
-                updateMessagesListView();
             }
         });
 
@@ -71,8 +68,8 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                if (!MessagesHandler.inviteWorkers.containsKey(CurrentUser.getInstance().getUserData().id)
-                        || MessagesHandler.inviteWorkers.get(CurrentUser.getInstance().getUserData().id).isEmpty())
+                if (!MessagesHandler.inviteWorkers.containsKey(CurrentUser.getInstance().getUserData().email)
+                        || MessagesHandler.inviteWorkers.get(CurrentUser.getInstance().getUserData().email).isEmpty())
                 {
                     setButtonsClickable(false);
                 } else
@@ -113,7 +110,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
         });
     }
 
-    // turning the buttons apearance on/off
+    // turning the buttons appearance on/off
     private void setButtonsClickable(boolean b)
     {
         registrationAcceptButton.setEnabled(b);
@@ -121,7 +118,6 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
 
 
     // search for invite messages sent from managers to this user's email, saves them on a list.
-    // done
     public void searchForNewMessages(User user)
     {
         Query query = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath).orderByChild("email")
@@ -135,7 +131,8 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
                 for (DataSnapshot ds : dataSnapshot.getChildren())
                 {
                     InviteMessage mess = ds.getValue(InviteMessage.class);
-                    MessagesHandler.sendMessage(true, CurrentUser.getInstance().getUserData().id, mess);
+                    MessagesHandler.sendMessage(false, mess);
+                    updateMessagesListView();
                 }
             }
 
@@ -152,9 +149,9 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     // done
     private void updateMessagesListView()
     {
-        if (MessagesHandler.inviteWorkers.containsKey(CurrentUser.getInstance().getUserData().id))
+        if (MessagesHandler.inviteWorkers.containsKey(CurrentUser.getInstance().getUserData().email))
             arrAdap = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
-                    MessagesHandler.inviteWorkers.get(CurrentUser.getInstance().getUserData().id));
+                    MessagesHandler.inviteWorkers.get(CurrentUser.getInstance().getUserData().email));
         registrationListView.setAdapter(arrAdap);
     }
 
@@ -162,12 +159,11 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     // half done
     private void messageDeclined(InviteMessage itemChosen)
     {
-        String id = databaseMessagesRef.push().getKey();
+
 
         InviteMessage inviteMessageDeclined = new InviteMessage(itemChosen);
-        inviteMessageDeclined.setCurrentStatus(InviteMessage.invitationStatus.declined);
+        inviteMessageDeclined.setCurrentStatus(InviteMessage.InvitationStatus.declined);
         inviteMessageDeclined.writeToDatabase(databaseMessagesRef);
-//        databaseRef.child(id).setValue(inviteMessageDeclined);
 
         MessagesHandler.sendReplyToManager(inviteMessageDeclined);
 
@@ -179,11 +175,9 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     // half done
     private void messageAccepted(InviteMessage itemChosen)
     {
-        String id = databaseMessagesRef.push().getKey();
 
         InviteMessage inviteMessageAccepted = new InviteMessage(itemChosen);
-        inviteMessageAccepted.setCurrentStatus(InviteMessage.invitationStatus.accepted);
-//        databaseRef.child(id).setValue(inviteMessageAccepted);
+        inviteMessageAccepted.setCurrentStatus(InviteMessage.InvitationStatus.accepted);
         inviteMessageAccepted.writeToDatabase(databaseMessagesRef);
 
         MessagesHandler.sendReplyToManager(inviteMessageAccepted);

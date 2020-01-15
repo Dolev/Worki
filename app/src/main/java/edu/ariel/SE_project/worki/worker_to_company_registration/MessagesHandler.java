@@ -127,7 +127,7 @@ public class MessagesHandler
         }
     }
 
-    public static void deleteMessage(boolean manager, String recipient)
+    public static void deleteMessage(boolean manager, InviteMessage inviteMessage)
     {
         HashMap<String, ArrayList<InviteMessage>> hMap;
         if (manager)
@@ -135,9 +135,9 @@ public class MessagesHandler
         else
             hMap = workerReplies;
 
-        if (hMap.containsKey(recipient))
+        if (hMap.containsKey(inviteMessage.getRecipient()))
         {
-            hMap.remove(recipient);
+            hMap.get(inviteMessage.getRecipient()).remove(inviteMessage);
         }
 
     }
