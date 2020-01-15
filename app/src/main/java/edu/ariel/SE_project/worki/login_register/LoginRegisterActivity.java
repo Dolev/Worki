@@ -34,6 +34,9 @@ import edu.ariel.SE_project.worki.assistance_classes.GlobalMetaData;
 import edu.ariel.SE_project.worki.assistance_classes.Transitions;
 import edu.ariel.SE_project.worki.data.User;
 
+
+
+
 public class LoginRegisterActivity extends AppCompatActivity
 {
 
@@ -171,6 +174,7 @@ public class LoginRegisterActivity extends AppCompatActivity
      * @param email    E-Mail
      * @param password Password
      */
+
     private void login(String email, String password)
     {
         mAuth.signInWithEmailAndPassword(email, password)

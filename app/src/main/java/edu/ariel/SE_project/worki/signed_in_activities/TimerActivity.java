@@ -126,6 +126,8 @@ public class TimerActivity extends AppCompatActivity
         timer.setBase(SystemClock.elapsedRealtime());
         timer.stop();
 
+
+
         startStop.setText(R.string.start_shift_text);
         pauseShift.setText(R.string.pause_shift_text);
         writeDB(ShiftStamp.ShiftStampType.Stop, System.currentTimeMillis());
