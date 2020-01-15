@@ -13,6 +13,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -133,5 +134,20 @@ public class CurrentShifts
         {
             Log.w("CurrentShifts", "unregister: shift not in list.");
         }
+    }
+
+    public void addShift(Date start, Date end, User user)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(GlobalMetaData.shiftsPath + '/' + user.companyId).push();
+        Shift shift = new Shift(user, new LinkedList<User>(), myRef.getKey(), start, end);
+        shift.writeToDatabase(myRef);
+    }
+
+    public void removeShift(Shift shift, User user)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(GlobalMetaData.shiftsPath + '/' + user.companyId).child(shift.getShiftId());
+        myRef.removeValue();
     }
 }

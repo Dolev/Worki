@@ -27,6 +27,7 @@ import java.util.Objects;
 import edu.ariel.SE_project.worki.R;
 import edu.ariel.SE_project.worki.data.CurrentUser;
 import edu.ariel.SE_project.worki.data.User;
+import edu.ariel.SE_project.worki.shift_management.CreateShifts;
 import edu.ariel.SE_project.worki.shift_management.RegisterToShifts;
 import edu.ariel.SE_project.worki.signed_in_activities.ListOfUserConnected;
 import edu.ariel.SE_project.worki.signed_in_activities.TimerActivity;
@@ -52,6 +53,7 @@ public class MenuFragment extends Fragment
         entries.add(new MenuEntry("Show Current Users", ListOfUserConnected.class));
 
         managerOnly.add(new MenuEntry("Register Workers", RegisterWorkerToCompanyActivity.class));
+        managerOnly.add(new MenuEntry("Manage Shifts", CreateShifts.class));
 
         workerOnly.add(new MenuEntry("Register to Company", RegistrationOfWorkerFromCompaniesActivity.class));
         workerOnly.add(new MenuEntry("Shifts", RegisterToShifts.class));

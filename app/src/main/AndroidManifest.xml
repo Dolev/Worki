@@ -9,7 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".shift_management.CreateShifts"></activity>
+        <activity
+            android:name=".shift_management.CreateShifts"
+            android:label="Manage Shifts" />
         <activity android:name=".shift_management.RegisterToShifts" />
         <activity android:name=".signed_in_activities.ListOfUserConnected" />
         <activity android:name=".worker_to_company_registration.RegistrationOfWorkerFromCompaniesActivity" />
