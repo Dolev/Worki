@@ -25,86 +25,87 @@ public class MessagesHandler
     public static HashMap<String, ArrayList<InviteMessage>> inviteWorkers = new HashMap<>();
     public static HashMap<String, ArrayList<InviteMessage>> workerReplies = new HashMap<>();
 
-    private static MessagesHandler instance = new MessagesHandler();
-
-    private HashMap<String, InviteMessage> messages = new HashMap<>();
-
-    public List<Consumer<List<InviteMessage>>> listeners = new LinkedList<>();
-
-    public static MessagesHandler getInstance()
-    {
-        return instance;
-    }
-
-    private MessagesHandler()
-    {
-        CurrentUser.getInstance().addOnUserNotNullListener(new Consumer<User>()
-        {
-            @Override
-            public void accept(User user)
-            {
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference(GlobalMetaData.usersPath + '/' + user.id);
-                myRef.addChildEventListener(new ChildEventListener()
-                {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
-                    {
-                        InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
-                        messages.put(inviteMessage.getRecipient(), inviteMessage);
-                        onChange();
-                    }
-
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
-                    {
-                        InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
-                        messages.put(inviteMessage.getRecipient(), inviteMessage);
-                        onChange();
-                    }
-
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot)
-                    {
-                        InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
-                        messages.remove(inviteMessage.getRecipient());
-                        onChange();
-                    }
-
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
-                    {
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError)
-                    {
-
-                    }
-                });
-            }
-        });
-    }
-
-    public List<InviteMessage> getMessages()
-    {
-        return new ArrayList<>(messages.values());
-    }
-
-    public void addOnMessagesChangedListener(Consumer<List<InviteMessage>> listener)
-    {
-        listeners.add(listener);
-    }
-
-    private void onChange()
-    {
-        List<InviteMessage> messages = getMessages();
-        for (Consumer<List<InviteMessage>> listener : listeners)
-        {
-            listener.accept(messages);
-        }
-    }
+//    private static MessagesHandler instance = new MessagesHandler();
+//
+//    private HashMap<String, InviteMessage> messages = new HashMap<>();
+//
+//    // needs changes
+//    public List<Consumer<List<InviteMessage>>> listeners = new LinkedList<>();
+//
+//    public static MessagesHandler getInstance()
+//    {
+//        return instance;
+//    }
+//
+//    private MessagesHandler()
+//    {
+//        CurrentUser.getInstance().addOnUserNotNullListener(new Consumer<User>()
+//        {
+//            @Override
+//            public void accept(User user)
+//            {
+//                FirebaseDatabase database = FirebaseDatabase.getInstance();
+//                DatabaseReference myRef = database.getReference(GlobalMetaData.usersPath + '/' + user.id);
+//                myRef.addChildEventListener(new ChildEventListener()
+//                {
+//                    @Override
+//                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
+//                    {
+//                        InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
+//                        messages.put(inviteMessage.getRecipient(), inviteMessage);
+//                        onChange();
+//                    }
+//
+//                    @Override
+//                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
+//                    {
+//                        InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
+//                        messages.put(inviteMessage.getRecipient(), inviteMessage);
+//                        onChange();
+//                    }
+//
+//                    @Override
+//                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot)
+//                    {
+//                        InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
+//                        messages.remove(inviteMessage.getRecipient());
+//                        onChange();
+//                    }
+//
+//                    @Override
+//                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
+//                    {
+//
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError)
+//                    {
+//
+//                    }
+//                });
+//            }
+//        });
+//    }
+//
+//    public List<InviteMessage> getMessages()
+//    {
+//        return new ArrayList<>(messages.values());
+//    }
+//
+//    public void addOnMessagesChangedListener(Consumer<List<InviteMessage>> listener)
+//    {
+//        listeners.add(listener);
+//    }
+//
+//    private void onChange()
+//    {
+//        List<InviteMessage> messages = getMessages();
+//        for (Consumer<List<InviteMessage>> listener : listeners)
+//        {
+//            listener.accept(messages);
+//        }
+//    }
 
     public static void sendMessage(boolean manager, InviteMessage message)
     {

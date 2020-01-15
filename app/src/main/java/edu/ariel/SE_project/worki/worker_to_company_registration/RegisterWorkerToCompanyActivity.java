@@ -40,6 +40,8 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
     private DatabaseReference databaseUsersRef;
     private DatabaseReference databaseMessagesRef;
 
+    private boolean flag = true;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -73,8 +75,8 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                if (!MessagesHandler.workerReplies.containsKey(CurrentUser.getInstance().getUserData().id) ||
-                        MessagesHandler.workerReplies.get(CurrentUser.getInstance().getUserData().id).isEmpty())
+                if (!MessagesHandler.workerReplies.containsKey(CurrentUser.getInstance().getUserData().email) ||
+                        MessagesHandler.workerReplies.get(CurrentUser.getInstance().getUserData().email).isEmpty())
                 {
                     ClearButton.setEnabled(false);
                 }
@@ -137,9 +139,35 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
 
     }
 
-    private boolean mailIsValid(String text)
+    // searches for this mail address on users db
+    private boolean mailIsValid(final String text)
     {
-        if (text == null || text.isEmpty() || isUserInDataBase(text))
+        Query query = FirebaseDatabase.getInstance().getReference(GlobalMetaData.usersPath).orderByChild("email").equalTo(text);
+        query.addValueEventListener(new ValueEventListener()
+        {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+            {
+                for(DataSnapshot ds : dataSnapshot.getChildren())
+                {
+                    if(ds.child(text).exists())
+                    {
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError)
+            {
+                flag = false;
+            }
+
+        });
+
+        if (text == null || text.isEmpty() || flag)
         {
             return false;
         }
@@ -149,45 +177,25 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
     // search for the user's email in the database, if so - saves the message on the firebase.
     private void sendInvitationToWorker(final String mailAddress)
     {
+//        Toast.makeText(this, "entered sendinvitationtoworker func", Toast.LENGTH_LONG).show();
         databaseMessagesRef = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath);
         databaseUsersRef = FirebaseDatabase.getInstance().getReference(GlobalMetaData.usersPath);
+
         Query query = FirebaseDatabase.getInstance().getReference(GlobalMetaData.usersPath).orderByChild("email").equalTo(mailAddress);
         query.addListenerForSingleValueEvent(new ValueEventListener()
         {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
             {
-                if (dataSnapshot.getChildrenCount() > 0)
-                {
+//                if (dataSnapshot.getChildrenCount() > 0)
+//                {
 //                    String id = databaseRef.push().getKey();
                     InviteMessage InviteNewWorker = new InviteMessage();
                     InviteNewWorker.readFromDatabase(dataSnapshot);
                     InviteNewWorker.writeToDatabase(databaseMessagesRef.push());
                     MessagesHandler.sendMessage(true, InviteNewWorker);
                     showSentMessage();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError)
-            {
-                showErrorMessage();
-            }
-        });
-
-
-    }
-
-    private boolean isUserInDataBase(String mailAddress)
-    {
-        Query query = FirebaseDatabase.getInstance().getReference(GlobalMetaData.usersPath).orderByChild("email").equalTo(mailAddress);
-        query.addValueEventListener(new ValueEventListener()
-        {
-
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
-            {
-               return;                  // should exit the function if the email exist in db
+//                }
             }
 
             @Override
@@ -195,11 +203,11 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
             {
 
             }
-
         });
-        return false;
+
 
     }
+
 
     // done
     private void showErrorMessage()
