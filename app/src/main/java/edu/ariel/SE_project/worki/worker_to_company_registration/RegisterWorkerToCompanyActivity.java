@@ -111,7 +111,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                MessagesHandler.deleteMessage(true, CurrentUser.getInstance().getUserData().email);
+                MessagesHandler.deleteAllMessages(true, CurrentUser.getInstance().getUserData().email);
             }
         });
     }

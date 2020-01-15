@@ -142,6 +142,21 @@ public class MessagesHandler
 
     }
 
+    public static void deleteAllMessages(boolean manager, String recipient)
+    {
+        HashMap<String, ArrayList<InviteMessage>> hMap;
+        if (manager)
+            hMap = inviteWorkers;
+        else
+            hMap = workerReplies;
+
+        if (hMap.containsKey(recipient))
+        {
+            hMap.get(recipient).clear();
+        }
+
+    }
+
 
     public static void sendReplyToManager(InviteMessage inviteMessage)
     {
@@ -154,8 +169,7 @@ public class MessagesHandler
 
     private static String createReply(String sender, String reply)
     {
-        String answer = sender + "has" + reply + "your Invitation.";
-        return answer;
+        return sender + "has" + reply + "your Invitation.";
     }
 
     public static ArrayList<String> convertToStrings(ArrayList<InviteMessage> inviteMessages)
