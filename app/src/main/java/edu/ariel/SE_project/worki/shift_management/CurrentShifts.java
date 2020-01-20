@@ -140,7 +140,7 @@ public class CurrentShifts
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(GlobalMetaData.shiftsPath + '/' + user.companyId).push();
-        Shift shift = new Shift(user, new LinkedList<User>(), myRef.getKey(), start, end, numOfWorkers);
+        Shift shift = new Shift(user.email, new LinkedList<User>(), myRef.getKey(), start, end, numOfWorkers);
         shift.writeToDatabase(myRef);
     }
 

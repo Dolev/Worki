@@ -51,6 +51,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        MessagesHandler.setContext(this);
         setContentView(R.layout.activity_register_worker_to_company);
 
         WorkerMail = findViewById(R.id.addWorkerToCompanyTextView);

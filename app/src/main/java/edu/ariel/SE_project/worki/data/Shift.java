@@ -14,9 +14,9 @@ import java.util.List;
 
 public class Shift implements ReadableFromDatabase, WriteableToDatabase
 {
-    private User shiftManager;
+    private String shiftManager;
 
-    private List<User> workersInShift;
+    private List<User> workersInShift = new ArrayList<>();
     private String shiftId;
     private Date shiftDate;
     private Date shiftEnd;
@@ -27,7 +27,7 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
         return numOfWorkers;
     }
 
-    public User getShiftManager()
+    public String getShiftManager()
     {
         return shiftManager;
     }
@@ -67,7 +67,7 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
         this.numOfWorkers = shift.numOfWorkers;
     }
 
-    public Shift(User shiftManager, List<User> workersInShift, String shiftId, Date shiftDate, Date shiftEnd, int numOfWorkers)
+    public Shift(String shiftManager, List<User> workersInShift, String shiftId, Date shiftDate, Date shiftEnd, int numOfWorkers)
     {
         this.shiftManager = shiftManager;
         this.shiftId = shiftId;
@@ -94,7 +94,8 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
         if (shiftDate == null || shiftEnd == null)
             return "";
 
-        return "Start: " + df.format(shiftDate) + "\nEnd: " + df.format(shiftEnd) + "\nTotal: " + numOfWorkers + ", Current" + workersInShift.size();
+        return "Start: " + df.format(shiftDate) + "\nEnd: " + df.format(shiftEnd) + "\nTotal: " + numOfWorkers
+                + (workersInShift == null ? "" : ", Current: " + workersInShift.size());
     }
 
     /**
@@ -105,8 +106,10 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
     @Override
     public Shift readFromDatabase(DataSnapshot snapshot)
     {
-        User shiftManager = snapshot.child("shiftManager").getValue(User.class);
-        List<User> shiftWorkers = snapshot.child("workersInShift").getValue(List.class);
+        String shiftManager = snapshot.child("shiftManager").getValue(String.class);
+        List<User> shiftWorkers = (List<User>) snapshot.child("workersInShift").getValue();
+        if (shiftWorkers == null)
+            shiftWorkers = new ArrayList<>();
         Date shiftDate = snapshot.child("shiftDate").getValue(Date.class);
         Date shiftEnd = snapshot.child("shiftEnd").getValue(Date.class);
         int numOfWorkers = snapshot.child("numOfWorkers").getValue(Integer.class);

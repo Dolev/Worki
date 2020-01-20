@@ -181,6 +181,7 @@ public class CreateShifts extends AppCompatActivity
         {
             final NumberPicker view = new NumberPicker(CreateShifts.this);
             view.setMinValue(0);
+            view.setMaxValue(Integer.MAX_VALUE);
             view.setWrapSelectorWheel(false);
             view.setValue(numOfWorkers);
             new AlertDialog.Builder(CreateShifts.this)

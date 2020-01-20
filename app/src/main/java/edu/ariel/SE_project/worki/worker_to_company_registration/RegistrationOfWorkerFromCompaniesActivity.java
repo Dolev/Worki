@@ -40,6 +40,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        MessagesHandler.setContext(this);
         setContentView(R.layout.activity_registation_of_worker_from_companies);
 
         registrationListView = findViewById(R.id.ListViewIncomingWorkerInvitations);

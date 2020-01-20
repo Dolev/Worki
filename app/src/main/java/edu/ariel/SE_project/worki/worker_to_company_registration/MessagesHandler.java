@@ -1,5 +1,6 @@
 package edu.ariel.SE_project.worki.worker_to_company_registration;
 
+import android.app.Activity;
 import android.os.Message;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.ariel.SE_project.worki.assistance_classes.GlobalMetaData;
+import edu.ariel.SE_project.worki.assistance_classes.MyNotificationHandler;
 import edu.ariel.SE_project.worki.data.CurrentUser;
 import edu.ariel.SE_project.worki.data.InviteMessage;
 import edu.ariel.SE_project.worki.data.User;
@@ -25,6 +28,7 @@ import edu.ariel.SE_project.worki.data.User;
 public class MessagesHandler
 {
     private static MessagesHandler instance = new MessagesHandler();
+    private static Activity activity;
 
     private HashMap<String, InviteMessage> messages = new HashMap<>();
 
@@ -34,6 +38,11 @@ public class MessagesHandler
     public static MessagesHandler getInstance()
     {
         return instance;
+    }
+
+    public static void setContext(Activity activity)
+    {
+        MessagesHandler.activity = activity;
     }
 
     private MessagesHandler()
@@ -47,7 +56,7 @@ public class MessagesHandler
                     throw new RuntimeException("email is null");
 
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference(GlobalMetaData.messagesPath(user.email));
+                final DatabaseReference myRef = database.getReference(GlobalMetaData.messagesPath(user.email));
                 myRef.addChildEventListener(new ChildEventListener()
                 {
                     @Override
@@ -56,14 +65,40 @@ public class MessagesHandler
                         InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
                         messages.put(inviteMessage.getSender(), inviteMessage);
                         onChange();
+                        DatabaseReference ref = myRef.child(dataSnapshot.getKey());
+                        ref.addValueEventListener(new ValueEventListener()
+                        {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                            {
+                                InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
+                                if (inviteMessage.getCurrentStatus() == InviteMessage.InvitationStatus.accepted
+                                        && messages.containsKey(inviteMessage.getSender())
+                                        && messages.get(inviteMessage.getSender()).getCurrentStatus()
+                                        == InviteMessage.InvitationStatus.undecided)
+                                {
+                                    onAccepted(inviteMessage);
+                                }
+
+                                messages.put(inviteMessage.getSender(), inviteMessage);
+                                onChange();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError)
+                            {
+
+                            }
+                        });
                     }
 
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
                     {
-                        InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
-                        messages.put(inviteMessage.getSender(), inviteMessage);
-                        onChange();
+//                        InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
+//                        messages.put(inviteMessage.getSender(), inviteMessage);
+//                        onChange();
+
                     }
 
                     @Override
@@ -88,6 +123,11 @@ public class MessagesHandler
                 });
             }
         });
+    }
+
+    private void onAccepted(InviteMessage message)
+    {
+        MyNotificationHandler.sendNotification(activity, "Invitation Accepted", message.getSender() + " has accepted your invitation", 00);
     }
 
     public List<InviteMessage> getMessages()
