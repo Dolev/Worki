@@ -89,8 +89,6 @@ public class MenuFragment extends Fragment
                 getActivity().invalidateOptionsMenu();
             }
         }
-
-
     }
 
 

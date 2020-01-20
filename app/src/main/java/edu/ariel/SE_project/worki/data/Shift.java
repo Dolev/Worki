@@ -20,6 +20,12 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
     private String shiftId;
     private Date shiftDate;
     private Date shiftEnd;
+    private int numOfWorkers;
+
+    public int getNumOfWorkers()
+    {
+        return numOfWorkers;
+    }
 
     public User getShiftManager()
     {
@@ -58,15 +64,17 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
         this.workersInShift = shift.workersInShift;
         this.shiftDate = shift.shiftDate;
         this.shiftEnd = shift.shiftEnd;
+        this.numOfWorkers = shift.numOfWorkers;
     }
 
-    public Shift(User shiftManager, List<User> workersInShifts, String shiftId, Date shiftDate, Date shiftEnd)
+    public Shift(User shiftManager, List<User> workersInShift, String shiftId, Date shiftDate, Date shiftEnd, int numOfWorkers)
     {
         this.shiftManager = shiftManager;
         this.shiftId = shiftId;
         this.workersInShift = workersInShift;
         this.shiftDate = shiftDate;
         this.shiftEnd = shiftEnd;
+        this.numOfWorkers = numOfWorkers;
     }
 
     public void addWorkerToShift(User worker)
@@ -86,7 +94,7 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
         if (shiftDate == null || shiftEnd == null)
             return "";
 
-        return "Start: " + df.format(shiftDate) + "\nEnd: " + df.format(shiftEnd);
+        return "Start: " + df.format(shiftDate) + "\nEnd: " + df.format(shiftEnd) + "\nTotal: " + numOfWorkers + ", Current" + workersInShift.size();
     }
 
     /**
@@ -101,8 +109,9 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
         List<User> shiftWorkers = snapshot.child("workersInShift").getValue(List.class);
         Date shiftDate = snapshot.child("shiftDate").getValue(Date.class);
         Date shiftEnd = snapshot.child("shiftEnd").getValue(Date.class);
+        int numOfWorkers = snapshot.child("numOfWorkers").getValue(Integer.class);
 
-        return new Shift(shiftManager, shiftWorkers, snapshot.getKey(), shiftDate, shiftEnd);
+        return new Shift(shiftManager, shiftWorkers, snapshot.getKey(), shiftDate, shiftEnd, numOfWorkers);
     }
 
     /**
@@ -118,6 +127,35 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
         reference.child("shiftId").setValue(shiftId);
         reference.child("shiftDate").setValue(shiftDate);
         reference.child("shiftEnd").setValue(shiftEnd);
+        reference.child("numOfWorkers").setValue(numOfWorkers);
 
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Shift shift = (Shift) o;
+
+        if (numOfWorkers != shift.numOfWorkers) return false;
+        if (!shiftManager.equals(shift.shiftManager)) return false;
+        if (!workersInShift.equals(shift.workersInShift)) return false;
+        if (shiftId != null ? !shiftId.equals(shift.shiftId) : shift.shiftId != null) return false;
+        if (!shiftDate.equals(shift.shiftDate)) return false;
+        return shiftEnd.equals(shift.shiftEnd);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = shiftManager.hashCode();
+        result = 31 * result + workersInShift.hashCode();
+        result = 31 * result + (shiftId != null ? shiftId.hashCode() : 0);
+        result = 31 * result + shiftDate.hashCode();
+        result = 31 * result + shiftEnd.hashCode();
+        result = 31 * result + numOfWorkers;
+        return result;
     }
 }

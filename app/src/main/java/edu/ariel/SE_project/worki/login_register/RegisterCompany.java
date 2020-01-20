@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import edu.ariel.SE_project.worki.R;
 import edu.ariel.SE_project.worki.assistance_classes.GlobalMetaData;
 import edu.ariel.SE_project.worki.assistance_classes.Transitions;
+import edu.ariel.SE_project.worki.data.Company;
 import edu.ariel.SE_project.worki.data.CurrentUser;
 import edu.ariel.SE_project.worki.data.User;
 
@@ -49,7 +50,7 @@ public class RegisterCompany extends AppCompatActivity
 
 
         // Initialize variables
-        name = findViewById(R.id.companyName);
+        name = findViewById(R.id.name);
 
         address = findViewById(R.id.companyPostalAddress);
         phone = findViewById(R.id.companyPhoneNumber);
@@ -120,24 +121,19 @@ public class RegisterCompany extends AppCompatActivity
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(GlobalMetaData.companiesPath + '/' + user.companyId);
 
-        boolean nameSuccessful = myRef.child("name").setValue(name.getText().toString()).isSuccessful();
-        boolean addressSuccessful = myRef.child("address").setValue(address.getText().toString()).isSuccessful();
-        boolean phoneSuccessful = myRef.child("phone").setValue(phone.getText().toString()).isSuccessful();
+        new Company(user.companyId, name.getText().toString(), address.getText().toString()).writeToDatabase(myRef);
 
         Log.d("Register Company", "Finished");
-        updateUI(true);
+        updateUI();
     }
 
 
     /**
      * Called after registering the company.
-     *
-     * @param successful was the registration successful?
      */
-    private void updateUI(boolean successful)
+    private void updateUI()
     {
-        if (successful)
-            Transitions.toLoggedInActivity(this);
+        Transitions.toLoggedInActivity(this);
     }
 
     /**

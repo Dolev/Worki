@@ -38,12 +38,31 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
 
     public enum InvitationStatus
     {
-        invite, accepted, declined
+        undecided, accepted, declined
     }
 
     private InvitationStatus currentStatus;
     private String recipient;
     private String sender;
+
+    public boolean isInvite()
+    {
+        return invite;
+    }
+
+    private boolean invite;
+    private String companyId;
+    private boolean show = true;
+
+    public boolean isShow()
+    {
+        return show;
+    }
+
+    public String getCompanyId()
+    {
+        return companyId;
+    }
 
     public String getId()
     {
@@ -63,7 +82,10 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
         this.recipient = inviteMessage.getRecipient();
         this.sender = inviteMessage.getSender();
         this.currentStatus = inviteMessage.getCurrentStatus();
-        this.id = id;
+        this.id = inviteMessage.id;
+        this.invite = inviteMessage.invite;
+        this.companyId = inviteMessage.companyId;
+        this.show = inviteMessage.show;
     }
 
 //    public  InviteMessage (String recipient, String sender)
@@ -72,19 +94,24 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
 //        this.sender = sender;
 //    }
 
-    public InviteMessage(String recipient, String sender, InvitationStatus status)
+    public InviteMessage(String recipient, String sender, InvitationStatus status, boolean invite, String companyId)
     {
         this.recipient = recipient;
         this.sender = sender;
         this.currentStatus = status;
+        this.invite = invite;
+        this.companyId = companyId;
     }
 
-    public InviteMessage(String recipient, String sender, String id, InvitationStatus status)
+    public InviteMessage(String recipient, String sender, String id, InvitationStatus status, boolean invite, String companyId, boolean show)
     {
         this.recipient = recipient;
         this.sender = sender;
         this.currentStatus = status;
         this.id = id;
+        this.invite = invite;
+        this.companyId = companyId;
+        this.show = show;
     }
 
     public String getRecipient()
@@ -108,11 +135,13 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
     }
 
 
-    public void inverseRecipientSender()
+    public InviteMessage replyMessage()
     {
-        String temp = this.recipient;
-        this.recipient = this.sender;
-        this.sender = temp;
+        InviteMessage mess = new InviteMessage(this);
+        mess.recipient = this.sender;
+        mess.sender = this.recipient;
+        mess.invite = !this.invite;
+        return mess;
     }
 
     public String statusToString()
@@ -120,8 +149,9 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
         if (this.getCurrentStatus() == InvitationStatus.accepted)
         {
             return "Accepted";
-        } else
+        } else if (this.getCurrentStatus() == InvitationStatus.declined)
             return "Declined";
+        else return "Undecided";
     }
 
 
@@ -137,9 +167,20 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
         String recipient = snapshot.child("recipient").getValue(String.class);
         String sender = snapshot.child("sender").getValue(String.class);
         InvitationStatus invitationStatus = snapshot.child("invitationStatus").getValue(InviteMessage.InvitationStatus.class);
+        boolean invite = getOrDefault(snapshot.child("invite").getValue(Boolean.class), false);
+        String id = snapshot.getKey();
+        String companyId = snapshot.child("id").getValue(String.class);
+        boolean show = getOrDefault(snapshot.child("show").getValue(Boolean.class), true);
 
-        return new InviteMessage(recipient, sender, snapshot.getKey(), invitationStatus);
+        return new InviteMessage(recipient, sender, id, invitationStatus, invite, companyId, show);
 
+    }
+
+    private boolean getOrDefault(Boolean nullable, boolean def)
+    {
+        if (nullable == null)
+            return def;
+        else return nullable;
     }
 
     /**
@@ -153,5 +194,16 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
         reference.child("recipient").setValue(recipient);
         reference.child("sender").setValue(sender);
         reference.child("invitationStatus").setValue(currentStatus);
+        reference.child("invite").setValue(invite);
+        reference.child("id").setValue(companyId);
+        reference.child("show").setValue(show);
+    }
+
+    public InviteMessage hidden()
+    {
+        InviteMessage mess = new InviteMessage(this);
+
+        mess.show = false;
+        return mess;
     }
 }

@@ -1,10 +1,10 @@
 package edu.ariel.SE_project.worki.worker_to_company_registration;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Consumer;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,14 +12,11 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import edu.ariel.SE_project.worki.R;
 import edu.ariel.SE_project.worki.assistance_classes.GlobalMetaData;
@@ -36,7 +33,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     private ArrayAdapter arrAdap;
     private InviteMessage itemChosen;
 
-    private DatabaseReference databaseMessagesRef;
+    private List<InviteMessage> items;
 
 
     @Override
@@ -45,12 +42,11 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registation_of_worker_from_companies);
 
-
-        databaseMessagesRef = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath);
-
         registrationListView = findViewById(R.id.ListViewIncomingWorkerInvitations);
         registrationAcceptButton = findViewById(R.id.ButtonAcceptIncomingWorkerInvitations);
         registrationDeclineButton = findViewById(R.id.ButtonDeclineIncomingWorkerInvitations);
+
+        registrationListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
 
         CurrentUser.getInstance().addOnUserNotNullListener(new Consumer<User>()
@@ -58,7 +54,14 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
             @Override
             public void accept(User user)
             {
-                searchForNewMessages(user);
+                MessagesHandler.getInstance().addOnMessagesChangedListener(new Consumer<List<InviteMessage>>()
+                {
+                    @Override
+                    public void accept(List<InviteMessage> inviteMessages)
+                    {
+                        updateMessagesListView();
+                    }
+                });
             }
         });
 
@@ -68,14 +71,14 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                if (!MessagesHandler.getInstance().getMessages().contains(CurrentUser.getInstance().getUserData().email)
-                        || MessagesHandler.getInstance().getMessages().isEmpty())
+                if (MessagesHandler.getInstance().getMessages().isEmpty())
                 {
                     setButtonsClickable(false);
                 } else
                 {
                     setButtonsClickable(true);
-                    itemChosen = (InviteMessage) parent.getSelectedItem();          // for later use of accept/decline
+                    itemChosen = items.get(position);          // for later use of accept/decline
+                    Log.d("Registration-Worker", itemChosen + " clicked");
                 }
 
             }
@@ -88,9 +91,12 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 // TODO
-                if (registrationAcceptButton.isClickable() && itemChosen != null && CurrentUser.getInstance().getUserData() != null)
+                if (itemChosen != null && CurrentUser.getInstance().getUserData() != null)
                 {
-                    messageAccepted(itemChosen);
+                    acceptMessage(itemChosen);
+                } else
+                {
+                    Log.w("Registration-Worker", "Accept Button: user or itemChosen is Null");
                 }
             }
         });
@@ -101,11 +107,13 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 // TODO
-                if (registrationDeclineButton.isClickable() && itemChosen != null && CurrentUser.getInstance().getUserData() != null)
+                if (itemChosen != null && CurrentUser.getInstance().getUserData() != null)
                 {
-                    messageDeclined(itemChosen);
+                    declineMessage(itemChosen);
+                } else
+                {
+                    Log.w("Registration-Worker", "Decline Button: user or itemChosen is Null");
                 }
-
             }
         });
     }
@@ -114,74 +122,94 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     private void setButtonsClickable(boolean b)
     {
         registrationAcceptButton.setEnabled(b);
+        registrationDeclineButton.setEnabled(b);
     }
 
 
     // search for invite messages sent from managers to this user's email, saves them on a list.
-    public void searchForNewMessages(User user)
-    {
-        Query query = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath).orderByChild("email")
-                .equalTo(user.email);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
-            {
-                for (DataSnapshot ds : dataSnapshot.getChildren())
-                {
-                    InviteMessage mess = ds.getValue(InviteMessage.class);
-                    MessagesHandler.sendMessage(false, mess);
-                    updateMessagesListView();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError)
-            {
-                noMessagesToShow();
-            }
-        });
-    }
+//    public void searchForNewMessages(User user)
+//    {
+//        Query query = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath).orderByChild("email")
+//                .equalTo(user.email);
+//
+//        query.addListenerForSingleValueEvent(new ValueEventListener()
+//        {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+//            {
+//                for (DataSnapshot ds : dataSnapshot.getChildren())
+//                {
+//                    InviteMessage mess = ds.getValue(InviteMessage.class);
+//                    MessagesHandler.sendMessage(false, mess);
+//                    updateMessagesListView();
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError)
+//            {
+//                noMessagesToShow();
+//            }
+//        });
+//    }
 
 
     // updates the listview ui
     private void updateMessagesListView()
     {
+        List<InviteMessage> messages = new LinkedList<>();
+
+        for (InviteMessage mess : MessagesHandler.getInstance().getMessages())
+        {
+            if (mess.getCurrentStatus() != InviteMessage.InvitationStatus.declined)
+                messages.add(mess);
+        }
+
+
+        items = messages;
+
 //        if (MessagesHandler.getInstance().getMessages().contains(CurrentUser.getInstance().getUserData().email))
         arrAdap = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
-                    MessagesHandler.getInstance().getMessages().get(CurrentUser.getInstance().getUserData().email));                          // how to get specific user's messages?
+                MessagesHandler.convertToStrings(messages));                          // how to get specific user's messages?
 
         registrationListView.setAdapter(arrAdap);
     }
 
-    // deletes declined message from listview
-    private void messageDeclined(InviteMessage itemChosen)
+    private void acceptMessage(InviteMessage mess)
     {
-
-        InviteMessage inviteMessageDeclined = new InviteMessage(itemChosen);
-        inviteMessageDeclined.setCurrentStatus(InviteMessage.InvitationStatus.declined);
-        inviteMessageDeclined.writeToDatabase(databaseMessagesRef);
-
-        MessagesHandler.sendReplyToManager(inviteMessageDeclined);
-        MessagesHandler.getInstance().(false, inviteMessageDeclined);
-        //todo delete from db?
-        updateMessagesListView();
-    }
-
-    // changes message status to accepted, deletes all messages from listview
-    private void messageAccepted(InviteMessage itemChosen)
-    {
-
-        InviteMessage inviteMessageAccepted = new InviteMessage(itemChosen);
+        InviteMessage inviteMessageAccepted = new InviteMessage(mess);
         inviteMessageAccepted.setCurrentStatus(InviteMessage.InvitationStatus.accepted);
-        inviteMessageAccepted.writeToDatabase(databaseMessagesRef);
+        MessagesHandler.getInstance().updateMessage(inviteMessageAccepted);
 
-        MessagesHandler.sendReplyToManager(inviteMessageAccepted);
-        MessagesHandler.deleteAllMessages(false, inviteMessageAccepted.getRecipient());
+        MessagesHandler.getInstance().updateMessage(inviteMessageAccepted.replyMessage());
+
+        declineAll(mess);
+
+        User user = CurrentUser.getInstance().getUserData();
+        user.companyId = mess.getCompanyId();
+
+        CurrentUser.getInstance().updateUserData(user);
 
         updateMessagesListView();
         Toast.makeText(this, "Invitation has been accepted Successfully!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void declineMessage(InviteMessage mess)
+    {
+        InviteMessage inviteMessageDeclined = new InviteMessage(mess);
+        inviteMessageDeclined.setCurrentStatus(InviteMessage.InvitationStatus.declined);
+        MessagesHandler.getInstance().updateMessage(inviteMessageDeclined);
+
+        MessagesHandler.getInstance().sendMessage(inviteMessageDeclined.replyMessage());
+    }
+
+    private void declineAll(InviteMessage exception)
+    {
+        for (InviteMessage mess : MessagesHandler.getInstance().getMessages())
+        {
+            if (!mess.equals(exception) && mess.getCurrentStatus() == InviteMessage.InvitationStatus.undecided)
+                declineMessage(mess);
+        }
     }
 
     private void noMessagesToShow()

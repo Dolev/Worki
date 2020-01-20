@@ -29,7 +29,7 @@ public class MessagesHandler
     private HashMap<String, InviteMessage> messages = new HashMap<>();
 
     // needs changes
-    public List<Consumer<List<InviteMessage>>> listeners = new LinkedList<>();
+    private List<Consumer<List<InviteMessage>>> listeners = new LinkedList<>();
 
     public static MessagesHandler getInstance()
     {
@@ -43,8 +43,11 @@ public class MessagesHandler
             @Override
             public void accept(User user)
             {
+                if (user.email == null)
+                    throw new RuntimeException("email is null");
+
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference(GlobalMetaData.messagesPath + '/' + user.id);
+                DatabaseReference myRef = database.getReference(GlobalMetaData.messagesPath(user.email));
                 myRef.addChildEventListener(new ChildEventListener()
                 {
                     @Override
@@ -106,50 +109,34 @@ public class MessagesHandler
         }
     }
 
-    public static void sendMessage(boolean manager, InviteMessage message)
+    public void sendMessage(InviteMessage message)
     {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath + '/' + message.getRecipient()).push();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath(message.getRecipient())).push();
         message.writeToDatabase(ref);
     }
 
-    public static void updateMessage(boolean manager, InviteMessage message)
+    public void updateMessage(InviteMessage message)
     {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath + '/' + message.getRecipient()).child(message.getId());
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath(message.getRecipient())).child(message.getId());
         message.writeToDatabase(ref);
     }
 
-    public static void updateAllMessages(boolean manager, String recipient)
+    private static String createReply(String sender, String status, boolean invite)
     {
-        HashMap<String, ArrayList<InviteMessage>> hMap;
-
-        if (MessagesHandler.getInstance().getMessages().contains(recipient))
+        if (invite)
         {
-//            .get(recipient).clear();
+            return "Invitation from " + sender + ".\nStatus: " + status;
         }
-
+        return sender + " has " + status + " your Invitation.";
     }
 
-
-    public static void sendReplyToManager(InviteMessage inviteMessage)
+    public static List<String> convertToStrings(List<InviteMessage> inviteMessages)
     {
-        InviteMessage sendToManager = new InviteMessage(inviteMessage);
-        sendToManager.inverseRecipientSender();
-
-        sendMessage(false, sendToManager);
-
-    }
-
-    private static String createReply(String sender, String reply)
-    {
-        return sender + "has" + reply + "your Invitation.";
-    }
-
-    public static ArrayList<String> convertToStrings(ArrayList<InviteMessage> inviteMessages)
-    {
-        ArrayList<String> repliesInStrings = new ArrayList<>();
+        List<String> repliesInStrings = new ArrayList<>();
         for (InviteMessage im : inviteMessages)
         {
-            repliesInStrings.add(createReply(im.getSender(), im.statusToString()));
+            if (im.isShow())
+                repliesInStrings.add(createReply(im.getSender(), im.statusToString(), im.isInvite()));
         }
 
         return repliesInStrings;

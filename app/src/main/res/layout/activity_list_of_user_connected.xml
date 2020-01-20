@@ -7,6 +7,17 @@
     tools:context=".signed_in_activities.ListOfUserConnected"
     android:background="@drawable/background">
 
+    <fragment
+        android:id="@+id/fragment6"
+        android:name="edu.ariel.SE_project.worki.assistance_classes.MenuFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_meun" />
+
     <ListView
         android:id="@+id/screenOfUsers"
         android:layout_width="match_parent"
