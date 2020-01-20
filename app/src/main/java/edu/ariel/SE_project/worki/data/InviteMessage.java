@@ -45,6 +45,13 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
     private String recipient;
     private String sender;
 
+    public String getId()
+    {
+        return id;
+    }
+
+    private String id;
+
 
     public InviteMessage()
     {
@@ -56,6 +63,7 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
         this.recipient = inviteMessage.getRecipient();
         this.sender = inviteMessage.getSender();
         this.currentStatus = inviteMessage.getCurrentStatus();
+        this.id = id;
     }
 
 //    public  InviteMessage (String recipient, String sender)
@@ -69,6 +77,14 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
         this.recipient = recipient;
         this.sender = sender;
         this.currentStatus = status;
+    }
+
+    public InviteMessage(String recipient, String sender, String id, InvitationStatus status)
+    {
+        this.recipient = recipient;
+        this.sender = sender;
+        this.currentStatus = status;
+        this.id = id;
     }
 
     public String getRecipient()
@@ -106,8 +122,7 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
             return "Accepted";
         } else
             return "Declined";
-        }
-
+    }
 
 
     /**
@@ -123,7 +138,7 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
         String sender = snapshot.child("sender").getValue(String.class);
         InvitationStatus invitationStatus = snapshot.child("invitationStatus").getValue(InviteMessage.InvitationStatus.class);
 
-        return new InviteMessage(recipient, sender, invitationStatus);
+        return new InviteMessage(recipient, sender, snapshot.getKey(), invitationStatus);
 
     }
 

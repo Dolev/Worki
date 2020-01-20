@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Consumer;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,6 +28,7 @@ import edu.ariel.SE_project.worki.assistance_classes.GlobalMetaData;
 import edu.ariel.SE_project.worki.data.CurrentUser;
 import edu.ariel.SE_project.worki.data.InviteMessage;
 import edu.ariel.SE_project.worki.data.User;
+
 // this appear on manager page
 public class RegisterWorkerToCompanyActivity extends AppCompatActivity
 {
@@ -75,12 +77,11 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                if (!MessagesHandler.workerReplies.containsKey(CurrentUser.getInstance().getUserData().email) ||
-                        MessagesHandler.workerReplies.get(CurrentUser.getInstance().getUserData().email).isEmpty())
+                if (!MessagesHandler.getInstance().getMessages().contains(CurrentUser.getInstance().getUserData().email) ||
+                        MessagesHandler.getInstance().getMessages().isEmpty())
                 {
                     ClearButton.setEnabled(false);
-                }
-                else
+                } else
                 {
                     ClearButton.setEnabled(true);
                 }
@@ -93,14 +94,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
                                          @Override
                                          public void onClick(View v)
                                          {
-                                             if (mailIsValid(WorkerMail.getText().toString()))
-                                             {
-                                                 sendInvitationToWorker(WorkerMail.getText().toString());
-                                             }
-                                             else
-                                             {
-                                                 showErrorMessage();
-                                             }
+                                             mailIsValid(WorkerMail.getText().toString());
                                          }
                                      }
         );
@@ -111,7 +105,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                MessagesHandler.deleteAllMessages(true, CurrentUser.getInstance().getUserData().email);
+                MessagesHandler.updateAllMessages(true, CurrentUser.getInstance().getUserData().email);
             }
         });
     }
@@ -119,10 +113,10 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
     // done
     private void updateRepliesListView()
     {
-        if (MessagesHandler.workerReplies.containsKey(CurrentUser.getInstance().getUserData().email))
+        if (MessagesHandler.getInstance().getMessages().contains(CurrentUser.getInstance().getUserData().email))
         {
             myReplies = new ArrayList<>();
-            myReplies = MessagesHandler.convertToStrings(MessagesHandler.workerReplies.get(CurrentUser.getInstance().getUserData().email));
+            myReplies = MessagesHandler.convertToStrings(MessagesHandler.getInstance().getMessages().get(CurrentUser.getInstance().getUserData().email));
 
             arrAdap = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, myReplies);
             repliesListview.setAdapter(arrAdap);
@@ -132,7 +126,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
     private void searchForNewReplies()
     {
         // todo implement send AnswerToManager, need some kind of static object to handle messages
-        if (MessagesHandler.workerReplies.containsKey(CurrentUser.getInstance().getUserData().email))
+        if (MessagesHandler.getInstance().getMessages().contains(CurrentUser.getInstance().getUserData().email))
         {
             updateRepliesListView();
         }
@@ -140,70 +134,37 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
     }
 
     // searches for this mail address on users db
-    private boolean mailIsValid(final String text)
+    private void mailIsValid(final String text)
     {
+        String[] str = text.split("@");
+
         Query query = FirebaseDatabase.getInstance().getReference(GlobalMetaData.usersPath).orderByChild("email").equalTo(text);
-        query.addValueEventListener(new ValueEventListener()
-        {
-
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
-            {
-                for(DataSnapshot ds : dataSnapshot.getChildren())
-                {
-                    if(ds.child(text).exists())
-                    {
-                        flag = true;
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError)
-            {
-                flag = false;
-            }
-
-        });
-
-        if (text == null || text.isEmpty() || flag)
-        {
-            return false;
-        }
-        return true;
-    }
-
-    // search for the user's email in the database, if so - saves the message on the firebase.
-    private void sendInvitationToWorker(final String mailAddress)
-    {
-//        Toast.makeText(this, "entered sendinvitationtoworker func", Toast.LENGTH_LONG).show();
-        databaseMessagesRef = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath);
-        databaseUsersRef = FirebaseDatabase.getInstance().getReference(GlobalMetaData.usersPath);
-
-        Query query = FirebaseDatabase.getInstance().getReference(GlobalMetaData.usersPath).orderByChild("email").equalTo(mailAddress);
         query.addListenerForSingleValueEvent(new ValueEventListener()
         {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
             {
-//                if (dataSnapshot.getChildrenCount() > 0)
-//                {
-//                    String id = databaseRef.push().getKey();
-                    InviteMessage InviteNewWorker = new InviteMessage();
-                    InviteNewWorker.readFromDatabase(dataSnapshot);
-                    InviteNewWorker.writeToDatabase(databaseMessagesRef.push());
-                    MessagesHandler.sendMessage(true, InviteNewWorker);
-                    showSentMessage();
-//                }
+                sendInvitationToWorker(WorkerMail.getText().toString(), dataSnapshot);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError)
             {
-
+                showErrorMessage();
             }
+
         });
+    }
+
+    // search for the user's email in the database, if so - saves the message on the firebase.
+    private void sendInvitationToWorker(final String mailAddress, DataSnapshot snapshot)
+    {
+
+        Log.d("ds: ", snapshot.toString());
+        InviteMessage InviteNewWorker = new InviteMessage(mailAddress,CurrentUser.getInstance().getUserData().email, InviteMessage.InvitationStatus.invite);
+
+        MessagesHandler.sendMessage(true, InviteNewWorker);
+        showSentMessage();
 
 
     }

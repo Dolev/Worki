@@ -68,8 +68,8 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                if (!MessagesHandler.inviteWorkers.containsKey(CurrentUser.getInstance().getUserData().email)
-                        || MessagesHandler.inviteWorkers.get(CurrentUser.getInstance().getUserData().email).isEmpty())
+                if (!MessagesHandler.getInstance().getMessages().contains(CurrentUser.getInstance().getUserData().email)
+                        || MessagesHandler.getInstance().getMessages().isEmpty())
                 {
                     setButtonsClickable(false);
                 } else
@@ -148,9 +148,10 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     // updates the listview ui
     private void updateMessagesListView()
     {
-        if (MessagesHandler.inviteWorkers.containsKey(CurrentUser.getInstance().getUserData().email))
-            arrAdap = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
-                    MessagesHandler.inviteWorkers.get(CurrentUser.getInstance().getUserData().email));
+//        if (MessagesHandler.getInstance().getMessages().contains(CurrentUser.getInstance().getUserData().email))
+        arrAdap = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
+                    MessagesHandler.getInstance().getMessages().get(CurrentUser.getInstance().getUserData().email));                          // how to get specific user's messages?
+
         registrationListView.setAdapter(arrAdap);
     }
 
@@ -163,7 +164,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
         inviteMessageDeclined.writeToDatabase(databaseMessagesRef);
 
         MessagesHandler.sendReplyToManager(inviteMessageDeclined);
-        MessagesHandler.deleteMessage(false, inviteMessageDeclined);
+        MessagesHandler.getInstance().(false, inviteMessageDeclined);
         //todo delete from db?
         updateMessagesListView();
     }

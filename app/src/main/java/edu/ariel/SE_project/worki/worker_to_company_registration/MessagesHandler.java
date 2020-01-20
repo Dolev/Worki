@@ -1,5 +1,7 @@
 package edu.ariel.SE_project.worki.worker_to_company_registration;
 
+import android.os.Message;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
@@ -22,137 +24,107 @@ import edu.ariel.SE_project.worki.data.User;
 
 public class MessagesHandler
 {
-    public static HashMap<String, ArrayList<InviteMessage>> inviteWorkers = new HashMap<>();
-    public static HashMap<String, ArrayList<InviteMessage>> workerReplies = new HashMap<>();
+    private static MessagesHandler instance = new MessagesHandler();
 
-//    private static MessagesHandler instance = new MessagesHandler();
-//
-//    private HashMap<String, InviteMessage> messages = new HashMap<>();
-//
-//    // needs changes
-//    public List<Consumer<List<InviteMessage>>> listeners = new LinkedList<>();
-//
-//    public static MessagesHandler getInstance()
-//    {
-//        return instance;
-//    }
-//
-//    private MessagesHandler()
-//    {
-//        CurrentUser.getInstance().addOnUserNotNullListener(new Consumer<User>()
-//        {
-//            @Override
-//            public void accept(User user)
-//            {
-//                FirebaseDatabase database = FirebaseDatabase.getInstance();
-//                DatabaseReference myRef = database.getReference(GlobalMetaData.usersPath + '/' + user.id);
-//                myRef.addChildEventListener(new ChildEventListener()
-//                {
-//                    @Override
-//                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
-//                    {
-//                        InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
-//                        messages.put(inviteMessage.getRecipient(), inviteMessage);
-//                        onChange();
-//                    }
-//
-//                    @Override
-//                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
-//                    {
-//                        InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
-//                        messages.put(inviteMessage.getRecipient(), inviteMessage);
-//                        onChange();
-//                    }
-//
-//                    @Override
-//                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot)
-//                    {
-//                        InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
-//                        messages.remove(inviteMessage.getRecipient());
-//                        onChange();
-//                    }
-//
-//                    @Override
-//                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
-//                    {
-//
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError)
-//                    {
-//
-//                    }
-//                });
-//            }
-//        });
-//    }
-//
-//    public List<InviteMessage> getMessages()
-//    {
-//        return new ArrayList<>(messages.values());
-//    }
-//
-//    public void addOnMessagesChangedListener(Consumer<List<InviteMessage>> listener)
-//    {
-//        listeners.add(listener);
-//    }
-//
-//    private void onChange()
-//    {
-//        List<InviteMessage> messages = getMessages();
-//        for (Consumer<List<InviteMessage>> listener : listeners)
-//        {
-//            listener.accept(messages);
-//        }
-//    }
+    private HashMap<String, InviteMessage> messages = new HashMap<>();
+
+    // needs changes
+    public List<Consumer<List<InviteMessage>>> listeners = new LinkedList<>();
+
+    public static MessagesHandler getInstance()
+    {
+        return instance;
+    }
+
+    private MessagesHandler()
+    {
+        CurrentUser.getInstance().addOnUserNotNullListener(new Consumer<User>()
+        {
+            @Override
+            public void accept(User user)
+            {
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference(GlobalMetaData.messagesPath + '/' + user.id);
+                myRef.addChildEventListener(new ChildEventListener()
+                {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
+                    {
+                        InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
+                        messages.put(inviteMessage.getSender(), inviteMessage);
+                        onChange();
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
+                    {
+                        InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
+                        messages.put(inviteMessage.getSender(), inviteMessage);
+                        onChange();
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot)
+                    {
+                        InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
+                        messages.remove(inviteMessage.getRecipient());
+                        onChange();
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
+                    {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError)
+                    {
+
+                    }
+                });
+            }
+        });
+    }
+
+    public List<InviteMessage> getMessages()
+    {
+        return new ArrayList<>(messages.values());
+    }
+
+    public void addOnMessagesChangedListener(Consumer<List<InviteMessage>> listener)
+    {
+        listeners.add(listener);
+    }
+
+    private void onChange()
+    {
+        List<InviteMessage> messages = getMessages();
+        for (Consumer<List<InviteMessage>> listener : listeners)
+        {
+            listener.accept(messages);
+        }
+    }
 
     public static void sendMessage(boolean manager, InviteMessage message)
     {
-        HashMap<String, ArrayList<InviteMessage>> hMap;
-        if (manager)
-            hMap = inviteWorkers;
-        else
-            hMap = workerReplies;
-
-        if (hMap.containsKey(message.getRecipient()))
-        {
-            if (hMap.get(message.getRecipient()) != null)
-                hMap.get(message.getRecipient()).add(message);
-        } else
-        {
-            ArrayList<InviteMessage> list = new ArrayList<>();
-            list.add(message);
-            hMap.put(message.getRecipient(), list);
-        }
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath + '/' + message.getRecipient()).push();
+        message.writeToDatabase(ref);
     }
 
-    public static void deleteMessage(boolean manager, InviteMessage inviteMessage)
+    public static void updateMessage(boolean manager, InviteMessage message)
     {
-        HashMap<String, ArrayList<InviteMessage>> hMap;
-        if (manager)
-            hMap = inviteWorkers;
-        else
-            hMap = workerReplies;
-
-        if (hMap.containsKey(inviteMessage.getRecipient()))
-        {
-            hMap.get(inviteMessage.getRecipient()).remove(inviteMessage);
-        }
-
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath + '/' + message.getRecipient()).child(message.getId());
+        message.writeToDatabase(ref);
     }
 
-    public static void deleteAllMessages(boolean manager, String recipient)
+    public static void updateAllMessages(boolean manager, String recipient)
     {
         HashMap<String, ArrayList<InviteMessage>> hMap;
-        if (manager)
-            hMap = inviteWorkers;
-        else
-            hMap = workerReplies;
 
-        if (hMap.containsKey(recipient))
+        if (MessagesHandler.getInstance().getMessages().contains(recipient))
         {
-            hMap.get(recipient).clear();
+//            .get(recipient).clear();
         }
 
     }
@@ -182,5 +154,4 @@ public class MessagesHandler
 
         return repliesInStrings;
     }
-
 }
