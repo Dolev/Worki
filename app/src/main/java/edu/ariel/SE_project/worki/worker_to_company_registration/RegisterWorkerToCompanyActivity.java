@@ -22,9 +22,11 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import edu.ariel.SE_project.worki.R;
 import edu.ariel.SE_project.worki.assistance_classes.GlobalMetaData;
+import edu.ariel.SE_project.worki.data.Company;
 import edu.ariel.SE_project.worki.data.CurrentUser;
 import edu.ariel.SE_project.worki.data.InviteMessage;
 import edu.ariel.SE_project.worki.data.User;
@@ -37,7 +39,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
     private Button ClearButton;
     private ListView repliesListview;
 
-    private ArrayList<String> myReplies;
+    private List<String> myReplies;
     private ArrayAdapter arrAdap;
     private DatabaseReference databaseUsersRef;
     private DatabaseReference databaseMessagesRef;
@@ -49,6 +51,7 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        MessagesHandler.setContext(this);
         setContentView(R.layout.activity_register_worker_to_company);
 
         WorkerMail = findViewById(R.id.addWorkerToCompanyTextView);
@@ -57,28 +60,14 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
         ClearButton = findViewById(R.id.clearRecievedRepliesFromWorkersButton);
         repliesListview = findViewById(R.id.managerRepliesFromWorkersListView);
 
-//        myReplies = new ArrayList<>();
 
-        CurrentUser.getInstance().addOnUserNotNullListener(new Consumer<User>()
-        {
-            @Override
-            public void accept(User user)
-            {
-                searchForNewReplies();
-//                updateRepliesListView();
-
-            }
-        });
-
-
-        // shows replies recieved from workers
+        // shows replies received from workers
         repliesListview.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                if (!MessagesHandler.getInstance().getMessages().contains(CurrentUser.getInstance().getUserData().email) ||
-                        MessagesHandler.getInstance().getMessages().isEmpty())
+                if (MessagesHandler.getInstance().getMessages().isEmpty())
                 {
                     ClearButton.setEnabled(false);
                 } else
@@ -86,6 +75,15 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
                     ClearButton.setEnabled(true);
                 }
 
+            }
+        });
+
+        MessagesHandler.getInstance().addOnMessagesChangedListener(new Consumer<List<InviteMessage>>()
+        {
+            @Override
+            public void accept(List<InviteMessage> inviteMessages)
+            {
+                updateRepliesListView();
             }
         });
 
@@ -105,38 +103,56 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                MessagesHandler.updateAllMessages(true, CurrentUser.getInstance().getUserData().email);
+                hideAll();
             }
         });
+    }
+
+    private void hideAll()
+    {
+        for (InviteMessage mess :
+                MessagesHandler.getInstance().getMessages())
+        {
+            if (mess.isShow())
+                MessagesHandler.getInstance().updateMessage(mess.hidden());
+        }
+    }
+
+    private void addToCompany(List<InviteMessage> allMessages)
+    {
+        Company company = CurrentUser.getInstance().getCompany();
+
+        if (company == null)
+            return;
+
+        boolean updated = false;
+
+        for (InviteMessage mess : allMessages)
+        {
+            if (mess.getCurrentStatus() == InviteMessage.InvitationStatus.accepted &&
+                    !company.workers.contains(mess.getSender()))
+            {
+                company.workers.add(mess.getSender());
+                updated = true;
+            }
+        }
+        if (updated)
+            CurrentUser.getInstance().updateCompanyData(company);
     }
 
     // done
     private void updateRepliesListView()
     {
-        if (MessagesHandler.getInstance().getMessages().contains(CurrentUser.getInstance().getUserData().email))
-        {
-            myReplies = new ArrayList<>();
-            myReplies = MessagesHandler.convertToStrings(MessagesHandler.getInstance().getMessages().get(CurrentUser.getInstance().getUserData().email));
+        myReplies = new ArrayList<>();
+        myReplies = MessagesHandler.convertToStrings(MessagesHandler.getInstance().getMessages());
 
-            arrAdap = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, myReplies);
-            repliesListview.setAdapter(arrAdap);
-        }
-    }
-
-    private void searchForNewReplies()
-    {
-        // todo implement send AnswerToManager, need some kind of static object to handle messages
-        if (MessagesHandler.getInstance().getMessages().contains(CurrentUser.getInstance().getUserData().email))
-        {
-            updateRepliesListView();
-        }
-
+        arrAdap = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, myReplies);
+        repliesListview.setAdapter(arrAdap);
     }
 
     // searches for this mail address on users db
     private void mailIsValid(final String text)
     {
-        String[] str = text.split("@");
 
         Query query = FirebaseDatabase.getInstance().getReference(GlobalMetaData.usersPath).orderByChild("email").equalTo(text);
         query.addListenerForSingleValueEvent(new ValueEventListener()
@@ -161,12 +177,11 @@ public class RegisterWorkerToCompanyActivity extends AppCompatActivity
     {
 
         Log.d("ds: ", snapshot.toString());
-        InviteMessage InviteNewWorker = new InviteMessage(mailAddress,CurrentUser.getInstance().getUserData().email, InviteMessage.InvitationStatus.invite);
+        InviteMessage inviteNewWorker = new InviteMessage(mailAddress, CurrentUser.getInstance().getUserData().email,
+                InviteMessage.InvitationStatus.undecided, true, CurrentUser.getInstance().getUserData().companyId);
 
-        MessagesHandler.sendMessage(true, InviteNewWorker);
+        MessagesHandler.getInstance().sendMessage(inviteNewWorker);
         showSentMessage();
-
-
     }
 
 

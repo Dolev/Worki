@@ -53,6 +53,20 @@ public class RegisterToShifts extends AppCompatActivity implements View.OnClickL
             }
         });
 
+        accept.setEnabled(false);
+        reject.setEnabled(false);
+
+        CurrentUser.getInstance().addOnUserNotNullListener(new Consumer<User>()
+        {
+            @Override
+            public void accept(User user)
+            {
+
+                accept.setEnabled(true);
+                reject.setEnabled(true);
+            }
+        });
+
         accept.setOnClickListener(this);
         reject.setOnClickListener(this);
     }
@@ -68,60 +82,18 @@ public class RegisterToShifts extends AppCompatActivity implements View.OnClickL
     {
         if (shifts == null)
             return;
-        Shift selection = shifts.get(shiftsView.getCheckedItemPosition());
+        final Shift selection = shifts.get(shiftsView.getCheckedItemPosition());
         User user = CurrentUser.getInstance().getUserData();
         if (v.equals(accept))
         {
+
             if (!selection.getWorkersInShift().contains(user))
                 CurrentShifts.getInstance().registerToShift(selection, user);
-            //add notification
-            addNotification();
-
         } else if (v.equals(reject))
         {
             if (selection.getWorkersInShift().contains(user))
                 CurrentShifts.getInstance().unregisterToShift(selection, user);
-            //dellete notification
-
-
         }
-
-    }
-
-    private void createNotificationChannel(String CHANNEL_ID)
-    {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        {
-            CharSequence name = getString(R.string.channel_name);
-            String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-
-    }
-
-
-    public void addNotification()
-    {
-        String CHANNEL_ID = NotificationChannel.DEFAULT_CHANNEL_ID;
-        createNotificationChannel(CHANNEL_ID);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.notification)
-                .setContentTitle("Worki- Shift is about to Start")
-                .setContentText("Please dont be late!")
-                .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText("Please dont be late!"))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setCategory(NotificationCompat.CATEGORY_CALL);
-
 
     }
 }

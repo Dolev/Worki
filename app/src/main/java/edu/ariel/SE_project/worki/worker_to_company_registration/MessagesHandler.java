@@ -1,5 +1,6 @@
 package edu.ariel.SE_project.worki.worker_to_company_registration;
 
+import android.app.Activity;
 import android.os.Message;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.ariel.SE_project.worki.assistance_classes.GlobalMetaData;
+import edu.ariel.SE_project.worki.assistance_classes.MyNotificationHandler;
 import edu.ariel.SE_project.worki.data.CurrentUser;
 import edu.ariel.SE_project.worki.data.InviteMessage;
 import edu.ariel.SE_project.worki.data.User;
@@ -25,15 +28,21 @@ import edu.ariel.SE_project.worki.data.User;
 public class MessagesHandler
 {
     private static MessagesHandler instance = new MessagesHandler();
+    private static Activity activity;
 
     private HashMap<String, InviteMessage> messages = new HashMap<>();
 
     // needs changes
-    public List<Consumer<List<InviteMessage>>> listeners = new LinkedList<>();
+    private List<Consumer<List<InviteMessage>>> listeners = new LinkedList<>();
 
     public static MessagesHandler getInstance()
     {
         return instance;
+    }
+
+    public static void setContext(Activity activity)
+    {
+        MessagesHandler.activity = activity;
     }
 
     private MessagesHandler()
@@ -43,8 +52,11 @@ public class MessagesHandler
             @Override
             public void accept(User user)
             {
+                if (user.email == null)
+                    throw new RuntimeException("email is null");
+
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference(GlobalMetaData.messagesPath + '/' + user.id);
+                final DatabaseReference myRef = database.getReference(GlobalMetaData.messagesPath(user.email));
                 myRef.addChildEventListener(new ChildEventListener()
                 {
                     @Override
@@ -53,14 +65,40 @@ public class MessagesHandler
                         InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
                         messages.put(inviteMessage.getSender(), inviteMessage);
                         onChange();
+                        DatabaseReference ref = myRef.child(dataSnapshot.getKey());
+                        ref.addValueEventListener(new ValueEventListener()
+                        {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                            {
+                                InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
+                                if (inviteMessage.getCurrentStatus() == InviteMessage.InvitationStatus.accepted
+                                        && messages.containsKey(inviteMessage.getSender())
+                                        && messages.get(inviteMessage.getSender()).getCurrentStatus()
+                                        == InviteMessage.InvitationStatus.undecided)
+                                {
+                                    onAccepted(inviteMessage);
+                                }
+
+                                messages.put(inviteMessage.getSender(), inviteMessage);
+                                onChange();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError)
+                            {
+
+                            }
+                        });
                     }
 
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
                     {
-                        InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
-                        messages.put(inviteMessage.getSender(), inviteMessage);
-                        onChange();
+//                        InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
+//                        messages.put(inviteMessage.getSender(), inviteMessage);
+//                        onChange();
+
                     }
 
                     @Override
@@ -87,6 +125,11 @@ public class MessagesHandler
         });
     }
 
+    private void onAccepted(InviteMessage message)
+    {
+        MyNotificationHandler.sendNotification(activity, "Invitation Accepted", message.getSender() + " has accepted your invitation", 00);
+    }
+
     public List<InviteMessage> getMessages()
     {
         return new ArrayList<>(messages.values());
@@ -106,50 +149,34 @@ public class MessagesHandler
         }
     }
 
-    public static void sendMessage(boolean manager, InviteMessage message)
+    public void sendMessage(InviteMessage message)
     {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath + '/' + message.getRecipient()).push();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath(message.getRecipient())).push();
         message.writeToDatabase(ref);
     }
 
-    public static void updateMessage(boolean manager, InviteMessage message)
+    public void updateMessage(InviteMessage message)
     {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath + '/' + message.getRecipient()).child(message.getId());
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(GlobalMetaData.messagesPath(message.getRecipient())).child(message.getId());
         message.writeToDatabase(ref);
     }
 
-    public static void updateAllMessages(boolean manager, String recipient)
+    private static String createReply(String sender, String status, boolean invite)
     {
-        HashMap<String, ArrayList<InviteMessage>> hMap;
-
-        if (MessagesHandler.getInstance().getMessages().contains(recipient))
+        if (invite)
         {
-//            .get(recipient).clear();
+            return "Invitation from " + sender + ".\nStatus: " + status;
         }
-
+        return sender + " has " + status + " your Invitation.";
     }
 
-
-    public static void sendReplyToManager(InviteMessage inviteMessage)
+    public static List<String> convertToStrings(List<InviteMessage> inviteMessages)
     {
-        InviteMessage sendToManager = new InviteMessage(inviteMessage);
-        sendToManager.inverseRecipientSender();
-
-        sendMessage(false, sendToManager);
-
-    }
-
-    private static String createReply(String sender, String reply)
-    {
-        return sender + "has" + reply + "your Invitation.";
-    }
-
-    public static ArrayList<String> convertToStrings(ArrayList<InviteMessage> inviteMessages)
-    {
-        ArrayList<String> repliesInStrings = new ArrayList<>();
+        List<String> repliesInStrings = new ArrayList<>();
         for (InviteMessage im : inviteMessages)
         {
-            repliesInStrings.add(createReply(im.getSender(), im.statusToString()));
+            if (im.isShow())
+                repliesInStrings.add(createReply(im.getSender(), im.statusToString(), im.isInvite()));
         }
 
         return repliesInStrings;

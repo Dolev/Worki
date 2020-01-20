@@ -9,6 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".assistance_classes.MyNotificationHandler" />
+
         <activity
             android:name=".shift_management.CreateShifts"
             android:label="Manage Shifts" />

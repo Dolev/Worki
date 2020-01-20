@@ -136,11 +136,11 @@ public class CurrentShifts
         }
     }
 
-    public void addShift(Date start, Date end, User user)
+    public void addShift(Date start, Date end, User user, int numOfWorkers)
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(GlobalMetaData.shiftsPath + '/' + user.companyId).push();
-        Shift shift = new Shift(user, new LinkedList<User>(), myRef.getKey(), start, end);
+        Shift shift = new Shift(user.email, new LinkedList<User>(), myRef.getKey(), start, end, numOfWorkers);
         shift.writeToDatabase(myRef);
     }
 

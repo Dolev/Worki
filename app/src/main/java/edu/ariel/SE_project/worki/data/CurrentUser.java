@@ -19,8 +19,8 @@ import java.util.List;
 import edu.ariel.SE_project.worki.assistance_classes.GlobalMetaData;
 
 /**
- * Class for getting user data from database. Data is updated automatically.
- * TODO won't work when logging out
+ * Class for getting user data from database. Data is updated automatically. TODO won't work when
+ * logging out
  */
 public class CurrentUser
 {
@@ -31,6 +31,8 @@ public class CurrentUser
     private User user;
 
     private FirebaseUser firebaseUser;
+
+    private Company company = null;
 
     public List<Consumer<User>> listeners = new LinkedList<>();
 
@@ -73,7 +75,8 @@ public class CurrentUser
     /**
      * Update the user data.
      *
-     * @param firebaseUser the current signed in user, null when not signed in ( will return without doing anything).
+     * @param firebaseUser the current signed in user, null when not signed in ( will return without
+     *                     doing anything).
      */
     private void updateUser(final FirebaseUser firebaseUser)
     {
@@ -87,10 +90,10 @@ public class CurrentUser
         this.firebaseUser = firebaseUser;
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(GlobalMetaData.usersPath + '/' + firebaseUser.getUid());
+        DatabaseReference userRef = database.getReference(GlobalMetaData.usersPath + '/' + firebaseUser.getUid());
 
         // Read from the database
-        myRef.addValueEventListener(new ValueEventListener()
+        userRef.addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
@@ -100,11 +103,14 @@ public class CurrentUser
                 user = new User(firebaseUser, dataSnapshot);
 
 
+                List<Consumer<User>> _listeners = new LinkedList<>(listeners);
+
                 for (Consumer<User> listener : listeners)
                 {
                     listener.accept(user);
-                    listeners.remove(listener);
+                    _listeners.remove(listener);
                 }
+                listeners = _listeners;
 
                 Log.d("CurrentUser", "Reading Data. Id: " + firebaseUser.getUid());
             }
@@ -114,6 +120,36 @@ public class CurrentUser
             {
                 // Failed to read value
                 Log.w("CurrentUser", "Failed to read data. Id: " + firebaseUser.getUid() + ", User: " + user, error.toException());
+            }
+        });
+
+        addOnUserNotNullListener(new Consumer<User>()
+        {
+            @Override
+            public void accept(User user)
+            {
+                if (user.companyId == null)
+                {
+                    company = null;
+                    return;
+                }
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference companyRef = database.getReference(GlobalMetaData.companiesPath + '/' + user.companyId);
+
+                companyRef.addValueEventListener(new ValueEventListener()
+                {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                    {
+                        company = new Company().readFromDatabase(dataSnapshot);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError)
+                    {
+
+                    }
+                });
             }
         });
     }
@@ -128,6 +164,11 @@ public class CurrentUser
         return user;
     }
 
+    public Company getCompany()
+    {
+        return company;
+    }
+
     public FirebaseUser getFirebaseUser()
     {
         return firebaseUser;
@@ -140,4 +181,19 @@ public class CurrentUser
         else
             listeners.add(listener);
     }
+
+    public void updateUserData(User user)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(GlobalMetaData.usersPath + '/' + firebaseUser.getUid());
+        user.writeToDatabase(myRef);
+    }
+
+    public void updateCompanyData(Company company)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(GlobalMetaData.companiesPath + '/' + company.id);
+        company.writeToDatabase(myRef);
+    }
+
 }

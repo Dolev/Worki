@@ -1,5 +1,6 @@
 package edu.ariel.SE_project.worki.shift_management;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Consumer;
 
@@ -14,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -33,6 +35,7 @@ public class CreateShifts extends AppCompatActivity
 {
     private Button add, remove;
     private Calendar startCal = Calendar.getInstance(), endCal = Calendar.getInstance();
+    private int numOfWorkers = 0;
     private List<Shift> shifts = null;
     private ListView shiftsView;
 
@@ -47,12 +50,20 @@ public class CreateShifts extends AppCompatActivity
         shiftsView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         remove = findViewById(R.id.remove);
 
-        add.setOnClickListener(new View.OnClickListener()
+        CurrentUser.getInstance().addOnUserNotNullListener(new Consumer<User>()
         {
             @Override
-            public void onClick(View v)
+            public void accept(User user)
             {
-                firstDialog.run();
+                add.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+
+                        firstDialog.run();
+                    }
+                });
             }
         });
         CurrentShifts.getInstance().addOnShiftsChangedListener(new Consumer<List<Shift>>()
@@ -168,10 +179,36 @@ public class CreateShifts extends AppCompatActivity
         @Override
         public void run()
         {
+            final NumberPicker view = new NumberPicker(CreateShifts.this);
+            view.setMinValue(0);
+            view.setMaxValue(Integer.MAX_VALUE);
+            view.setWrapSelectorWheel(false);
+            view.setValue(numOfWorkers);
+            new AlertDialog.Builder(CreateShifts.this)
+                    .setView(view)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(@NonNull DialogInterface dialog, int which)
+                        {
+                            numOfWorkers = view.getValue();
+                            fourthDialog.run();
+                        }
+                    })
+                    .show();
+        }
+    };
+
+    private Runnable fourthDialog = new Runnable()
+    {
+        @Override
+        public void run()
+        {
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(CreateShifts.this);
             dialogBuilder.setTitle("Add New Shift?");
             DateFormat df = SimpleDateFormat.getDateTimeInstance();
-            dialogBuilder.setMessage("Start: " + df.format(startCal.getTime()) + "\nEnd: " + df.format(endCal.getTime()));
+            dialogBuilder.setMessage("Start: " + df.format(startCal.getTime()) + "\nEnd: "
+                    + df.format(endCal.getTime()) + "\nNumber Of Workers: " + numOfWorkers);
 
             dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener()
             {
@@ -200,14 +237,8 @@ public class CreateShifts extends AppCompatActivity
 
     private void addShift()
     {
-        CurrentUser.getInstance().addOnUserNotNullListener(new Consumer<User>()
-        {
-            @Override
-            public void accept(User user)
-            {
-                CurrentShifts.getInstance()
-                        .addShift(startCal.getTime(), endCal.getTime(), CurrentUser.getInstance().getUserData());
-            }
-        });
+
+        CurrentShifts.getInstance()
+                .addShift(startCal.getTime(), endCal.getTime(), CurrentUser.getInstance().getUserData(), numOfWorkers);
     }
 }
