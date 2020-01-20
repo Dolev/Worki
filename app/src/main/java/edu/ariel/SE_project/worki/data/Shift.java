@@ -1,17 +1,19 @@
 package edu.ariel.SE_project.worki.data;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresPermission;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Shift implements ReadableFromDatabase, WriteableToDatabase
 {
-    private static int shiftIdGenerator = 0;
     private User shiftManager;
 
     private List<User> workersInShift;
@@ -49,14 +51,6 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
 
     }
 
-    public Shift(User shiftManager, int shiftLength)
-    {
-        this.shiftManager = shiftManager;
-        shiftDate = new Date();
-        shiftEnd = new Date(shiftDate.getTime() + shiftLength);
-
-    }
-
     public Shift(Shift shift)
     {
         this.shiftManager = shift.shiftManager;
@@ -85,16 +79,14 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
         workersInShift.remove(worker);
     }
 
+    @NonNull
     public String toString()
     {
-        String workers = workersInShift.toString();
+        DateFormat df = SimpleDateFormat.getDateTimeInstance();
+        if (shiftDate == null || shiftEnd == null)
+            return "";
 
-        return "Shift {Shift Id: " + shiftId + '\'' +
-                ", Manager Id: " + shiftManager.id + '\'' +
-                ", Workers In Shift" + workers + '\'' +
-                ", Shift Starts in: " + shiftDate.toString() +
-                ", Shift Ends in: " + shiftEnd.toString() + '\'' +
-                '}';
+        return "Start: " + df.format(shiftDate) + "\nEnd: " + df.format(shiftEnd);
     }
 
     /**

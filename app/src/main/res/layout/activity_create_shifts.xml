@@ -6,54 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".shift_management.CreateShifts">
 
-    <TextView
-        android:id="@+id/startDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start Date"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/startTime"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/startTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start Time"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/startDate"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/endDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="End Date"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/endTime"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/startDate" />
-
-    <TextView
-        android:id="@+id/endTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="End Time"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/endDate"
-        app:layout_constraintTop_toBottomOf="@+id/startTime" />
-
     <Button
         android:id="@+id/add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/endDate" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ListView
         android:id="@+id/shift_list"
@@ -62,7 +21,7 @@
         app:layout_constraintBottom_toTopOf="@+id/remove"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add">
+        app:layout_constraintTop_toTopOf="parent">
 
     </ListView>
 
