@@ -62,7 +62,7 @@ public class ListOfUserConnected extends AppCompatActivity
                 if (CurrentUser.getInstance().getUserData().isManager || (s.getWorkersInShift().contains(CurrentUser.getInstance().getUserData())))
                 {                                    //insert workers by current users
                     ArrayAdapter<User> userAdapter =
-                            new ArrayAdapter<User>(this, android.R.layout.simple_list_item_1, s.getWorkersInShift());
+                            new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, s.getWorkersInShift());
 
                     show_users_online.setAdapter(userAdapter);
                 }

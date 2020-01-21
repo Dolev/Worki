@@ -14,8 +14,12 @@
         <activity
             android:name=".shift_management.CreateShifts"
             android:label="Manage Shifts" />
-        <activity android:name=".shift_management.RegisterToShifts" />
-        <activity android:name=".signed_in_activities.ListOfUserConnected" />
+        <activity
+            android:name=".shift_management.RegisterToShifts"
+            android:label="Join Shifts" />
+        <activity
+            android:name=".signed_in_activities.ListOfUserConnected"
+            android:label="Connected Users" />
         <activity android:name=".worker_to_company_registration.RegistrationOfWorkerFromCompaniesActivity" />
         <activity android:name=".worker_to_company_registration.RegisterWorkerToCompanyActivity" />
         <activity

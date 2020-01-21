@@ -197,6 +197,7 @@ public class MenuFragment extends Fragment
         if (intent != null)
         {
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            intent.putExtra("isManager", isManager);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);

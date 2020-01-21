@@ -10,13 +10,15 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Shift implements ReadableFromDatabase, WriteableToDatabase
 {
     private String shiftManager;
 
-    private List<User> workersInShift = new ArrayList<>();
+    private Map<User, Long> workersInShift = new HashMap<>();
     private String shiftId;
     private Date shiftDate;
     private Date shiftEnd;
@@ -34,7 +36,7 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
 
     public List<User> getWorkersInShift()
     {
-        return workersInShift;
+        return new ArrayList<>(workersInShift.keySet());
     }
 
     public String getShiftId()
@@ -67,7 +69,7 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
         this.numOfWorkers = shift.numOfWorkers;
     }
 
-    public Shift(String shiftManager, List<User> workersInShift, String shiftId, Date shiftDate, Date shiftEnd, int numOfWorkers)
+    public Shift(String shiftManager, Map<User, Long> workersInShift, String shiftId, Date shiftDate, Date shiftEnd, int numOfWorkers)
     {
         this.shiftManager = shiftManager;
         this.shiftId = shiftId;
@@ -79,12 +81,24 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
 
     public void addWorkerToShift(User worker)
     {
-        workersInShift.add(worker);
+        workersInShift.put(worker, 0L);
     }
 
     public void removeWorkerFromShift(User worker)
     {
         workersInShift.remove(worker);
+    }
+
+    public void setTime(User worker, Long time)
+    {
+        if (worker == null)
+            return;
+        workersInShift.put(worker, time);
+    }
+
+    public Long getTime(User worker)
+    {
+        return workersInShift.get(worker);
     }
 
     @NonNull
@@ -107,9 +121,9 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
     public Shift readFromDatabase(DataSnapshot snapshot)
     {
         String shiftManager = snapshot.child("shiftManager").getValue(String.class);
-        List<User> shiftWorkers = (List<User>) snapshot.child("workersInShift").getValue();
+        Map<User, Long> shiftWorkers = (Map<User, Long>) snapshot.child("workersInShift").getValue();
         if (shiftWorkers == null)
-            shiftWorkers = new ArrayList<>();
+            shiftWorkers = new HashMap<>();
         Date shiftDate = snapshot.child("shiftDate").getValue(Date.class);
         Date shiftEnd = snapshot.child("shiftEnd").getValue(Date.class);
         int numOfWorkers = snapshot.child("numOfWorkers").getValue(Integer.class);

@@ -20,7 +20,10 @@ import java.util.TimerTask;
 
 import edu.ariel.SE_project.worki.R;
 import edu.ariel.SE_project.worki.assistance_classes.GlobalMetaData;
+import edu.ariel.SE_project.worki.data.CurrentUser;
+import edu.ariel.SE_project.worki.data.Shift;
 import edu.ariel.SE_project.worki.data.ShiftStamp;
+import edu.ariel.SE_project.worki.shift_management.CurrentShifts;
 
 public class TimerActivity extends AppCompatActivity
 {
@@ -89,7 +92,7 @@ public class TimerActivity extends AppCompatActivity
         timer.start();
 
         startStop.setText(R.string.stop_shift_text);
-        writeDB(ShiftStamp.ShiftStampType.Start, System.currentTimeMillis());
+        //writeDB(ShiftStamp.ShiftStampType.Start, System.currentTimeMillis());
     }
 
     /**
@@ -102,7 +105,7 @@ public class TimerActivity extends AppCompatActivity
         timer.stop();
 
         pauseShift.setText(R.string.continue_shift_text);
-        writeDB(ShiftStamp.ShiftStampType.Pause, System.currentTimeMillis());
+        //writeDB(ShiftStamp.ShiftStampType.Pause, System.currentTimeMillis());
     }
 
     /**
@@ -114,7 +117,7 @@ public class TimerActivity extends AppCompatActivity
         timer.start();
 
         pauseShift.setText(R.string.pause_shift_text);
-        writeDB(ShiftStamp.ShiftStampType.Continue, System.currentTimeMillis());
+        //writeDB(ShiftStamp.ShiftStampType.Continue, System.currentTimeMillis());
     }
 
     /**
@@ -123,14 +126,17 @@ public class TimerActivity extends AppCompatActivity
     private void stopTimer()
     {
         pauseShift.setEnabled(false);
+
+
+        writeShift(SystemClock.elapsedRealtime() - timer.getBase());
+
         timer.setBase(SystemClock.elapsedRealtime());
         timer.stop();
 
 
-
         startStop.setText(R.string.start_shift_text);
         pauseShift.setText(R.string.pause_shift_text);
-        writeDB(ShiftStamp.ShiftStampType.Stop, System.currentTimeMillis());
+        //writeDB(ShiftStamp.ShiftStampType.Stop, System.currentTimeMillis());
     }
 
     private void writeDB(ShiftStamp.ShiftStampType type, long time)
@@ -139,5 +145,12 @@ public class TimerActivity extends AppCompatActivity
         DatabaseReference myRef = database.getReference(GlobalMetaData.userDataPath());
         ShiftStamp ss = new ShiftStamp(type, time);
         ss.writeToDatabase(myRef.child("shiftStamps").push());
+    }
+
+    private void writeShift(long elapsed)
+    {
+        Shift s = CurrentShifts.getInstance().getCurrentShift();
+        if (s != null)
+            s.setTime(CurrentUser.getInstance().getUserData(), elapsed);
     }
 }
