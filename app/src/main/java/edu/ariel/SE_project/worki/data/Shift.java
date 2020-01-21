@@ -18,11 +18,17 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
 {
     private String shiftManager;
 
-    private Map<User, Long> workersInShift = new HashMap<>();
+    private Map<String, Long> workersInShift = new HashMap<>();
     private String shiftId;
     private Date shiftDate;
     private Date shiftEnd;
     private int numOfWorkers;
+    private String companyId;
+
+    public String getCompanyId()
+    {
+        return companyId;
+    }
 
     public int getNumOfWorkers()
     {
@@ -34,7 +40,7 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
         return shiftManager;
     }
 
-    public List<User> getWorkersInShift()
+    public List<String> getWorkersInShift()
     {
         return new ArrayList<>(workersInShift.keySet());
     }
@@ -67,9 +73,10 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
         this.shiftDate = shift.shiftDate;
         this.shiftEnd = shift.shiftEnd;
         this.numOfWorkers = shift.numOfWorkers;
+        this.companyId = shift.companyId;
     }
 
-    public Shift(String shiftManager, Map<User, Long> workersInShift, String shiftId, Date shiftDate, Date shiftEnd, int numOfWorkers)
+    public Shift(String shiftManager, Map<String, Long> workersInShift, String shiftId, Date shiftDate, Date shiftEnd, int numOfWorkers, String companyId)
     {
         this.shiftManager = shiftManager;
         this.shiftId = shiftId;
@@ -77,26 +84,27 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
         this.shiftDate = shiftDate;
         this.shiftEnd = shiftEnd;
         this.numOfWorkers = numOfWorkers;
+        this.companyId = companyId;
     }
 
-    public void addWorkerToShift(User worker)
+    public void addWorkerToShift(String worker)
     {
         workersInShift.put(worker, 0L);
     }
 
-    public void removeWorkerFromShift(User worker)
+    public void removeWorkerFromShift(String worker)
     {
         workersInShift.remove(worker);
     }
 
-    public void setTime(User worker, Long time)
+    public void setTime(String worker, Long time)
     {
         if (worker == null)
             return;
         workersInShift.put(worker, time);
     }
 
-    public Long getTime(User worker)
+    public Long getTime(String worker)
     {
         return workersInShift.get(worker);
     }
@@ -121,14 +129,45 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
     public Shift readFromDatabase(DataSnapshot snapshot)
     {
         String shiftManager = snapshot.child("shiftManager").getValue(String.class);
-        Map<User, Long> shiftWorkers = (Map<User, Long>) snapshot.child("workersInShift").getValue();
+        Map<String, Long> shiftWorkers = (Map<String, Long>) snapshot.child("workersInShift").getValue();
         if (shiftWorkers == null)
             shiftWorkers = new HashMap<>();
+
+        shiftWorkers = toAppFormat(shiftWorkers);
+
         Date shiftDate = snapshot.child("shiftDate").getValue(Date.class);
         Date shiftEnd = snapshot.child("shiftEnd").getValue(Date.class);
-        int numOfWorkers = snapshot.child("numOfWorkers").getValue(Integer.class);
+        Integer numOfWorkers = snapshot.child("numOfWorkers").getValue(Integer.class);
+        String companyId = snapshot.child("companyId").getValue(String.class);
 
-        return new Shift(shiftManager, shiftWorkers, snapshot.getKey(), shiftDate, shiftEnd, numOfWorkers);
+        if (numOfWorkers == null)
+            numOfWorkers = 0;
+
+        return new Shift(shiftManager, shiftWorkers, snapshot.getKey(), shiftDate, shiftEnd, numOfWorkers, companyId);
+    }
+
+    private Map<String, Long> toAppFormat(Map<String, Long> map)
+    {
+        Map<String, Long> _map = new HashMap<>();
+        for (String email :
+                map.keySet())
+        {
+            Long time = map.get(email);
+            _map.put(email.replace("-at-", "@").replace("-dot-", "."), time);
+        }
+        return _map;
+    }
+
+    private Map<String, Long> toWebFormat(Map<String, Long> map)
+    {
+        Map<String, Long> _map = new HashMap<>();
+        for (String email :
+                map.keySet())
+        {
+            Long time = map.get(email);
+            _map.put(email.replace("@", "-at-").replace(".", "-dot-"), time);
+        }
+        return _map;
     }
 
     /**
@@ -140,11 +179,12 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
     public void writeToDatabase(DatabaseReference reference)
     {
         reference.child("shiftManager").setValue(shiftManager);
-        reference.child("workersInShift").setValue(workersInShift);
+        reference.child("workersInShift").setValue(toWebFormat(workersInShift));
         reference.child("shiftId").setValue(shiftId);
         reference.child("shiftDate").setValue(shiftDate);
         reference.child("shiftEnd").setValue(shiftEnd);
         reference.child("numOfWorkers").setValue(numOfWorkers);
+        reference.child("companyId").setValue(companyId);
 
     }
 
@@ -158,21 +198,26 @@ public class Shift implements ReadableFromDatabase, WriteableToDatabase
 
         if (numOfWorkers != shift.numOfWorkers) return false;
         if (!shiftManager.equals(shift.shiftManager)) return false;
-        if (!workersInShift.equals(shift.workersInShift)) return false;
-        if (shiftId != null ? !shiftId.equals(shift.shiftId) : shift.shiftId != null) return false;
-        if (!shiftDate.equals(shift.shiftDate)) return false;
-        return shiftEnd.equals(shift.shiftEnd);
+        if (workersInShift != null ? !workersInShift.equals(shift.workersInShift) : shift.workersInShift != null)
+            return false;
+        if (!shiftId.equals(shift.shiftId)) return false;
+        if (shiftDate != null ? !shiftDate.equals(shift.shiftDate) : shift.shiftDate != null)
+            return false;
+        if (shiftEnd != null ? !shiftEnd.equals(shift.shiftEnd) : shift.shiftEnd != null)
+            return false;
+        return companyId.equals(shift.companyId);
     }
 
     @Override
     public int hashCode()
     {
         int result = shiftManager.hashCode();
-        result = 31 * result + workersInShift.hashCode();
-        result = 31 * result + (shiftId != null ? shiftId.hashCode() : 0);
-        result = 31 * result + shiftDate.hashCode();
-        result = 31 * result + shiftEnd.hashCode();
+        result = 31 * result + (workersInShift != null ? workersInShift.hashCode() : 0);
+        result = 31 * result + shiftId.hashCode();
+        result = 31 * result + (shiftDate != null ? shiftDate.hashCode() : 0);
+        result = 31 * result + (shiftEnd != null ? shiftEnd.hashCode() : 0);
         result = 31 * result + numOfWorkers;
+        result = 31 * result + companyId.hashCode();
         return result;
     }
 }

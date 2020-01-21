@@ -113,7 +113,7 @@ public class CurrentShifts
 
         if (shifts.containsKey(shift.getShiftId()))
         {
-            shift.addWorkerToShift(user);
+            shift.addWorkerToShift(user.email);
             shift.writeToDatabase(myRef.child(shift.getShiftId()));
         } else
         {
@@ -128,7 +128,7 @@ public class CurrentShifts
 
         if (shifts.containsKey(shift.getShiftId()))
         {
-            shift.removeWorkerFromShift(user);
+            shift.removeWorkerFromShift(user.email);
             shift.writeToDatabase(myRef.child(shift.getShiftId()));
         } else
         {
@@ -140,7 +140,14 @@ public class CurrentShifts
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(GlobalMetaData.shiftsPath + '/' + user.companyId).push();
-        Shift shift = new Shift(user.email, new HashMap<User, Long>(), myRef.getKey(), start, end, numOfWorkers);
+        Shift shift = new Shift(user.email, new HashMap<String, Long>(), myRef.getKey(), start, end, numOfWorkers, user.companyId);
+        shift.writeToDatabase(myRef);
+    }
+
+    public void updateShift(Shift shift)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(GlobalMetaData.shiftsPath + '/' + shift.getCompanyId()).child(shift.getShiftId());
         shift.writeToDatabase(myRef);
     }
 

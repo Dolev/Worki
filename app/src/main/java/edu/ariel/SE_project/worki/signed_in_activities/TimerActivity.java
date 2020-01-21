@@ -151,6 +151,9 @@ public class TimerActivity extends AppCompatActivity
     {
         Shift s = CurrentShifts.getInstance().getCurrentShift();
         if (s != null)
-            s.setTime(CurrentUser.getInstance().getUserData(), elapsed);
+        {
+            s.setTime(CurrentUser.getInstance().getUserData().email, elapsed);
+            CurrentShifts.getInstance().updateShift(s);
+        }
     }
 }
