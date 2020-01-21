@@ -67,8 +67,9 @@ public class RegisterToShifts extends AppCompatActivity implements View.OnClickL
             }
         });
 
-        accept.setOnClickListener(this);
-        reject.setOnClickListener(this);
+        accept.setOnClickListener(this);;   {}
+
+A]SSSSSSP]        reject.setOnClickListener(this);
     }
 
     private void updateUI(List<Shift> shifts)

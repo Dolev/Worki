@@ -29,6 +29,7 @@ public class ListOfUserConnected extends AppCompatActivity
 
     private List<User> users = null;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -45,6 +46,14 @@ public class ListOfUserConnected extends AppCompatActivity
             public void accept(User user)
             {
                 openUsersScreen();
+                CurrentShifts.getInstance().addOnShiftsChangedListener(new Consumer<List<Shift>>()
+                {
+                    @Override
+                    public void accept(List<Shift> shifts)
+                    {
+                        openUsersScreen();
+                    }
+                });
             }
         });
 
@@ -61,6 +70,7 @@ public class ListOfUserConnected extends AppCompatActivity
             if (s.getShiftDate().before(current) && s.getShiftEnd().after(current))
                 if (CurrentUser.getInstance().getUserData().isManager || (s.getWorkersInShift().contains(CurrentUser.getInstance().getUserData())))
                 {                                    //insert workers by current users
+
                     ArrayAdapter<User> userAdapter =
                             new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, s.getWorkersInShift());
 
