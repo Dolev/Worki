@@ -57,7 +57,6 @@ public class ListOfUserConnected extends AppCompatActivity
             }
         });
 
-
     }
 
     private void openUsersScreen()
