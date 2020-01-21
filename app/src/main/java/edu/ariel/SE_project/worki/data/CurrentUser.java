@@ -51,6 +51,12 @@ public class CurrentUser
         return ourInstance;
     }
 
+    public void addWorkerToCompany(String email)
+    {
+        company.workers.add(email);
+        updateCompanyData(company);
+    }
+
     /**
      * Create the user and add the data listeners.
      */

@@ -20,12 +20,19 @@
         <activity
             android:name=".signed_in_activities.ListOfUserConnected"
             android:label="Connected Users" />
-        <activity android:name=".worker_to_company_registration.RegistrationOfWorkerFromCompaniesActivity" />
-        <activity android:name=".worker_to_company_registration.RegisterWorkerToCompanyActivity" />
+        <activity
+            android:name=".worker_to_company_registration.RegistrationOfWorkerFromCompaniesActivity"
+            android:label="Register to Company" />
+        <activity
+            android:name=".worker_to_company_registration.RegisterWorkerToCompanyActivity"
+            android:label="Register Workers to Company" />
         <activity
             android:name=".login_register.RegisterCompany"
-            android:allowBackup="false" />
-        <activity android:name=".signed_in_activities.TimerActivity" />
+            android:allowBackup="false"
+            android:label="Register Company" />
+        <activity
+            android:name=".signed_in_activities.TimerActivity"
+            android:label="Shift Time" />
         <activity
             android:name=".login_register.LoginRegisterActivity"
             android:allowBackup="false"

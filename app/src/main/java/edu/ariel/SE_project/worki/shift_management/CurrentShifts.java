@@ -160,11 +160,15 @@ public class CurrentShifts
 
     public Shift getCurrentShift()
     {
+        Date current = new Date();
+        Log.d("CurrentShift", "getCurrentShift. Current date: " + current + " shifts: " + getShifts());
         for (Shift s : getShifts())
         {
-            Date current = new Date();
             if (s.getShiftDate().before(current) && s.getShiftEnd().after(current))
+            {
+                Log.d("CurrentShift", "getCurrentShift. current shift: " + s);
                 return s;
+            }
         }
         return null;
     }

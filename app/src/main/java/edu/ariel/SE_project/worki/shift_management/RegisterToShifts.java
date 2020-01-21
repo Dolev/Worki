@@ -94,11 +94,11 @@ public class RegisterToShifts extends AppCompatActivity implements View.OnClickL
         if (v.equals(accept))
         {
 
-            if (!selection.getWorkersInShift().contains(user))
+            if (!selection.getWorkersInShift().contains(user.email))
                 CurrentShifts.getInstance().registerToShift(selection, user);
         } else if (v.equals(reject))
         {
-            if (selection.getWorkersInShift().contains(user))
+            if (selection.getWorkersInShift().contains(user.email))
                 CurrentShifts.getInstance().unregisterToShift(selection, user);
         }
 

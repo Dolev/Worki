@@ -1,7 +1,7 @@
 package edu.ariel.SE_project.worki.worker_to_company_registration;
 
 import android.app.Activity;
-import android.os.Message;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,7 +12,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,32 +63,14 @@ public class MessagesHandler
                     {
                         InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
                         messages.put(inviteMessage.getSender(), inviteMessage);
+                        Log.d("MessagesHandler", "Message Recived: " + inviteMessage);
                         onChange();
-                        DatabaseReference ref = myRef.child(dataSnapshot.getKey());
-                        ref.addValueEventListener(new ValueEventListener()
+
+                        if (CurrentUser.getInstance().getUserData() != null && CurrentUser.getInstance().getUserData().isManager)
                         {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
-                            {
-                                InviteMessage inviteMessage = new InviteMessage().readFromDatabase(dataSnapshot);
-                                if (inviteMessage.getCurrentStatus() == InviteMessage.InvitationStatus.accepted
-                                        && messages.containsKey(inviteMessage.getSender())
-                                        && messages.get(inviteMessage.getSender()).getCurrentStatus()
-                                        == InviteMessage.InvitationStatus.undecided)
-                                {
-                                    onAccepted(inviteMessage);
-                                }
-
-                                messages.put(inviteMessage.getSender(), inviteMessage);
-                                onChange();
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError)
-                            {
-
-                            }
-                        });
+                            if (inviteMessage.getCurrentStatus() == InviteMessage.InvitationStatus.accepted_not_opened)
+                                invitationAccepted(inviteMessage);
+                        }
                     }
 
                     @Override
@@ -125,9 +106,14 @@ public class MessagesHandler
         });
     }
 
-    private void onAccepted(InviteMessage message)
+    private void invitationAccepted(InviteMessage message)
     {
-        MyNotificationHandler.sendNotification(activity, "Invitation Accepted", message.getSender() + " has accepted your invitation", 00);
+        Log.d("MessagesHandler", "Message accepted: " + message.toString().replace('\n', ' '));
+        CurrentUser.getInstance().addWorkerToCompany(message.getSender());
+        message.setCurrentStatus(InviteMessage.InvitationStatus.accepted);
+        updateMessage(message);
+        MyNotificationHandler.createNotification(activity, "Invitation Accepted", message.getSender() + " has accepted your invitation");
+
     }
 
     public List<InviteMessage> getMessages()
