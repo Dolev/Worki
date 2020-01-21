@@ -50,7 +50,7 @@ public class User
         else
             isManager = false;
 
-        companyId = snapshot.child("id").getValue(String.class);
+        companyId = snapshot.child("companyId").getValue(String.class);
         email = snapshot.child("email").getValue(String.class);
 
         for (DataSnapshot d : snapshot.child("shiftStamps").getChildren())
@@ -95,7 +95,7 @@ public class User
 
         reference.child("manager").setValue(isManager);
         if (companyId != null)
-            reference.child("id").setValue(companyId);
+            reference.child("companyId").setValue(companyId);
 
 
         DatabaseReference stamps = reference.child("shiftStamps");
@@ -115,7 +115,7 @@ public class User
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", isManager=" + isManager +
-                ", id='" + companyId + '\'' +
+                ", companyId='" + companyId + '\'' +
                 '}';
     }
 

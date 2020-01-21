@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Consumer;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -45,6 +46,14 @@ public class ListOfUserConnected extends AppCompatActivity
             public void accept(User user)
             {
                 openUsersScreen();
+                CurrentShifts.getInstance().addOnShiftsChangedListener(new Consumer<List<Shift>>()
+                {
+                    @Override
+                    public void accept(List<Shift> shifts)
+                    {
+                        openUsersScreen();
+                    }
+                });
             }
         });
 
@@ -53,21 +62,23 @@ public class ListOfUserConnected extends AppCompatActivity
 
     private void openUsersScreen()
     {
+        Log.d("CurrentShiftUsers", "displaying...");
         List<Shift> shifts = CurrentShifts.getInstance().getShifts();
         List<User> users = null;
-        for (Shift s : shifts)
+        Shift shift = CurrentShifts.getInstance().getCurrentShift();
+        User user = CurrentUser.getInstance().getUserData();
+
+        if (shift != null && user != null)// && (user.isManager || shift.getWorkersInShift().contains(user.email)))
         {
-            Date current = new Date();
-            if (s.getShiftDate().before(current) && s.getShiftEnd().after(current))
-                if (CurrentUser.getInstance().getUserData().isManager || (s.getWorkersInShift().contains(CurrentUser.getInstance().getUserData())))
-                {                                    //insert workers by current users
-                    ArrayAdapter<String> userAdapter =
-                            new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, s.getWorkersInShift());
+            ArrayAdapter<String> userAdapter =
+                    new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, shift.getWorkersInShift());
 
-                    show_users_online.setAdapter(userAdapter);
-                }
+            show_users_online.setAdapter(userAdapter);
+
+            Log.d("CurrentShiftUsers", "users: " + shift.getWorkersInShift());
+        } else
+        {
+            Log.d("CurrentShiftUsers", "Faild. Shift: " + shift + ". user: " + user);
         }
-
-
     }
 }

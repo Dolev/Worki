@@ -38,7 +38,7 @@ public class InviteMessage implements ReadableFromDatabase, WriteableToDatabase
 
     public enum InvitationStatus
     {
-        undecided, accepted, declined
+        undecided, accepted, declined, accepted_not_opened
     }
 
     private InvitationStatus currentStatus;

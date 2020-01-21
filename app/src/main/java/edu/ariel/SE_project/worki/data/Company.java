@@ -68,7 +68,9 @@ public class Company implements ReadableFromDatabase, WriteableToDatabase
         String id = snapshot.getKey();
         String name = snapshot.child("name").getValue(String.class);
         String address = snapshot.child("address").getValue(String.class);
-        List<String> workers = snapshot.child("workers").getValue(ArrayList.class);
+        List<String> workers = (List<String>) snapshot.child("workers").getValue();
+        if (workers == null)
+            workers = new ArrayList<>();
         return new Company(id, name, address, workers);
     }
 

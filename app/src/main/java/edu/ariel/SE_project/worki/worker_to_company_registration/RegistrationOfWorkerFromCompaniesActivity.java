@@ -179,7 +179,7 @@ public class RegistrationOfWorkerFromCompaniesActivity extends AppCompatActivity
     private void acceptMessage(InviteMessage mess)
     {
         InviteMessage inviteMessageAccepted = new InviteMessage(mess);
-        inviteMessageAccepted.setCurrentStatus(InviteMessage.InvitationStatus.accepted);
+        inviteMessageAccepted.setCurrentStatus(InviteMessage.InvitationStatus.accepted_not_opened);
         MessagesHandler.getInstance().updateMessage(inviteMessageAccepted);
 
         MessagesHandler.getInstance().updateMessage(inviteMessageAccepted.replyMessage());

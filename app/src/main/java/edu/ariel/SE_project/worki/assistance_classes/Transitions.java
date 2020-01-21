@@ -19,6 +19,7 @@ import edu.ariel.SE_project.worki.data.User;
 import edu.ariel.SE_project.worki.login_register.LoginRegisterActivity;
 import edu.ariel.SE_project.worki.login_register.RegisterCompany;
 import edu.ariel.SE_project.worki.signed_in_activities.TimerActivity;
+import edu.ariel.SE_project.worki.worker_to_company_registration.RegisterWorkerToCompanyActivity;
 
 /**
  * Class for all transitions between activities for simplicity.
@@ -129,5 +130,13 @@ public class Transitions
 
         activity.startActivity(new Intent(activity, MainActivity.class));
         activity.finish();
+    }
+
+    public static Intent getNotificationIntent(Activity activity)
+    {
+        Intent intent = new Intent(activity, RegisterWorkerToCompanyActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        intent.putExtra("isManager", true);
+        return intent;
     }
 }
