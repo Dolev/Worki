@@ -33,6 +33,12 @@ public class RegisterToShifts extends AppCompatActivity implements View.OnClickL
 
 
     @Override
+    public void onPointerCaptureChanged(boolean hasCapture)
+    {
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -69,7 +75,7 @@ public class RegisterToShifts extends AppCompatActivity implements View.OnClickL
 
         accept.setOnClickListener(this);;   {}
 
-A]SSSSSSP]        reject.setOnClickListener(this);
+      reject.setOnClickListener(this);
     }
 
     private void updateUI(List<Shift> shifts)
