@@ -84,7 +84,7 @@ public class Transitions
                                 toRegisterCompany(activity);
                             } else
                             {
-                                Intent intent = new Intent(activity, TimerActivity.class);
+                                Intent intent = new Intent(activity, RegisterWorkerToCompanyActivity.class);
 
                                 intent.putExtra("isManager", user.isManager);
 

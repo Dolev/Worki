@@ -49,7 +49,6 @@ public class MenuFragment extends Fragment
     {
         // Add menu entries here
 
-        entries.add(new MenuEntry("Timer", TimerActivity.class));
         entries.add(new MenuEntry("Show Current Users", ListOfUserConnected.class));
 
         managerOnly.add(new MenuEntry("Register Workers", RegisterWorkerToCompanyActivity.class));
@@ -57,6 +56,7 @@ public class MenuFragment extends Fragment
 
         workerOnly.add(new MenuEntry("Register to Company", RegistrationOfWorkerFromCompaniesActivity.class));
         workerOnly.add(new MenuEntry("Shifts", RegisterToShifts.class));
+        workerOnly.add(new MenuEntry("Timer", TimerActivity.class));
     }
 
 
