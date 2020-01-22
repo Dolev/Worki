@@ -179,6 +179,12 @@ public class CreateShifts extends AppCompatActivity
         @Override
         public void run()
         {
+            if (endCal.before(startCal))
+            {
+                Toast.makeText(CreateShifts.this, "End time is before Start time", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             final NumberPicker view = new NumberPicker(CreateShifts.this);
             view.setMinValue(0);
             view.setMaxValue(Integer.MAX_VALUE);
@@ -186,6 +192,7 @@ public class CreateShifts extends AppCompatActivity
             view.setValue(numOfWorkers);
             new AlertDialog.Builder(CreateShifts.this)
                     .setView(view)
+                    .setTitle("Number of Workers")
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
                     {
                         @Override
