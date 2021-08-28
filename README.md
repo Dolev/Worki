@@ -23,3 +23,21 @@ Software Engineering project for Ariel University
 
 ## Object Diagram
 ![Object](https://github.com/elishadar/Worki/blob/master/Readme/UML/Worki%20object%20diagram.png)
+
+## Authors
+ 
+ <a href="https://www.linkedin.com/in/dolev-hindy-49924a152/" target="_blank">
+ <img src="https://avatars0.githubusercontent.com/u/33119992" width="70" align="left">
+</a>
+
+**Dolev Hindy**
+
+[![Linkedin](https://img.shields.io/badge/-linkedin-grey?logo=linkedin)](https://www.linkedin.com/in/dolev-hindy-49924a152/)
+
+<a href="https://www.linkedin.com/in/amit-kazado-21762a180/" target="_blank">
+ <img src="https://avatars0.githubusercontent.com/u/44847490" width="70" align="left">
+</a>
+
+**Amit Kazado**
+
+[![Linkedin](https://img.shields.io/badge/-linkedin-grey?logo=linkedin)](https://www.linkedin.com/in/amit-kazado-21762a180/)
